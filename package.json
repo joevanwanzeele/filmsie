@@ -1,7 +1,7 @@
 {
     "name": "filmsie",
     "private": true,
-    "version": "0.0.0",
+    "version": "0.0.0-7",
     "description": "a Sails application",
     "dependencies": {
         "sails": "0.9.15",
@@ -12,20 +12,21 @@
         "sails-mongo": "~0.9.7",
         "bcrypt": "0.7.7",
         "crypto": "0.0.3",
-        "node-uuid": "1.4.1"
+        "node-uuid": "1.4.1",
+        "rotten-tomatoes-api": "0.0.1"
     },
     "scripts": {
         "start": "node app.js",
         "debug": "node debug app.js"
     },
     "repository": {
-    "type": "git",
-    "url": "git://github.com/joevanwanzeele/filmsie.git"
-  },
-  "author": "joe.vanwanzeele@gmail.com",
-  "license": "",
-  "subdomain": "filmsie",
-  "engines": {
-    "node": "0.10.x"
-  }
+        "type": "git",
+        "url": "git://github.com/joevanwanzeele/filmsie.git"
+    },
+    "author": "joe.vanwanzeele@gmail.com",
+    "license": "",
+    "subdomain": "filmsie",
+    "engines": {
+        "node": "0.10.x"
+    }
 }
