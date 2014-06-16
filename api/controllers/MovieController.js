@@ -22,7 +22,7 @@ module.exports = {
 
     rotten.listMoviesInTheaters({page_limit: 16, page: 1}, function(err,response){
 	   if (err) console.log(err);
-	   console.dir(response);
+	   //console.dir(response);
      res.view({items: response.movies});
     });
     //
