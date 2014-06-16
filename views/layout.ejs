@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title><%- title %></title>
+    <title>Filmsie</title>
 
     <!-- Viewport mobile tag for sensible mobile support -->
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -29,15 +29,71 @@
 
     <!--STYLES-->
     <link rel="stylesheet" href="/linker/styles/bootstrap.min.css">
+    <link rel="stylesheet" href="/linker/styles/custom.css">
     <!--STYLES END-->
     <script type="text/javascript">
       window.filmsie = { csrf: "<%= _csrf %>"};
     </script>
-
+    <script src="/linker/js/jquery-2.1.0.min.js"></script>
   </head>
 
   <body>
+
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"> Filmsie</a>
+        </div>
+      <div class="navbar-collapse collapse">
+        <ul class="nav navbar-nav">
+          <% if (session.authenticated) { %>
+            <li class="active"><a href="/user/show/<%= session.User.id %>"><%= session.User.firstName %> </a> </li>
+            <li><a href="/saleItem/">Buy Something</a></li>
+            <li><a href="/saleItem/new/">Sell Something</a></li>
+            <% } %>
+            <% if (session.authenticated && session.User.admin) { %>
+            <li><a href="/user">User Administration</a></li>
+
+          <% } %>
+        </ul>
+        <div class="navbar-right">
+          <% if (session.authenticated) { %>
+            <a class="btn btn-default navbar-btn navbar-right" href="/session/destroy">sign-out</a>
+          <% } %>
+        </div>
+        <% if (!session.authenticated) { %>
+          <form class="navbar-form navbar-right" action="/session/create">
+            <div class="form-group">
+              <input type="text" placeholder="Email" name="email" class="form-control">
+            </div>
+            <div class="form-group">
+              <input type="password" placeholder="Password" name="password" class="form-control">
+            </div>
+            <button type="submit" class="btn btn-success">Sign in</button>
+            <input type="hidden" name="_csrf" value="<%= _csrf %>" />
+          </form>
+        <% } %>
+        </div>
+      </div>
+      </div>
+    </nav>
+
     <%- body %>
+
+    <div class="container">
+      <hr>
+      <footer class="footer pull-right">
+        <div>
+          <a href="/about">About Us</a>
+          <div>Copyright Filmsie LLC, 2014</div>
+        </div>
+      </footer>
+    </div>
 
 
 

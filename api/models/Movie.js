@@ -8,12 +8,13 @@
 
 module.exports = {
 
-  attributes: {
-  	
-  	/* e.g.
-  	nickname: 'string'
-  	*/
-    
-  }
+schema: true,
 
+attributes: {
+
+  rottenTomatoesId: {
+    type: 'string',
+    required: true
+    }
+  }
 };
