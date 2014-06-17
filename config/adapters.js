@@ -27,7 +27,7 @@ module.exports.adapters = {
     user     : 'nodejitsu',
     password : process.env.MONGO_PSSWD,
     database : 'nodejitsudb8249523199',
-    port     : '10031',
+    port     : '10048',
     schema   : true
   }
 };
