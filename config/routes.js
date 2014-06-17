@@ -35,6 +35,16 @@ module.exports.routes = {
   '/': {
     controller: 'MovieController',
     action: 'index'
+  },
+
+  '/login': {
+    controller: 'AuthController',
+    action: 'login'
+  },
+
+  '/logout': {
+    controller: 'AuthController',
+    action: 'logout'
   }
 
   /*
