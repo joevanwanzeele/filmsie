@@ -26,7 +26,7 @@ module.exports.adapters = {
     host     : 'troup.mongohq.com',
     user     : 'nodejitsu',
     password : process.env.MONGO_PSSWD,
-    database : 'nodejitsudb1741942826',
+    database : 'nodejitsudb8249523199',
     port     : '10031',
     schema   : true
   }
