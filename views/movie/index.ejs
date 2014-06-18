@@ -1,39 +1,7 @@
-<style>
-html { -webkit-font-smoothing: antialiased; }
-  body {
-    background-color: #5C5740;
-    font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
-  }
-  td {
-    text-align: center;
-  }
-  .movie-container {
-    background-color: #353225;
-    height:400px;
-    width: 250px;
-    margin:5px;
-    /* border: 2px solid #000000; */
-  }
-  .movie-container img{
-    height:250px;
-    width:155px;
-    margin-top:16px;
-  }
-  .movie-title-container{
-    background-color: #FFF8DB;
-    color: #000000;
-    height:154px;
-    padding: 5px;
-    display:block;
-    margin-bottom:10px;
-    vertical-align:middle;
-  }
-
-</style>
-<div class="container">
+<div class="container movie-table-container">
 <table>
   <% _.each(items, function(item, i) {
-      if (i % 4 == 0) {
+      if (i % 5 == 0) {
         if (i != 0) { %>
         </tr>
         <% } %>
@@ -42,8 +10,20 @@ html { -webkit-font-smoothing: antialiased; }
     <td>
       <div class="movie-container">
         <div class="movie-title-container">
-          <h4><%= item.title %></h4>
+          <h5><%= item.title %></h5>
           <img src='<%= item.posters.original %>'/>
+        </div>
+        <div class="rating-container">
+          <div class="rating-box">1</div>
+          <div class="rating-box">2</div>
+          <div class="rating-box">3</div>
+          <div class="rating-box">4</div>
+          <div class="rating-box">5</div>
+          <div class="rating-box">6</div>
+          <div class="rating-box">7</div>
+          <div class="rating-box">8</div>
+          <div class="rating-box">9</div>
+          <div class="rating-box">10</div>
         </div>
     </div>
     </td>
@@ -51,3 +31,43 @@ html { -webkit-font-smoothing: antialiased; }
   </tr>
 </table>
 </div>
+
+<script type="text/javascript">
+  function MovieViewModel() {
+    var self = this;
+    self.id = ko.observable();
+    self.externalId = ko.observable();
+    self.currentUserRating = ko.observable();
+    self.title = ko.observable();
+    self.imageUrl = ko.observable();
+
+  }
+
+  function MoviesViewModel() {
+    var self = this;
+    self.totalResults = ko.observable(0);
+    self.movies = ko.observableArray([]);
+    self.searchParameters = ko.observable();
+
+    self.getMovies = function(){
+      $.ajax({
+        type: "POST",
+        url: "/movie/search",
+        success: function(data){
+          console.dir(data);
+        }
+      });
+    }
+  }
+
+  function searchParametersViewModel() {
+    var self = this;
+    var years = ko.observableArray([]);
+  }
+
+  $(function(){
+    var vm = new MoviesViewModel();
+    ko.applyBindings(vm);
+    vm.getMovies();
+  });
+</script>

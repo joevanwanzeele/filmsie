@@ -20,7 +20,7 @@ module.exports = {
   index: function(req, res){
     var rotten = require('rotten-tomatoes-api')(sails.config.rotten.api_key);
 
-    rotten.listMoviesInTheaters({page_limit: 16, page: 1}, function(err,response){
+    rotten.listMoviesInTheaters({page_limit: 25, page: 1}, function(err,response){
 	   if (err) console.log(err);
 	   //console.dir(response);
      res.view({items: response.movies});
@@ -35,6 +35,16 @@ module.exports = {
     //     });
     // });
 
+  },
+
+  search: function(req, res){
+    var rotten = require('rotten-tomatoes-api')(sails.config.rotten.api_key);
+
+    rotten.listMoviesInTheaters({page_limit: 25, page: 1}, function(err,response){
+     if (err) console.log(err);
+     //console.dir(response);
+     res.json(response);
+    });
   },
 
   /*

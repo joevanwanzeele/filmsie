@@ -9,6 +9,8 @@
 @darkGray: #4A4A4A;
 @red: #D16565;
 
+html { -webkit-font-smoothing: antialiased; }
+
 body{
   padding-top: 60px;
   padding-bottom: 40px;
@@ -90,4 +92,81 @@ body{
 .fb-login-button{
   margin-top:15px;
   float:right;
+}
+
+body {
+  background-color: #5C5740;
+  font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+}
+td {
+  text-align: center;
+}
+.movie-container {
+  background-color: #353225;
+  height:257px;
+  width: 160px;
+  margin:5px;
+  border-radius: 10px;
+}
+
+.movie-container img{
+  height:140px;
+  margin-top:16px;
+}
+.movie-title-container{
+  background-color: #FFF8DB;
+  color: #000000;
+  height: 160px;
+  padding: 5px;
+  display:block;
+  margin-bottom:10px;
+  vertical-align:middle;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+}
+.rating-star{
+  height:5px;
+  width:5px;
+  background-image: url("../linker/img/star-empty-transparency.png");
+
+}
+.rating-star :hover{
+  background-image: url("../linker/img/star-black-transparency.png");
+}
+.active-rating {
+  background-image: url("../linker/img/star-gold-transparency.png");
+}
+.rating-container{
+  padding:0px;
+  position:relative;
+  top:60px;
+  height:20px;
+  background: #ff6666; /* Old browsers */
+  background: -moz-linear-gradient(left,  #ff6666 0%, #8ced80 100%); /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, right top, color-stop(0%,#ff6666), color-stop(100%,#8ced80)); /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(left,  #ff6666 0%,#8ced80 100%); /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(left,  #ff6666 0%,#8ced80 100%); /* Opera 11.10+ */
+  background: -ms-linear-gradient(left,  #ff6666 0%,#8ced80 100%); /* IE10+ */
+  background: linear-gradient(to right,  #ff6666 0%,#8ced80 100%); /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ff6666', endColorstr='#8ced80',GradientType=1 ); /* IE6-9 */
+}
+.rating-box{
+  background-color: #353225;
+  opacity:.75;
+  width:16px;
+  height:100%;
+  clear:none;
+  float:left;
+  font-size:9px;
+  color:#ffffff;
+  line-height:2em;
+}
+.rating-box:hover{
+  background:none;
+  color:#000000;
+  font-weight:bold;
+  cursor:pointer;
+}
+.rating-box-active{
+  opacity:0;
 }
