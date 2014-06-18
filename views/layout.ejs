@@ -77,14 +77,8 @@
           <% } %>
         </ul>
         <div class="navbar-right">
-          <% if (session.authenticated) { %>
-            <a class="btn btn-default navbar-btn navbar-right" href="/user/logout">sign-out</a>
-          <% } %>
-        </div>
-        <% if (!session.authenticated) { %>
           <div class="fb-login-button" data-max-rows="1" data-size="medium" data-show-faces="false" data-auto-logout-link="true">
           </div>
-        <% } %>
         </div>
       </div>
       </div>

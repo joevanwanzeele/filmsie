@@ -39,13 +39,23 @@ module.exports = {
 
   search: function(req, res){
     var rotten = require('rotten-tomatoes-api')(sails.config.rotten.api_key);
+    if (!req.body.q)
+    {
+      rotten.listDvdsCurrentReleases({page_limit: req.body.page_limit, page: req.body.page, q: req.body.q }, function(err,response){
+       if (err) console.log(err);
+       //console.dir(response);
+       //link up user reviews
+       res.json(response);
+      });
 
-    rotten.listDvdsCurrentReleases({page_limit: req.body.page_limit, page: req.body.page }, function(err,response){
-     if (err) console.log(err);
-     //console.dir(response);
-     //link up user reviews
-     res.json(response);
-    });
+    } else {
+      rotten.movieSearch({page_limit: req.body.page_limit, page: req.body.page, q: req.body.q }, function(err,response){
+       if (err) console.log(err);
+       //console.dir(response);
+       //link up user reviews
+       res.json(response);
+      });
+    }
   },
 
   /*
