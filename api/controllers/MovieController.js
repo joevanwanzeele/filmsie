@@ -40,9 +40,10 @@ module.exports = {
   search: function(req, res){
     var rotten = require('rotten-tomatoes-api')(sails.config.rotten.api_key);
 
-    rotten.listMoviesInTheaters({page_limit: 25, page: 1}, function(err,response){
+    rotten.listDvdsCurrentReleases({page_limit: req.body.page_limit, page: req.body.page }, function(err,response){
      if (err) console.log(err);
      //console.dir(response);
+     //link up user reviews
      res.json(response);
     });
   },

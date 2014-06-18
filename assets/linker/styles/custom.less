@@ -98,11 +98,15 @@ body {
   background-color: #5C5740;
   font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
 }
+
 td {
   text-align: center;
 }
+
 .movie-table-container{
   width:70%;
+  height:600px;
+  overflow:scroll;
 }
 
 .table-no-border>thead>tr>th,
@@ -118,14 +122,18 @@ td {
   background-color: #353225;
   height:257px;
   width: 160px;
-  margin:5px;
+  margin:10px;
   border-radius: 10px;
+  padding:0;
+  float:left;
+  text-align:center;
+
+  img{
+    height:150px;
+    margin-top:16px;
+  }
 }
 
-.movie-container img{
-  height:140px;
-  margin-top:16px;
-}
 .movie-title-container{
   background-color: #FFF8DB;
   color: #000000;
@@ -137,18 +145,7 @@ td {
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
 }
-.rating-star{
-  height:5px;
-  width:5px;
-  background-image: url("../linker/img/star-empty-transparency.png");
 
-}
-.rating-star :hover{
-  background-image: url("../linker/img/star-black-transparency.png");
-}
-.active-rating {
-  background-image: url("../linker/img/star-gold-transparency.png");
-}
 .rating-container{
   padding:0px;
   position:relative;
@@ -173,13 +170,17 @@ td {
   font-size:9px;
   color:#ffffff;
   line-height:2em;
+
+  &:hover{
+    background:none;
+    color:#000000;
+    font-weight:bold;
+    cursor:pointer;
+  }
 }
-.rating-box:hover{
-  background:none;
-  color:#000000;
-  font-weight:bold;
-  cursor:pointer;
-}
+
 .rating-box-active{
   opacity:0;
+  color:#000000;
+  font-weight:bold;
 }

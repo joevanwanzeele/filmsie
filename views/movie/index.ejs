@@ -1,47 +1,36 @@
 
-<div class="container movie-table-container">
-<table class="table table-no-border">
-  <% _.each(items, function(item, i) {
-      if (i % 5 == 0) {
-        if (i != 0) { %>
-        </tr>
-        <% } %>
-        <tr>
-      <% } %>
-    <td>
-      <div class="movie-container">
-        <div class="movie-title-container">
-          <h5><%= item.title %></h5>
-          <img src='<%= item.posters.original %>'/>
-        </div>
-        <div class="rating-container">
-          <div class="rating-box">1</div>
-          <div class="rating-box">2</div>
-          <div class="rating-box">3</div>
-          <div class="rating-box">4</div>
-          <div class="rating-box">5</div>
-          <div class="rating-box">6</div>
-          <div class="rating-box">7</div>
-          <div class="rating-box">8</div>
-          <div class="rating-box">9</div>
-          <div class="rating-box">10</div>
-        </div>
-    </div>
-    </td>
-    <% }) %>
-  </tr>
-</table>
+<div class="container movie-table-container" data-bind="template: {name: 'movie-template', foreach: movies}, event: {scroll: scrolled}">
 </div>
 
-<script type="text/javascript">
-  function MovieViewModel() {
-    var self = this;
-    self.id = ko.observable();
-    self.externalId = ko.observable();
-    self.currentUserRating = ko.observable();
-    self.title = ko.observable();
-    self.imageUrl = ko.observable();
+<script type="text/html" id="movie-template">
+  <div class="movie-container">
+    <div class="movie-title-container">
+      <h5 data-bind="text: title"></h5>
+      <img data-bind="attr: {src: imageUrl}" />
+    </div>
+    <div class="rating-container">
+      <div class="rating-box" data-bind="css:{ 'rating-box-active': currentUserRating() == 1}">1</div>
+      <div class="rating-box" data-bind="css:{ 'rating-box-active': currentUserRating() == 2}">2</div>
+      <div class="rating-box" data-bind="css:{ 'rating-box-active': currentUserRating() == 3}">3</div>
+      <div class="rating-box" data-bind="css:{ 'rating-box-active': currentUserRating() == 4}">4</div>
+      <div class="rating-box" data-bind="css:{ 'rating-box-active': currentUserRating() == 5}">5</div>
+      <div class="rating-box" data-bind="css:{ 'rating-box-active': currentUserRating() == 6}">6</div>
+      <div class="rating-box" data-bind="css:{ 'rating-box-active': currentUserRating() == 7}">7</div>
+      <div class="rating-box" data-bind="css:{ 'rating-box-active': currentUserRating() == 8}">8</div>
+      <div class="rating-box" data-bind="css:{ 'rating-box-active': currentUserRating() == 9}">9</div>
+      <div class="rating-box" data-bind="css:{ 'rating-box-active': currentUserRating() == 10}">10</div>
+    </div>
+</div>
+</script>
 
+<script type="text/javascript">
+  function MovieViewModel(data) {
+    var self = this;
+    self.id = ko.observable(data.id || '');
+    //self.externalId = ko.observable(data.externalId);
+    self.currentUserRating = ko.observable();
+    self.title = ko.observable(data.title || '');
+    self.imageUrl = ko.observable(data.posters.original || '');
   }
 
   function MoviesViewModel() {
@@ -49,15 +38,63 @@
     self.totalResults = ko.observable(0);
     self.movies = ko.observableArray([]);
     self.searchParameters = ko.observable();
+    self.page = ko.observable(0);
+    self.itemsToGet = 36;
+    self.getting = ko.observable(false);
+    self.maxInView = self.itemsToGet * 3;
 
-    self.getMovies = function(){
+    self.getMovies = function(direction){
+      if (self.totalResults() == self.movies().length && self.movies().length != 0) return;
+
+      if (self.getting() === true) return;
+      self.getting(true);
+
+      self.page(self.page() + 1);
+
       $.ajax({
         type: "POST",
         url: "/movie/search",
+        data: {page: self.page(), page_limit: self.itemsToGet },
         success: function(data){
-          console.dir(data);
+            self.totalResults(data.total);
+            _.each(data.movies, function(movie, i){
+              if (i+1 == data.total) return;
+              self.movies.push(new MovieViewModel(movie));
+            });
+            //console.dir(data);
+            if (self.movies().length > self.maxInView){
+            //remove first or last n
+            //var spliceLocation = direction == "top" ? self.maxInView - 1 : 0;
+            //self.movies.splice(spliceLocation, self.itemsToGet);
+            //console.dir(self.movies().length);
+            }
+            self.getting(false);
+            //console.dir(self.movies);
         }
       });
+    }
+
+    self.scrolled = function(data, event){
+      //determine range
+      var el = event.target;
+      var cols = Math.floor($(el).width() / 166);
+      var totalRows = self.movies().length / cols;
+      var rowHeight = 180;
+      var viewRows = Math.floor($(el).height() / rowHeight);
+
+      //only have 3 x viewRows loaded at a time
+      //re-load when halfway through the first (if scrolling up) or last (if scrolling down)
+
+      //var triggerTopPosition = rowHeight * viewRows * .5;
+      var triggerBottomPosition = rowHeight * (totalRows - 1);
+
+
+      //console.dir($(el).scrollTop());
+      //console.dir(triggerBottomPosition);
+
+      if ($(el).scrollTop() > triggerBottomPosition){
+        self.getMovies("bottom");
+      }
     }
   }
 
