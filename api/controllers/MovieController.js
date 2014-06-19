@@ -25,16 +25,6 @@ module.exports = {
 	   //console.dir(response);
      res.view({items: response.movies});
     });
-    //
-    // mdb.configuration({}, function(err, response){
-    //     var config = response;
-    //     mdb.miscPopularMovies({}, function(err, response){
-    //       var items = response.results;
-    //       console.dir(items);
-    //       res.view({items: items, config: config});
-    //     });
-    // });
-
   },
 
   search: function(req, res){
@@ -56,6 +46,16 @@ module.exports = {
        res.json(response);
       });
     }
+  },
+
+  details: function(req, res){
+    var rotten = require('rotten-tomatoes-api')(sails.config.rotten.api_key);
+
+    rotten.movieGet({ id:req.body.rottenId }, function(err,response){
+	     if (err) console.log(err);
+	     console.log(response);
+       res.json(response);
+    });
   },
 
   /*

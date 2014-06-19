@@ -1,51 +1,103 @@
 <div class="fluid-container">
-<div class="left-panel">
-  <div class="row">
-    <div class="col-sm-12 navbar-btn navbar-left">
-      <div class="input-group">
-        <input type="text" data-bind="value: searchQuery, valueUpdate: 'afterkeydown', event: {keypress: searchOnEnter }" class="form-control">
-        <span class="input-group-btn">
-          <button class="btn btn-default" data-bind="click: search" type="button"><span class="glyphicon glyphicon-search"></span></button>
-        </span>
+  <div class="left-panel">
+    <div class="row">
+      <div class="col-sm-12 navbar-btn navbar-left">
+        <div class="input-group">
+          <input type="text" data-bind="value: searchQuery, valueUpdate: 'afterkeydown', event: {keypress: searchOnEnter }" class="form-control">
+          <span class="input-group-btn">
+            <button class="btn btn-default" data-bind="click: search" type="button"><span class="glyphicon glyphicon-search"></span></button>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="right-panel">
+    <div class="movie-table-container" data-bind="template: {name: 'movie-template', foreach: movies}, event: {scroll: scrolled}"></div>
+  </div>
+</div>
+
+<div id="movieDetailsModal" data-bind="with: movieDetails" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="movieDetailsLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title" id="myModalLabel" data-bind="text: title"></h4>
+      </div>
+      <div class="modal-body">
+        <div class="detail-image-container">
+          <img data-bind="attr: {src: bigImageUrl}" />
+        </div>
+        <br/>
+        <p data-bind="text: synopsis"></p>
+        <h4>your rating: <span data-bind="text: currentUserRating"></span></h4>
+        <a data-bind="attr: {href: imdbUrl }" target="_blank">IMDB info</a>
       </div>
     </div>
   </div>
 </div>
 
-<div class="right-panel">
-  <div class="movie-table-container" data-bind="template: {name: 'movie-template', foreach: movies}, event: {scroll: scrolled}"></div>
-</div>
-</div>
 
 <script type="text/html" id="movie-template">
   <div class="movie-container">
-    <div class="movie-title-container">
+    <div class="movie-title-container" data-bind="click: showDetails">
       <h5 data-bind="text: title"></h5>
       <img data-bind="attr: {src: imageUrl}" />
     </div>
     <div class="rating-container">
-      <div class="rating-box" data-bind="css:{ 'rating-box-active': currentUserRating() == 1}">1</div>
-      <div class="rating-box" data-bind="css:{ 'rating-box-active': currentUserRating() == 2}">2</div>
-      <div class="rating-box" data-bind="css:{ 'rating-box-active': currentUserRating() == 3}">3</div>
-      <div class="rating-box" data-bind="css:{ 'rating-box-active': currentUserRating() == 4}">4</div>
-      <div class="rating-box" data-bind="css:{ 'rating-box-active': currentUserRating() == 5}">5</div>
-      <div class="rating-box" data-bind="css:{ 'rating-box-active': currentUserRating() == 6}">6</div>
-      <div class="rating-box" data-bind="css:{ 'rating-box-active': currentUserRating() == 7}">7</div>
-      <div class="rating-box" data-bind="css:{ 'rating-box-active': currentUserRating() == 8}">8</div>
-      <div class="rating-box" data-bind="css:{ 'rating-box-active': currentUserRating() == 9}">9</div>
-      <div class="rating-box" data-bind="css:{ 'rating-box-active': currentUserRating() == 10}">10</div>
+      <div class="rating-box" data-bind="css:{ 'rating-box-active': currentUserRating() == 1}, click: function(){setRating(1)}">1</div>
+      <div class="rating-box" data-bind="css:{ 'rating-box-active': currentUserRating() == 2}, click: function(){setRating(2)}">2</div>
+      <div class="rating-box" data-bind="css:{ 'rating-box-active': currentUserRating() == 3}, click: function(){setRating(3)}">3</div>
+      <div class="rating-box" data-bind="css:{ 'rating-box-active': currentUserRating() == 4}, click: function(){setRating(4)}">4</div>
+      <div class="rating-box" data-bind="css:{ 'rating-box-active': currentUserRating() == 5}, click: function(){setRating(5)}">5</div>
+      <div class="rating-box" data-bind="css:{ 'rating-box-active': currentUserRating() == 6}, click: function(){setRating(6)}">6</div>
+      <div class="rating-box" data-bind="css:{ 'rating-box-active': currentUserRating() == 7}, click: function(){setRating(7)}">7</div>
+      <div class="rating-box" data-bind="css:{ 'rating-box-active': currentUserRating() == 8}, click: function(){setRating(8)}">8</div>
+      <div class="rating-box" data-bind="css:{ 'rating-box-active': currentUserRating() == 9}, click: function(){setRating(9)}">9</div>
+      <div class="rating-box" data-bind="css:{ 'rating-box-active': currentUserRating() == 10}, click: function(){setRating(10)}">10</div>
     </div>
 </div>
 </script>
 
 <script type="text/javascript">
-  function MovieViewModel(data) {
+  function MovieViewModel(data, parent) {
     var self = this;
-    self.id = ko.observable(data.id || '');
+    self.id = ko.observable(data && data.id || '');
     //self.externalId = ko.observable(data.externalId);
     self.currentUserRating = ko.observable();
-    self.title = ko.observable(data.title || '');
-    self.imageUrl = ko.observable(data.posters.original || '');
+    self.title = ko.observable(data && data.title || '');
+    self.imageUrl = ko.observable(data && data.posters.profile || '');
+    self.bigImageUrl = ko.observable();
+    self.year = ko.observable();
+    self.genres = ko.observableArray([]);
+    self.runtime = ko.observable();
+    self.synopsis = ko.observable();
+    self.imdbId = ko.observable();
+    self.imdbUrl = ko.computed(function(){
+      return "http://www.imdb.com/title/tt" + self.imdbId() + "/";
+    });
+
+    self.showDetails = function(){
+      $.ajax({
+        type: "POST",
+        url: "/movie/details",
+        data: {rottenId: self.id() },
+        success: function(data){
+          self.year(data.year);
+          self.genres(data.genres);
+          self.runtime(data.runtime);
+          self.synopsis(data.synopsis);
+          self.imdbId(data.alternate_ids.imdb);
+          self.bigImageUrl(data.posters.detailed);
+          parent.movieDetails(self);
+          $('#movieDetailsModal').modal();
+        }
+      });
+    }
+
+    self.setRating = function(rating){
+      self.currentUserRating(rating);
+    }
   }
 
   function MoviesViewModel() {
@@ -58,6 +110,7 @@
     self.getting = ko.observable(false);
     self.maxInView = self.itemsToGet * 3;
     self.searchQuery = ko.observable();
+    self.movieDetails = ko.observable(new MovieViewModel());
 
     self.getMovies = function(){
       if (self.totalResults() == self.movies().length && self.movies().length != 0) return;
@@ -75,7 +128,7 @@
               self.totalResults(data.total);
               _.each(data.movies, function(movie, i){
                 if (i+1 == data.total) return;
-                self.movies.push(new MovieViewModel(movie));
+                self.movies.push(new MovieViewModel(movie, self));
               });
               self.getting(false);
             }
