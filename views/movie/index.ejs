@@ -1,16 +1,20 @@
-
-<div class="row">
-  <div class="col-sm-2 navbar-btn navbar-right">
-    <div class="input-group">
-      <input type="text" data-bind="value: searchQuery" class="form-control">
-      <span class="input-group-btn">
-        <button class="btn btn-default" data-bind="click: search" type="button"><span class="glyphicon glyphicon-search"></span></button>
-      </span>
+<div class="fluid-container">
+<div class="left-panel">
+  <div class="row">
+    <div class="col-sm-12 navbar-btn navbar-left">
+      <div class="input-group">
+        <input type="text" data-bind="value: searchQuery, valueUpdate: 'afterkeydown', event: {keypress: searchOnEnter }" class="form-control">
+        <span class="input-group-btn">
+          <button class="btn btn-default" data-bind="click: search" type="button"><span class="glyphicon glyphicon-search"></span></button>
+        </span>
+      </div>
     </div>
   </div>
 </div>
 
-<div class="container movie-table-container" data-bind="template: {name: 'movie-template', foreach: movies}, event: {scroll: scrolled}">
+<div class="right-panel">
+  <div class="movie-table-container" data-bind="template: {name: 'movie-template', foreach: movies}, event: {scroll: scrolled}"></div>
+</div>
 </div>
 
 <script type="text/html" id="movie-template">
@@ -50,12 +54,12 @@
     self.movies = ko.observableArray([]);
     self.searchParameters = ko.observable();
     self.page = ko.observable(0);
-    self.itemsToGet = 36;
+    self.itemsToGet = 40;
     self.getting = ko.observable(false);
     self.maxInView = self.itemsToGet * 3;
     self.searchQuery = ko.observable();
 
-    self.getMovies = function(direction){
+    self.getMovies = function(){
       if (self.totalResults() == self.movies().length && self.movies().length != 0) return;
 
       if (self.getting() === true) return;
@@ -66,83 +70,48 @@
       $.ajax({
         type: "POST",
         url: "/movie/search",
-        data: {page: self.page(), page_limit: self.itemsToGet },
+        data: {page: self.page(), page_limit: self.itemsToGet, q: self.searchQuery() },
         success: function(data){
-            self.totalResults(data.total);
-            _.each(data.movies, function(movie, i){
-              if (i+1 == data.total) return;
-              self.movies.push(new MovieViewModel(movie));
-            });
-            //console.dir(data);
-            if (self.movies().length > self.maxInView){
-            //remove first or last n
-            //var spliceLocation = direction == "top" ? self.maxInView - 1 : 0;
-            //self.movies.splice(spliceLocation, self.itemsToGet);
-            //console.dir(self.movies().length);
+              self.totalResults(data.total);
+              _.each(data.movies, function(movie, i){
+                if (i+1 == data.total) return;
+                self.movies.push(new MovieViewModel(movie));
+              });
+              self.getting(false);
             }
-            self.getting(false);
-            //console.dir(self.movies);
-        }
       });
     }
 
     self.scrolled = function(data, event){
-      //determine range
       var el = event.target;
       var cols = Math.floor($(el).width() / 166);
       var totalRows = self.movies().length / cols;
-      var rowHeight = 180;
+      var rowHeight = 170;
       var viewRows = Math.floor($(el).height() / rowHeight);
 
-      //only have 3 x viewRows loaded at a time
-      //re-load when halfway through the first (if scrolling up) or last (if scrolling down)
-
-      //var triggerTopPosition = rowHeight * viewRows * .5;
       var triggerBottomPosition = rowHeight * (totalRows - 1);
 
-
-      //console.dir($(el).scrollTop());
-      //console.dir(triggerBottomPosition);
-
       if ($(el).scrollTop() > triggerBottomPosition){
-        self.getMovies("bottom");
+        self.getMovies();
       }
     }
 
     self.search = function(){
       self.movies([]);
-      $.ajax({
-        type: "POST",
-        url: "/movie/search",
-        data: {page: self.page(), page_limit: self.itemsToGet, q: self.searchQuery() },
-        success: function(data){
-            self.totalResults(data.total);
-            _.each(data.movies, function(movie, i){
-              if (i+1 == data.total) return;
-              self.movies.push(new MovieViewModel(movie));
-            });
-            //console.dir(data);
-            if (self.movies().length > self.maxInView){
-            //remove first or last n
-            //var spliceLocation = direction == "top" ? self.maxInView - 1 : 0;
-            //self.movies.splice(spliceLocation, self.itemsToGet);
-            //console.dir(self.movies().length);
-            }
-            self.getting(false);
-            //console.dir(self.movies);
-        }
-      });
+      self.page(0);
+      self.getMovies();
+    }
+
+    self.searchOnEnter = function(data, event){
+      if (event.keyCode == 13) self.search();
+      return true;
     }
   }
 
-  function searchParametersViewModel() {
-    var self = this;
-    var years = ko.observableArray([]);
-  }
-  var vm;
   $(function(){
-    vm = new MoviesViewModel();
+    var vm = new MoviesViewModel();
     ko.applyBindings(vm);
     vm.getMovies();
   });
+
 </script>
