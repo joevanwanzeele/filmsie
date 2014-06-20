@@ -39,20 +39,19 @@ passport.use(new FacebookStrategy({
     callbackURL: "http://localhost:1337/user/facebook/callback",
     enableProof: false
   }, function (accessToken, refreshToken, profile, done) {
-
+    console.dir(accessToken);
     findByFacebookId(profile.id, function (err, user) {
-
       // Create a new User if it doesn't exist yet
       if (!user) {
-        console.dir(profile);
         User.create({
           facebookId: profile._json.id,
+          facebookAccessToken: accessToken,
           email: profile._json.email,
           firstName: profile._json.first_name,
           lastName: profile._json.last_name
-          
+
         }).done(function (err, user) {
-          if (user) {
+          if (user) {  
             return done(null, user, {
               message: 'Logged In Successfully'
             });
@@ -66,6 +65,7 @@ passport.use(new FacebookStrategy({
 
       // If there is already a user, return it
       } else {
+        User.update(user.id, {facebookAccessToken: accessToken});
         return done(null, user, {
           message: 'Logged In Successfully'
         });

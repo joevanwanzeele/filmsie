@@ -29,31 +29,33 @@ module.exports = {
 
   logout: function (req, res){
     req.session.user = null;
+    req.session.authenticated = false;
     req.session.flash = 'You have logged out';
-    res.redirect('user/login');
+    res.redirect('/');
   },
 
   'facebook': function (req, res, next) {
      passport.authenticate('facebook', { scope: ['email', 'user_about_me']},
           function (err, user) {
-          //console.dir(user);
             req.logIn(user, function (err) {
             if(err) {
                 req.session.flash = 'There was an error';
-                res.redirect('user/login');
+                res.redirect('/');
             } else {
+                console.dir(user);
                 req.session.user = user;
-                res.redirect('/user/dashboard');
+                req.session.authenticated = true;
+                res.redirect('/');
             }
         });
     })(req, res, next);
   },
 
   'facebook/callback': function (req, res, next) {
-    //console.dir(req);
+     console.dir(req);
      passport.authenticate('facebook',
         function (req, res) {
-            res.redirect('/user/dashboard');
+            res.redirect('/');
         })(req, res, next);
   }
 };

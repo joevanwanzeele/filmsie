@@ -19,6 +19,11 @@ module.exports = {
       unique: true
     },
 
+    facebookAccessToken: {
+      type: 'string',
+      required: true
+    },
+
     firstName: {
       type: 'string'
     },

@@ -15,15 +15,24 @@
  * @docs        :: http://sailsjs.org/#!documentation/controllers
  */
 
+var graph = require('fbgraph');
+
 module.exports = {
 
   index: function(req, res){
+    var picture;
+    if (req.session.user){
+      graph.setAccessToken(req.session.user.facebookAccessToken);
+      graph.get(req.session.user.facebookId + "?fields=picture", function(err, response) {
+        picture = response.picture.data.url; // { picture: 'http://profile.ak.fbcdn.net/'... }
+      });
+    }
     var rotten = require('rotten-tomatoes-api')(sails.config.rotten.api_key);
 
     rotten.listMoviesInTheaters({page_limit: 25, page: 1}, function(err,response){
 	   if (err) console.log(err);
 	   //console.dir(response);
-     res.view({items: response.movies});
+     res.view({items: response.movies, profile_pic_url: picture});
     });
   },
 

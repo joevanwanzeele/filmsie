@@ -1,7 +1,7 @@
 {
     "name": "filmsie",
     "private": true,
-    "version": "0.0.0-28",
+    "version": "0.0.0-29",
     "description": "a Sails application",
     "dependencies": {
         "sails": "0.9.15",
@@ -15,7 +15,9 @@
         "bcrypt": "0.7.7",
         "crypto": "0.0.3",
         "node-uuid": "1.4.1",
-        "rotten-tomatoes-api": "0.0.1"
+        "rotten-tomatoes-api": "0.0.1",
+        "aws-lib": "0.3.0",
+        "fbgraph": "0.2.10"
     },
     "scripts": {
         "start": "node app.js",
