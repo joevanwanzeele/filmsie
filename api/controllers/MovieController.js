@@ -91,7 +91,6 @@ module.exports = {
         if (existing) {
           MovieUserRating.update(existing.id, {rating: rating }).done(function(err, existing){
             if (err) return console.log(err);
-            return console.log(existing);
           });
         } else {
           MovieUserRating.create({ userId: userId,

@@ -80,9 +80,8 @@
 
     self.ratingClass = function(value){
       if (self.currentUserRating() == null) return '';
-      if (self.currentUserRating() == value){
-        return 'rating-box-active';
-      }
+      if (self.currentUserRating() == value) return 'rating-box-active';
+      if (self.currentUserRating() > value) return 'rating-box-lower-score';
       return 'rating-box-inactive';
     }
 
