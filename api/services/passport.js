@@ -37,6 +37,7 @@ passport.use(new FacebookStrategy({
     clientID: '248849825312110',
     clientSecret: 'a6a81202bd774bc028d1422f12574a1d',
     callbackURL: "http://filmsie.jit.su/user/facebook/callback",
+    //callbackURL: "http://localhost:1337/user/facebook/callback",
     enableProof: false
   }, function (accessToken, refreshToken, profile, done) {
     console.dir(accessToken);

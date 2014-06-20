@@ -20,20 +20,15 @@ var graph = require('fbgraph');
 module.exports = {
 
   index: function(req, res){
-    var picture;
     if (req.session.user){
       graph.setAccessToken(req.session.user.facebookAccessToken);
       graph.get(req.session.user.facebookId + "?fields=picture", function(err, response) {
-        picture = response.picture.data.url; // { picture: 'http://profile.ak.fbcdn.net/'... }
+        res.view({profile_pic_url: response.picture.data.url});
       });
     }
-    var rotten = require('rotten-tomatoes-api')(sails.config.rotten.api_key);
-
-    rotten.listMoviesInTheaters({page_limit: 25, page: 1}, function(err,response){
-	   if (err) console.log(err);
-	   //console.dir(response);
-     res.view({items: response.movies, profile_pic_url: picture});
-    });
+    else{
+      res.view({profile_pic_url: "/img/not-found.png"});
+    }
   },
 
   search: function(req, res){
@@ -43,18 +38,74 @@ module.exports = {
       rotten.listDvdsCurrentReleases({page_limit: req.body.page_limit, page: req.body.page, q: req.body.q }, function(err,response){
        if (err) console.log(err);
        //console.dir(response);
-       //link up user reviews
-       res.json(response);
+       //link up user reviews (if user is logged in)
+       var userId = req.session.user ? req.session.user.id : null;
+       if (!userId) return res.json(response);
+
+       var ids = _.map(response.movies, function(item){ return item.id });
+
+       MovieUserRating.find()
+        .where({rottenTomatoesId: ids, userId: req.session.user.id })
+        .exec(function (err, ratings) {
+            _.each(ratings, function(rating){
+              var found = _.findWhere(response.movies, {id: rating.rottenTomatoesId});
+              found["currentUserRating"] = rating.rating;
+          });
+          res.json(response);
+        });
       });
 
     } else {
       rotten.movieSearch({page_limit: req.body.page_limit, page: req.body.page, q: req.body.q }, function(err,response){
        if (err) console.log(err);
        //console.dir(response);
-       //link up user reviews
-       res.json(response);
+       //link up user reviews (if user is logged in)
+       var userId = req.session.user ? req.session.user.id : null;
+       if (!userId) return res.json(response);
+
+       var ids = _.map(response.movies, function(item){ return item.id });
+
+       MovieUserRating.find()
+        .where({rottenTomatoesId: ids, userId: req.session.user.id })
+        .exec(function (err, ratings) {
+            _.each(ratings, function(rating){
+              var found = _.findWhere(response.movies, {id: rating.rottenTomatoesId});
+              found["currentUserRating"] = rating.rating;
+          });
+          res.json(response);
+        });
       });
     }
+  },
+
+  rate: function(req, res){
+    var userId = req.session.user.id;
+    var movieId = req.body.id;
+    var rottenTomatoesId = req.body.rottenTomatoesId;
+    var imdbId = req.body.imdbId;
+    var rating = Number(req.body.rating);
+
+    MovieUserRating.findOne({rottenTomatoesId: rottenTomatoesId, userId: userId })
+      .done(function(err, existing) {
+        if (err) return console.log(err);
+        if (existing) {
+          MovieUserRating.update(existing.id, {rating: rating }).done(function(err, existing){
+            if (err) return console.log(err);
+            return console.log(existing);
+          });
+        } else {
+          MovieUserRating.create({ userId: userId,
+                                   rottenTomatoesId: rottenTomatoesId,
+                                   imdbId: imdbId,
+                                   rating: rating })
+                                   .done(function(err, rating) {
+                                    if (err) {
+                                      return console.log(err);
+                                    }else {
+                                      return console.log(rating);
+                                    }});
+        }
+    });
   },
 
   details: function(req, res){
@@ -62,7 +113,6 @@ module.exports = {
 
     rotten.movieGet({ id:req.body.rottenId }, function(err,response){
 	     if (err) console.log(err);
-	     console.log(response);
        res.json(response);
     });
   },
