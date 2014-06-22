@@ -25,6 +25,7 @@
         <h4 class="modal-title" id="myModalLabel" data-bind="text: title"></h4>
       </div>
       <div class="modal-body">
+        <!-- ko if: !loadingDetails() -->
         <div class="detail-image-container">
           <img data-bind="attr: {src: bigImageUrl}" />
         </div>
@@ -32,6 +33,10 @@
         <p data-bind="text: synopsis"></p>
         <h4>your rating: <span data-bind="text: currentUserRating"></span></h4>
         <a data-bind="attr: {href: imdbUrl }" target="_blank">IMDB info</a>
+        <!-- /ko -->
+        <!-- ko if: loadingDetails -->
+        <div class="container" style="text-align:center"><img src="/img/ajax-loading.gif" alt="loading" /></div>
+        <!-- /ko -->
       </div>
     </div>
   </div>
@@ -74,6 +79,8 @@
     self.runtime = ko.observable();
     self.synopsis = ko.observable();
     self.imdbId = ko.observable();
+    self.loadingDetails = ko.observable(false);
+
     self.imdbUrl = ko.computed(function(){
       return "http://www.imdb.com/title/tt" + self.imdbId() + "/";
     });
@@ -86,6 +93,9 @@
     }
 
     self.showDetails = function(){
+      self.loadingDetails(true);
+      $('#movieDetailsModal').modal();
+
       $.ajax({
         type: "POST",
         url: "/movie/details",
@@ -98,7 +108,7 @@
           self.imdbId(data.alternate_ids.imdb);
           self.bigImageUrl(data.posters.detailed);
           parent.movieDetails(self);
-          $('#movieDetailsModal').modal();
+          self.loadingDetails(false);
         }
       });
     }
@@ -182,6 +192,7 @@
     var vm = new MoviesViewModel();
     ko.applyBindings(vm);
     vm.getMovies();
+    $()
   });
 
 </script>
