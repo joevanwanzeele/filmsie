@@ -19,11 +19,16 @@ attributes: {
 
   rottenTomatoesId: {
     type: 'string',
-    required: true
+    required: false
   },
 
   imdbId: {
     type: 'string',
+    required: false
+  },
+
+  movieDbId: {
+    type: 'integer',
     required: false
   },
 

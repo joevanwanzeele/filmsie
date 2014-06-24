@@ -27,52 +27,59 @@ module.exports = {
       });
     }
     else{
-      res.view({profile_pic_url: "/img/not-found.png"});
+      res.view({profile_pic_url: "/img/not-found.png"});  //image doesn't exist yet
     }
   },
 
-  search: function(req, res){
-    var rotten = require('rotten-tomatoes-api')(sails.config.rotten.api_key);
+  getConfigSettings: function(req, res){
+    var tmdb = require('tmdbv3').init(sails.config.mdbApi.api_key);
+    tmdb.configuration(function(err, response){
+      res.json(response);
+    });
+  },
+
+  search: function(req, response){ //use internet movie db api
+    var tmdb = require('tmdbv3').init(sails.config.mdbApi.api_key);
+
     if (!req.body.q)
     {
-      rotten.listDvdsCurrentReleases({page_limit: req.body.page_limit, page: req.body.page, q: req.body.q }, function(err,response){
-       if (err) console.log(err);
-       //console.dir(response);
-       //link up user reviews (if user is logged in)
-       var userId = req.session.user ? req.session.user.id : null;
-       if (!userId) return res.json(response);
+      tmdb.misc.nowPlaying(Number(req.body.page), function(err,res) {
+        //link up user reviews (if user is logged in)
 
-       var ids = _.map(response.movies, function(item){ return item.id });
+        var userId = req.session.user ? req.session.user.id : null;
+        //console.log(res);
 
-       MovieUserRating.find()
-        .where({rottenTomatoesId: ids, userId: req.session.user.id })
-        .exec(function (err, ratings) {
-            _.each(ratings, function(rating){
-              var found = _.findWhere(response.movies, {id: rating.rottenTomatoesId});
-              found["currentUserRating"] = rating.rating;
-          });
-          res.json(response);
-        });
-      });
+        if (!userId) return response.json(res);
 
+        var ids = _.map(res.results, function(item){ return item.id });
+
+        MovieUserRating.find()
+        .where({movieDbId: ids, userId: req.session.user.id })
+         .exec(function (err, ratings) {
+             _.each(ratings, function(rating){
+               var found = _.findWhere(res.results, {id: rating.movieDbId});
+               found["currentUserRating"] = rating.rating;
+           });
+           response.json(res);
+         });
+       });
     } else {
-      rotten.movieSearch({page_limit: req.body.page_limit, page: req.body.page, q: req.body.q }, function(err,response){
+      tmdb.search.movie(req.body.q, Number(req.body.page), function(err,res){
        if (err) console.log(err);
        //console.dir(response);
        //link up user reviews (if user is logged in)
        var userId = req.session.user ? req.session.user.id : null;
-       if (!userId) return res.json(response);
+       if (!userId) return response.json(res);
 
-       var ids = _.map(response.movies, function(item){ return item.id });
-
+       var ids = _.map(res.results, function(item){ return item.id });
        MovieUserRating.find()
-        .where({rottenTomatoesId: ids, userId: req.session.user.id })
+        .where({movieDbId: ids, userId: req.session.user.id })
         .exec(function (err, ratings) {
             _.each(ratings, function(rating){
-              var found = _.findWhere(response.movies, {id: rating.rottenTomatoesId});
+              var found = _.findWhere(res.results, {id: rating.movieDbId});
               found["currentUserRating"] = rating.rating;
           });
-          res.json(response);
+          return response.json(res);
         });
       });
     }
@@ -81,11 +88,12 @@ module.exports = {
   rate: function(req, res){
     var userId = req.session.user.id;
     var movieId = req.body.id;
+    var movieDbId = req.body.movieDbId;
     var rottenTomatoesId = req.body.rottenTomatoesId;
     var imdbId = req.body.imdbId;
     var rating = Number(req.body.rating);
 
-    MovieUserRating.findOne({rottenTomatoesId: rottenTomatoesId, userId: userId })
+    MovieUserRating.findOne({movieDbId: movieDbId, userId: userId })
       .done(function(err, existing) {
         if (err) return console.log(err);
         if (existing) {
@@ -94,6 +102,7 @@ module.exports = {
           });
         } else {
           MovieUserRating.create({ userId: userId,
+                                   movieDbId: movieDbId,
                                    rottenTomatoesId: rottenTomatoesId,
                                    imdbId: imdbId,
                                    rating: rating })
@@ -108,11 +117,10 @@ module.exports = {
   },
 
   details: function(req, res){
-    var rotten = require('rotten-tomatoes-api')(sails.config.rotten.api_key);
-
-    rotten.movieGet({ id:req.body.rottenId }, function(err,response){
-	     if (err) console.log(err);
-       res.json(response);
+    var tmdb = require('tmdbv3').init(sails.config.mdbApi.api_key);
+    tmdb.movie.info(req.body.movieDbId, function(err, response){
+      if (err) console.log(err);
+      res.json(response);
     });
   },
 

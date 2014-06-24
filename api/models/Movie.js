@@ -12,9 +12,14 @@ schema: true,
 
 attributes: {
 
-  rottenTomatoesId: {
-    type: 'string',
-    required: true
+    rottenTomatoesId: {
+      type: 'string',
+      required: false,
+    },
+
+    movieDbId: {
+      type: 'string',
+      required: false,
     }
   }
 };
