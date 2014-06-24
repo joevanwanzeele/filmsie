@@ -42,7 +42,6 @@ module.exports = {
                 req.session.flash = 'There was an error';
                 res.redirect('/');
             } else {
-                console.dir(user);
                 req.session.user = user;
                 req.session.authenticated = true;
                 res.redirect('/');
@@ -52,7 +51,6 @@ module.exports = {
   },
 
   'facebook/callback': function (req, res, next) {
-     console.dir(req);
      passport.authenticate('facebook',
         function (req, res) {
             res.redirect('/');
