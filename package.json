@@ -15,7 +15,6 @@
         "bcrypt": "0.7.7",
         "crypto": "0.0.3",
         "node-uuid": "1.4.1",
-        "rotten-tomatoes-api": "0.0.1",
         "tmdbv3": "0.1.2",
         "request": "2.36.0",
         "aws-lib": "0.3.0",
