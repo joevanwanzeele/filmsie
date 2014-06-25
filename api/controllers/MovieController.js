@@ -38,6 +38,13 @@ module.exports = {
     });
   },
 
+  genres: function(req, res){
+    var tmdb = require('tmdbv3').init(sails.config.mdbApi.api_key);
+    tmdb.genre.list(function(err, response){
+      res.json(response);
+    });
+  },
+
   search: function(req, response){ //use internet movie db api
     var tmdb = require('tmdbv3').init(sails.config.mdbApi.api_key);
 

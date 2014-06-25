@@ -23,13 +23,19 @@ html, body{
 }
 
 .main-content{
-  margin-top:30px;
+  margin-top:40px;
   height: 90%;
 }
 
 .left-panel{
   width:15%;
+  height:100%;
+  min-height:500px;
   float:left;
+  .footer{
+    position:absolute;
+    bottom:10px;
+  }
 }
 
 .right-panel{
@@ -234,4 +240,15 @@ td {
   p {
     text-indent:20px;
   }
+  img {
+    max-height:440px;
+  }
+}
+
+.panel-group .panel {
+  overflow: visible !important;
+}
+
+.panel-group select{
+  height:100px;
 }

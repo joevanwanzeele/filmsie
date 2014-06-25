@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Filmsie.com - Everyone's A Critic</title>
 
     <!-- Viewport mobile tag for sensible mobile support -->
@@ -28,6 +29,7 @@
     -->
 
     <!--STYLES-->
+    <link rel="stylesheet" href="/linker/styles/bootstrap-multiselect.css">
     <link rel="stylesheet" href="/linker/styles/bootstrap-theme.min.css">
     <link rel="stylesheet" href="/linker/styles/bootstrap.min.css">
     <link rel="stylesheet" href="/linker/styles/custom.css">
@@ -43,62 +45,48 @@
   </head>
 
   <body>
-    <nav class="navbar navbar-inverse navbar-fixed-top">
-      <div class="container">
+    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
         <div class="navbar-header">
-          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+            <span class="sr-only">Toggle navigation</span>
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="/"> Filmsie</a>
+          <a class="navbar-brand" href="/">Filmsie</a>
         </div>
-      <div class="navbar-collapse collapse">
-        <ul class="nav navbar-nav">
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
           <% if (session.authenticated) { %>
-              <input type="hidden" id="userId" value="<%= session.user.id %>"/>
-              <li><a href="/user/lists/">My Lists</a></li>
-              <li><a href="/user/recommendations/">Recommendations</a></li>
-            <%} if (session.authenticated && session.user.admin) { %>
-              <li><a href="/user">User Administration</a></li>
+            <div class="container">
+          <ul class="nav navbar-nav">
+            <li class="active"><a href="#">Movies</a></li>
+            <li><a href="#">Lists</a></li>
+            <li><a href="#">Friends</a></li>
+            <% if (session.authenticated && session.user.admin) { %>
+              <li><a href="/admin">Administration</a></li>
             <% } %>
           </ul>
-        <% if (session.authenticated) { %>
+        </div>
 
-             <div class="navbar-right">
-               <ul class="nav navbar-nav">
-                 <li class="active"><a href="/user/show/<%= session.user.id %>"><img src="<%= profile_pic_url %>"/> </a> </li>
-               </ul>
-               <form class="navbar-form navbar-right" action="/user/logout">
-                 <button type="submit" class="btn btn-warning">sign out</button>
-                 <input type="hidden" name="_csrf" value="<%= _csrf %>" />
-               </form>
-             </div>
-           <% } else { %>
-
-        <div class="navbar-right">
+          <!-- <ul class="nav navbar-nav navbar-right">
+            <li><a href="/user/show/<%= session.user.id %>"><img src="<%= profile_pic_url %>"/> </a>
+          </li>
+          </ul> -->
+          <% } else { %>
           <form class="navbar-form navbar-right" action="/user/facebook">
             <button type="submit" class="btn btn-success">sign in with Facebook</button>
             <input type="hidden" name="_csrf" value="<%= _csrf %>" />
           </form>
-        </div>
-        <% } %>
-      </div>
-      </div>
+          <% } %>
+        </div><!-- /.navbar-collapse -->
+      </div><!-- /.container-fluid -->
     </nav>
 
     <%- body %>
-
-    <div class="container navbar-fixed-bottom">
-      <hr>
-      <footer class="footer pull-right">
-        <div>
-          <a href="/about">About Us</a>
-          <div>Copyright Filmsie LLC, 2014</div>
-        </div>
-      </footer>
-    </div>
-
 
 
     <!--
@@ -154,7 +142,9 @@
     <script src="/linker/js/sails.io.js"></script>
     <script src="/linker/js/app.js"></script>
     <script src="/linker/js/jquery-2.1.0.min.js"></script>
+    <script src="/linker/js/bootstrap-multiselect.js"></script>
     <script src="/linker/js/bootstrap.min.js"></script>
+    <script src="/linker/js/movie.js"></script>
     <!--SCRIPTS END-->
   </body>
 </html>
