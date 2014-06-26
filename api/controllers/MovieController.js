@@ -48,48 +48,40 @@ module.exports = {
   search: function(req, response){ //use internet movie db api
     var tmdb = require('tmdbv3').init(sails.config.mdbApi.api_key);
 
-    if (!req.body.q)
-    {
-      tmdb.misc.nowPlaying(Number(req.body.page), function(err,res) {
-        //link up user reviews (if user is logged in)
+    //console.dir(req.body);
 
-        var userId = req.session.user ? req.session.user.id : null;
-        //console.log(res);
-
-        if (!userId) return response.json(res);
-
-        var ids = _.map(res.results, function(item){ return item.id });
-
-        MovieUserRating.find()
-        .where({movieDbId: ids, userId: req.session.user.id })
-         .exec(function (err, ratings) {
-             _.each(ratings, function(rating){
-               var found = _.findWhere(res.results, {id: rating.movieDbId});
-               found["currentUserRating"] = rating.rating;
-           });
-           response.json(res);
-         });
-       });
-    } else {
-      tmdb.search.movie(req.body.q, Number(req.body.page), function(err,res){
-       if (err) console.log(err);
-       //console.dir(response);
-       //link up user reviews (if user is logged in)
-       var userId = req.session.user ? req.session.user.id : null;
-       if (!userId) return response.json(res);
-
-       var ids = _.map(res.results, function(item){ return item.id });
-       MovieUserRating.find()
-        .where({movieDbId: ids, userId: req.session.user.id })
-        .exec(function (err, ratings) {
-            _.each(ratings, function(rating){
-              var found = _.findWhere(res.results, {id: rating.movieDbId});
-              found["currentUserRating"] = rating.rating;
-          });
-          return response.json(res);
-        });
-      });
+    if (req.body.q || req.body.year){
+      var query = req.body.q;
+      if (req.body.year) query += "&year=" + req.body.year;
+      tmdb.search.movie(query, Number(req.body.page), processMovieResults);
     }
+
+    if (req.body.genre){
+      tmdb.genre.movies(req.body.genre, Number(req.body.page), processMovieResults);
+    }
+
+    tmdb.misc.nowPlaying(Number(req.body.page), processMovieResults);
+
+    function processMovieResults(err,res) {
+      //link up user reviews (if user is logged in)
+
+      var userId = req.session.user ? req.session.user.id : null;
+      //console.log(res);
+
+      if (!userId) return response.json(res);
+
+      var ids = _.map(res.results, function(item){ return item.id });
+
+      MovieUserRating.find()
+      .where({movieDbId: ids, userId: req.session.user.id })
+       .exec(function (err, ratings) {
+           _.each(ratings, function(rating){
+             var found = _.findWhere(res.results, {id: rating.movieDbId});
+             found["currentUserRating"] = rating.rating;
+         });
+         return response.json(res);
+       });
+     }
   },
 
   rate: function(req, res){

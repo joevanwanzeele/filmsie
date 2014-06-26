@@ -14,32 +14,33 @@
     <div class="panel panel-default">
       <div class="panel-heading">
         <h4 class="panel-title">
-          <a data-toggle="collapse" data-parent="#accordion" href="#years">
+          <a data-toggle="collapse" data-parent="#accordion" data-target="#years" href="#years">
             year
           </a>
         </h4>
       </div>
       <div id="years" class="panel-collapse collapse in">
         <div class="panel-body">
-          <select multiple="false" data-bind="options: years, value: 'selectedYear', optionsCaption: 'any year'"></select>
+          <select multiple="false" data-bind="options: years, value: selectedYear, optionsCaption: 'any year'"></select>
         </div>
       </div>
     </div>
     <div class="panel panel-default">
       <div class="panel-heading">
         <h4 class="panel-title">
-          <a data-toggle="collapse" data-parent="#accordion" href="#genreContainer">
+          <a data-toggle="collapse" data-parent="#accordion" data-target="#genreContainer" href="#genreContainer">
             genre
           </a>
         </h4>
       </div>
       <div id="genreContainer" class="panel-collapse collapse in">
         <div class="panel-body">
-          <select multiple="false" data-bind="options: genres, optionsText: 'name', value: 'selectedGenre'"></select>
+          <select multiple="false" data-bind="options: genres, optionsText: 'name', value: selectedGenre, optionsCaption: 'any genre'"></select>
         </div>
       </div>
     </div>
   </div>
+
   <footer class="footer pull-right">
     <hr>
     powered by the <a href="www.themoviedb.org">TMDb</a> API
@@ -49,7 +50,7 @@
       <div>Copyright Filmsie LLC, 2014</div>
     </div>
   </footer>
-</div>
+</div> <!-- left panel -->
 
   <div class="right-panel">
     <div class="movie-table-container" data-bind="template: {name: 'movie-template', foreach: movies}, event: {scroll: scrolled}"></div>
@@ -119,12 +120,5 @@
     ko.applyBindings(vm);
     vm.getConfigSettings();
     vm.getGenres();
-
-    $(".accordion-group").on("shown",".collapse",function() {
-      $(this).css("overflow","visible");
-    });
-    $(".accordion-group").on("hidden",".collapse",function() {
-      $(this).css("overflow","hidden");
-    });
   });
 </script>
