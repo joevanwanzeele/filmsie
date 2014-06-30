@@ -57,12 +57,16 @@ module.exports = {
         page: Number(req.body.page) },
         processMovieResults);
     }
-    else if (req.body.genres || req.body.year){
+    else if (req.body.year){
       var genres = req.body.genres ? req.body.genres.join('|') : null;
       tmdb.discoverMovie({ with_genres: genres,
                             primary_release_year: Number(req.body.year),
-                            page: Number(req.body.page) },
+                            page: Number(req.body.page),
+                            sort_by: 'popularity.desc'},
                             processMovieResults);
+    } else if (req.body.genres){
+      var genre = req.body.genres[0];
+      tmdb.genreMovies({id: genre}, processMovieResults);
     } else tmdb.miscNowPlayingMovies({page: Number(req.body.page)}, processMovieResults);
 
     function processMovieResults(err,res) {

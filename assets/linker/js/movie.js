@@ -10,7 +10,7 @@ function MovieViewModel(data, parent) {
   self.runtime = ko.observable();
   self.synopsis = ko.observable();
   self.imdbId = ko.observable();
-  self.loadingDetails = ko.observable(false);
+  self.loadingDetails = ko.observable(true);
 
   self.genresString = ko.computed(function(){
     return self.genres().join(", ");
@@ -28,6 +28,7 @@ function MovieViewModel(data, parent) {
   }
 
   self.showDetails = function(){
+    parent.movieDetails(self);
     self.loadingDetails(true);
     $('#movieDetailsModal').modal();
 
@@ -44,7 +45,6 @@ function MovieViewModel(data, parent) {
         self.runtime(data.runtime);
         self.synopsis(data.overview);
         self.imdbId(data.imdb_id);
-        parent.movieDetails(self);
         self.loadingDetails(false);
       }
     });
@@ -103,6 +103,10 @@ function MoviesViewModel() {
     }
   }
 
+  self.hasSelectedYear = ko.computed(function(){
+    return self.selectedYear() != null;
+  });
+
   self.years = ko.computed(function(){
     var years = [];
     var currentYear = new Date().getFullYear();
@@ -132,8 +136,9 @@ function MoviesViewModel() {
     self.getting(true);
 
     self.page(self.page() + 1);
-
-    var genres = _.map(self.selectedGenres(), function(genre){ return genre.id; });
+    var genres = self.selectedGenres()[0] && self.selectedGenres()[0] != undefined
+        ? _.map(self.selectedGenres(), function(genre){ return genre.id; })
+        : null;
 
     $.ajax({
       type: "POST",
