@@ -23,9 +23,7 @@ pids
 logs
 results
 
-node_modules/*
-!node_modules/moviedb
-
+node_modules
 npm-debug.log
 
 

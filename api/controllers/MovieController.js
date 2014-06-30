@@ -48,7 +48,7 @@ module.exports = {
   search: function(req, response){ //use internet movie db api
     var tmdb = require('moviedb')(sails.config.mdbApi.api_key);
 
-    console.log(req.body);
+    //console.log(req.body);
 
     if (req.body.q){
       tmdb.searchMovie({
@@ -69,7 +69,7 @@ module.exports = {
       //link up user reviews (if user is logged in)
 
       var userId = req.session.user ? req.session.user.id : null;
-      console.log(res);
+      //console.log(res);
 
       if (!userId) return response.json(res);
 
