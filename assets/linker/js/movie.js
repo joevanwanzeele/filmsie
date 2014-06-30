@@ -55,7 +55,7 @@ function MovieViewModel(data, parent) {
       rating = null;
     }
     self.currentUserRating(rating);
-    if (!$('#userId').val()) return;
+    if (!parent.userId()) return;
     $.ajax({
       type: "POST",
       url: "/movie/rate",
@@ -86,6 +86,7 @@ function MoviesViewModel() {
   self.genres = ko.observableArray([]);
   self.selectedGenres = ko.observableArray([]);
   self.selectedYear = ko.observable();
+  self.userId = ko.observable();
 
   self.movieDetails = ko.observable(new MovieViewModel());
 

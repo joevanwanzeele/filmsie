@@ -92,6 +92,7 @@ module.exports = {
   },
 
   rate: function(req, res){
+    //console.dir(req.body);
     var userId = req.session.user.id;
     var movieId = req.body.id;
     var movieDbId = req.body.movieDbId;
@@ -116,7 +117,7 @@ module.exports = {
                                     if (err) {
                                       return console.log(err);
                                     }else {
-                                      return console.log(rating);
+                                      //return console.log(rating);
                                     }});
         }
     });
