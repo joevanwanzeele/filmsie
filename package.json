@@ -1,7 +1,7 @@
 {
     "name": "filmsie",
     "private": true,
-    "version": "0.0.0-38",
+    "version": "0.0.0-39",
     "description": "a Sails application",
     "dependencies": {
         "sails": "0.9.15",
@@ -15,7 +15,7 @@
         "bcrypt": "0.7.7",
         "crypto": "0.0.3",
         "node-uuid": "1.4.1",
-        "tmdbv3": "0.1.2",
+        "moviedb": "0.1.4",
         "request": "2.36.0",
         "aws-lib": "0.3.0",
         "fbgraph": "0.2.10"

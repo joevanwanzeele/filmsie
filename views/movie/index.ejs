@@ -35,7 +35,7 @@
       </div>
       <div id="genreContainer" class="panel-collapse collapse in">
         <div class="panel-body">
-          <select multiple="false" data-bind="options: genres, optionsText: 'name', value: selectedGenre, optionsCaption: 'any genre'"></select>
+          <select multiple="true" data-bind="options: genres, optionsText: 'name', selectedOptions: selectedGenres, optionsCaption: 'any genre'"></select>
         </div>
       </div>
     </div>
@@ -43,7 +43,7 @@
 
   <footer class="footer pull-right">
     <hr>
-    powered by the <a href="www.themoviedb.org">TMDb</a> API
+    powered by the <a href="http://www.themoviedb.org">TMDb</a> API
     <br/>
     <div>
       <a href="/about">About Us</a>

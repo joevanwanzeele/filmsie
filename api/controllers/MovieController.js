@@ -32,41 +32,44 @@ module.exports = {
   },
 
   getConfigSettings: function(req, res){
-    var tmdb = require('tmdbv3').init(sails.config.mdbApi.api_key);
+    var tmdb = require('moviedb')(sails.config.mdbApi.api_key);
     tmdb.configuration(function(err, response){
       res.json(response);
     });
   },
 
   genres: function(req, res){
-    var tmdb = require('tmdbv3').init(sails.config.mdbApi.api_key);
-    tmdb.genre.list(function(err, response){
+    var tmdb = require('moviedb')(sails.config.mdbApi.api_key);
+    tmdb.genreList(function(err, response){
       res.json(response);
     });
   },
 
   search: function(req, response){ //use internet movie db api
-    var tmdb = require('tmdbv3').init(sails.config.mdbApi.api_key);
+    var tmdb = require('moviedb')(sails.config.mdbApi.api_key);
 
-    //console.dir(req.body);
+    console.log(req.body);
 
-    if (req.body.q || req.body.year){
-      var query = req.body.q;
-      if (req.body.year) query += "&year=" + req.body.year;
-      tmdb.search.movie(query, Number(req.body.page), processMovieResults);
+    if (req.body.q){
+      tmdb.searchMovie({
+        query: req.body.q,
+        year: Number(req.body.year),
+        page: Number(req.body.page) },
+        processMovieResults);
     }
-
-    if (req.body.genre){
-      tmdb.genre.movies(req.body.genre, Number(req.body.page), processMovieResults);
-    }
-
-    tmdb.misc.nowPlaying(Number(req.body.page), processMovieResults);
+    else if (req.body.genres || req.body.year){
+      var genres = req.body.genres ? req.body.genres.join('|') : null;
+      tmdb.discoverMovie({ with_genres: genres,
+                            primary_release_year: Number(req.body.year),
+                            page: Number(req.body.page) },
+                            processMovieResults);
+    } else tmdb.miscNowPlayingMovies({page: Number(req.body.page)}, processMovieResults);
 
     function processMovieResults(err,res) {
       //link up user reviews (if user is logged in)
 
       var userId = req.session.user ? req.session.user.id : null;
-      //console.log(res);
+      console.log(res);
 
       if (!userId) return response.json(res);
 
@@ -116,8 +119,8 @@ module.exports = {
   },
 
   details: function(req, res){
-    var tmdb = require('tmdbv3').init(sails.config.mdbApi.api_key);
-    tmdb.movie.info(req.body.movieDbId, function(err, response){
+    var tmdb = require('moviedb')(sails.config.mdbApi.api_key);
+    tmdb.movieInfo({id: req.body.movieDbId}, function(err, response){
       if (err) console.log(err);
       res.json(response);
     });
