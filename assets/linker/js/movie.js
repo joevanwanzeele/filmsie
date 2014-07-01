@@ -67,9 +67,12 @@ function MovieViewModel(data, parent) {
       url: "/movie/cast",
       data: { movieDbId: self.id() },
       success: function(data){
-        _.each(data, function(castMember){
-          self.castMembers.push(new CastMemberViewModel(castMember, self));
-        })
+        if (data.length == 0) { $('.cast-container').html("(unavailable)"); }
+          else{
+          _.each(data, function(castMember){
+            self.castMembers.push(new CastMemberViewModel(castMember, self));
+          })
+        }
       }
     });
   }
@@ -93,6 +96,10 @@ function MovieViewModel(data, parent) {
               rating: rating },
     });
   }
+
+  self.amazonLink = ko.computed(function(){
+    return "http://www.amazon.com/s/?tag=filmsie03-20&search-alias=dvd&keywords=%22"+self.title()+"%22";
+  });
 }
 
 function GenreViewModel(data){
