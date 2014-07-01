@@ -41,10 +41,7 @@
     <hr>
     powered by the <a href="http://www.themoviedb.org">TMDb</a> API
     <br/>
-    <div>
-      <a href="/about">About Us</a>
-      <div>Copyright Filmsie LLC, 2014</div>
-    </div>
+    <div>Copyright Filmsie LLC, 2014</div>
   </footer>
 </div> <!-- left panel -->
 
@@ -60,7 +57,7 @@
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
         <h4 class="modal-title" id="myModalLabel" data-bind="text: title"></h4>
       </div>
-      <div class="modal-body">
+      <div class="modal-body movie-details">
         <!-- ko if: !loadingDetails() -->
         <div class="detail-image-container">
           <img data-bind="attr: {src: bigImageUrl}" />
@@ -68,9 +65,17 @@
         <br/>
         <p data-bind="text: synopsis"></p>
         <ul>
-          <li><span>release date: <span data-bind="text: releaseDate"></span></span></li>
-          <li><span>your rating: <span data-bind="text: currentUserRating"></span></span></li>
+          <li><span>Released <span data-bind="text: releaseDate"></span></span></li>
+          <!-- ko if: currentUserRating -->
+          <li><span>Your rating: <span data-bind="text: currentUserRating"></span></span></li>
+          <!-- /ko -->
           <li><span data-bind="text: genresString"></li>
+          <li><span data-bind="click: toggleCast, css: { 'glyphicon-plus' : castHidden, 'glyphicon-minus' : !castHidden() }" class="glyphicon"></span> Cast
+          <!-- ko if: !castHidden() -->
+            <div data-bind="template: { name: 'cast-member-template', foreach: castMembers }" class="container cast-container"></div>
+          <!-- /ko -->
+          </li>
+
         </ul>
 
         <a data-bind="attr: {href: imdbUrl }" target="_blank">IMDB info</a>
@@ -108,6 +113,13 @@
       <div class="rating-box" data-bind="css: ratingClass(10), click: function(){setRating(10)}">10</div>
     </div>
 </div>
+</script>
+
+<script type="text/html" id="cast-member-template">
+  <div class="cast-member-container container">
+    <span data-bind="text: name"></span><br/>
+    <img data-bind="attr: {src: imageUrl}" /><br/>
+  <div class="character-container" data-bind="text: character"></div>
 </script>
 
 <script type="text/javascript">

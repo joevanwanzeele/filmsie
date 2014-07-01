@@ -1,5 +1,14 @@
+function CastMemberViewModel(data, parent){
+  var self = this;
+  self.cast_id = ko.observable(data.cast_id);
+  self.name = ko.observable(data.name);
+  self.character = ko.observable(data.character);
+  self.imageUrl = ko.observable(data.profile_path != null ? parent.parent.thumbnailBaseUrl() + data.profile_path : null); //todo: replace with empty image path if none exists for cast member
+}
+
 function MovieViewModel(data, parent) {
   var self = this;
+  self.parent = parent;
   self.id = ko.observable(data && data.id || '');
   self.currentUserRating = ko.observable(data && data.currentUserRating || null);
   self.title = ko.observable(data && data.title || '');
@@ -11,6 +20,8 @@ function MovieViewModel(data, parent) {
   self.synopsis = ko.observable();
   self.imdbId = ko.observable();
   self.loadingDetails = ko.observable(true);
+  self.castMembers = ko.observableArray([]);
+  self.castHidden = ko.observable(true);
 
   self.genresString = ko.computed(function(){
     return self.genres().join(", ");
@@ -38,7 +49,7 @@ function MovieViewModel(data, parent) {
       data: {movieDbId: self.id() },
       cache: false,
       success: function(data){
-        self.releaseDate(data.release_date);
+        self.releaseDate(moment(data.release_date).format('LL'));
         _.each(data.genres, function(genre){
           self.genres.push(genre.name);
         });
@@ -48,6 +59,24 @@ function MovieViewModel(data, parent) {
         self.loadingDetails(false);
       }
     });
+  }
+
+  self.getCast = function(){
+    $.ajax({
+      type: "POST",
+      url: "/movie/cast",
+      data: { movieDbId: self.id() },
+      success: function(data){
+        _.each(data, function(castMember){
+          self.castMembers.push(new CastMemberViewModel(castMember, self));
+        })
+      }
+    });
+  }
+
+  self.toggleCast = function(){
+    if (!self.castMembers().length) self.getCast();
+    self.castHidden(!self.castHidden());
   }
 
   self.setRating = function(rating) {
