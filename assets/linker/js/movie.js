@@ -14,6 +14,16 @@ function UserViewModel(parent){
       }
     });
   }
+
+  self.scrolledFriends = function(){}
+}
+
+function ListViewModel(parent){
+  var self = this;
+  self.parent = parent;
+  self.id = ko.observable();
+  self.name = ko.observable();
+  self.movies = ko.observableArray([]);
 }
 
 function CastMemberViewModel(data, parent){
@@ -141,10 +151,45 @@ function MoviesViewModel(parent) {
   self.genres = ko.observableArray([]);
   self.selectedGenres = ko.observableArray([]);
   self.selectedYear = ko.observable();
+  self.movieLists = ko.observableArray([]);
 
   self.movieDetails = ko.observable(new MovieViewModel());
-
   self.user = ko.observable(new UserViewModel(self));
+
+  self.showingFriends = ko.observable(false);
+  self.showingMovies = ko.observable(true);
+  self.showingLists = ko.observable(false);
+
+  self.showFriends = function(vm, e){
+    $('.active').removeClass('active');
+    $(e.target).parent().addClass('active');
+    if (self.user().friends().length == 0) self.user().getFriends();
+    self.showingMovies(false);
+    self.showingLists(false);
+    self.showingFriends(true);
+  }
+
+  self.showMovies = function(el){
+    $('.active').removeClass('active');
+    $(e.target).parent().addClass('active');
+    self.showingLists(false);
+    self.showingFriends(false);
+    self.showingMovies(true);
+  }
+
+  self.showLists = function(el){
+    $('.active').removeClass('active');
+    $(e.target).parent().addClass('active');
+    self.showingMovies(false);
+    self.showingFriends(false);
+    self.showingLists(true);
+  }
+
+  self.friends = ko.computed(function(){
+    return self.user().friends;
+  });
+
+  self.scrolledFriends = self.user().scrolledFriends;
 
   self.getConfigSettings = function(){
     if (!self.thumbnailBaseUrl()){

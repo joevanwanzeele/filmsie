@@ -63,9 +63,9 @@
           <% if (session.authenticated) { %>
             <div class="container">
           <ul class="nav navbar-nav">
-            <li class="active"><a href="#Movies">Movies</a></li>
-            <li><a href="#Friends">Friends</a></li>
-            <li><a href="#Lists">Lists</a></li>
+            <li class="active"><a href="#Movies" data-bind="click: showMovies">Movies</a></li>
+            <li><a href="#Friends" data-bind="click: showFriends">Friends</a></li>
+            <li><a href="#Lists" data-bind="click: showLists">Lists</a></li>
             <% if (session.authenticated && session.user.admin) { %>
               <li><a href="/admin">Administration</a></li>
             <% } %>

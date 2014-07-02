@@ -38,11 +38,13 @@ module.exports = {
   facebookFriends: function(req, res, next){
     graph.setAccessToken(req.session.user.facebookAccessToken);
     //graph.setAppSecret(sails.config.facebook.client_secret);
-    
+    graph.get(req.session.user.facebookId + "/friends?fields=name,picture", function(err, response) {
+      console.dir(response.data);
+    });
   },
 
   'facebook': function (req, res, next) {
-     passport.authenticate('facebook', { scope: ['email', 'user_about_me']},
+     passport.authenticate('facebook', { scope: ['email', 'user_about_me', 'user_friends']},
           function (err, user) {
             req.logIn(user, function (err) {
             if(err) {
