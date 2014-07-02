@@ -53,7 +53,7 @@ module.exports = {
     if (req.body.q){
       tmdb.searchMovie({
         query: req.body.q,
-        year: Number(req.body.year),
+        year: req.body.year ? Number(req.body.year) : null,
         page: Number(req.body.page) },
         processMovieResults);
     }
