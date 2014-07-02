@@ -169,7 +169,7 @@ function MoviesViewModel(parent) {
     self.showingFriends(true);
   }
 
-  self.showMovies = function(el){
+  self.showMovies = function(vm, e){
     $('.active').removeClass('active');
     $(e.target).parent().addClass('active');
     self.showingLists(false);
@@ -177,7 +177,7 @@ function MoviesViewModel(parent) {
     self.showingMovies(true);
   }
 
-  self.showLists = function(el){
+  self.showLists = function(vm, e){
     $('.active').removeClass('active');
     $(e.target).parent().addClass('active');
     self.showingMovies(false);

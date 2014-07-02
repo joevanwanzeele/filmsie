@@ -64,5 +64,9 @@ module.exports = {
         function (req, res) {
             res.redirect('/');
         })(req, res, next);
+  },
+
+  privacy: function(req, res, next){
+    return res.view('privacy', { layout: null });
   }
 };
