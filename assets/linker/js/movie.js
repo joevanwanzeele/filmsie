@@ -1,3 +1,21 @@
+function UserViewModel(parent){
+  var self = this;
+  self.parent = parent;
+  self.id = ko.observable();
+  self.friends = ko.observableArray([]);
+
+  self.getFriends = function(){
+    $.ajax({
+      type: "POST",
+      url: "/user/facebookFriends",
+      cache: false,
+      success: function(data){
+        console.dir(data);
+      }
+    });
+  }
+}
+
 function CastMemberViewModel(data, parent){
   var self = this;
   self.cast_id = ko.observable(data.cast_id);
@@ -87,7 +105,7 @@ function MovieViewModel(data, parent) {
       rating = null;
     }
     self.currentUserRating(rating);
-    if (!parent.userId()) return;
+    if (!parent.user().id()) return;
     $.ajax({
       type: "POST",
       url: "/movie/rate",
@@ -108,8 +126,9 @@ function GenreViewModel(data){
   self.name = ko.observable(data.name);
 }
 
-function MoviesViewModel() {
+function MoviesViewModel(parent) {
   var self = this;
+  self.parent = parent;
   self.totalResults = ko.observable(0);
   self.movies = ko.observableArray([]);
   self.searchParameters = ko.observable();
@@ -122,9 +141,10 @@ function MoviesViewModel() {
   self.genres = ko.observableArray([]);
   self.selectedGenres = ko.observableArray([]);
   self.selectedYear = ko.observable();
-  self.userId = ko.observable();
 
   self.movieDetails = ko.observable(new MovieViewModel());
+
+  self.user = ko.observable(new UserViewModel(self));
 
   self.getConfigSettings = function(){
     if (!self.thumbnailBaseUrl()){
@@ -196,9 +216,6 @@ function MoviesViewModel() {
             self.getting(false);
           }
     });
-
-    self.selectedGenres.subscribe(function(){self.page(0); self.movies([]); self.getMovies();});
-    self.selectedYear.subscribe(function(){self.page(0); self.movies([]); self.getMovies();});
   }
 
   self.scrolled = function(data, event){
@@ -225,4 +242,13 @@ function MoviesViewModel() {
     if (event.keyCode == 13) self.search();
     return true;
   }
+
+  self.init = function(){
+    self.user().id("<%= req.session.user ? session.user.id : '' %>");
+    self.getConfigSettings();
+    self.getGenres();
+  }
+
+  self.selectedGenres.subscribe(self.search);
+  self.selectedYear.subscribe(self.search);
 }

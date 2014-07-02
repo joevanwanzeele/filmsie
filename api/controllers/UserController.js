@@ -16,6 +16,7 @@
  */
 
 var passport = require('passport');
+var graph = require('fbgraph');
 
 module.exports = {
 
@@ -32,6 +33,12 @@ module.exports = {
     req.session.authenticated = false;
     req.session.flash = 'You have logged out';
     res.redirect('/');
+  },
+
+  facebookFriends: function(req, res, next){
+    graph.setAccessToken(req.session.user.facebookAccessToken);
+    //graph.setAppSecret(sails.config.facebook.client_secret);
+    
   },
 
   'facebook': function (req, res, next) {

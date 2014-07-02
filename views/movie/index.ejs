@@ -126,9 +126,7 @@
 <script type="text/javascript">
   $(function(){
     var vm = new MoviesViewModel();
+    vm.init();
     ko.applyBindings(vm);
-    vm.getConfigSettings();
-    vm.getGenres();
-    vm.userId("<%= req.session.user ? session.user.id : '' %>");
   });
 </script>
