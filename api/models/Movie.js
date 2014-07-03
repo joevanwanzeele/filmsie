@@ -12,14 +12,12 @@ schema: true,
 
 attributes: {
 
-    rottenTomatoesId: {
-      type: 'string',
-      required: false,
-    },
+    title: { type: 'string', required: false },
 
-    movieDbId: {
-      type: 'string',
-      required: false,
-    }
+    thumbnailImageUrl: { type: 'string', required: false },
+
+    rottenTomatoesId: { type: 'string', required: false },
+
+    movieDbId: { type: 'string', required: false }
   }
 };

@@ -60,62 +60,6 @@ html, body{
   color: gray;
 }
 
-.container .gray {
-  color: gray;
-}
-
-.container {
-  .footer {
-    width: 25%;
-  }
-}
-
-.form-signin {
-  max-width: 30%;
-  padding: 19px 29px 29px;
-  margin: 0 auto 20px;
-  margin-top: 20px;
-  background-color: @lightGray;
-  border: 1px solid @green;
-  -webkit-border-radius: 15px;
-  -moz-border-radius: 15px;
-  border-radius: 15px;
-
-  h2 {
-    text-align: center;
-    margin-top: 0px;
-  }
-}
-
-.form-signin input[type="text"],
-.form-signin input[type="password"]{
-  font-size: 16px;
-  height: auto;
-  margin-bottom: 15px;
-  padding: 7px 9px;
-}
-
-.form-add-item {
-  max-width: 40%;
-  padding: 19px 29px 29px;
-  margin: 0 auto 20px;
-  margin-top: 20px;
-  background-color: @lightGray;
-  border: 1px solid @green;
-  -webkit-border-radius: 15px;
-  -moz-border-radius: 15px;
-  border-radius: 15px;
-
-  h2 {
-    text-align: center;
-    margin-top: 0px;
-  }
-
-  input, select, textarea {
-    margin-bottom: 10px;
-  }
-}
-
 .alert {
   position: absolute;
 }
@@ -160,6 +104,7 @@ td {
   padding:0;
   float:left;
   text-align:center;
+  position:relative;
 
   img{
     height:150px;
@@ -241,7 +186,7 @@ td {
     text-indent:20px;
   }
   img {
-    max-height:440px;
+    max-height:340px;
   }
   ul {
     list-style-type: none;
@@ -271,4 +216,35 @@ td {
 
 .pointer{
   cursor: pointer;
+}
+
+#addToListModal{
+  .modal-header{
+    text-align:center;
+  }
+  ul {
+    list-style: none;
+    padding-left:0;
+    li{
+      margin-bottom:5px;
+      button{
+        width:258px;
+        text-align:left;
+        .list-length{
+          float:right;
+        }
+      }
+    }
+  }
+}
+
+.addToListButton {
+  right:2px;
+  top:0px;
+  height:15px;
+  width:15px;
+  float:right;
+  position:absolute;
+  display:block;
+  clear:none;
 }

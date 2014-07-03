@@ -71,9 +71,14 @@ module.exports = {
 
     function processMovieResults(err,res) {
       //link up user reviews (if user is logged in)
+      _.each(res.results, function(movie){
+        movie["movieDbId"] = movie.id;
+        movie.id = null; //this should be set to the local id in the future
+      });
 
       var userId = req.session.user ? req.session.user.id : null;
       //console.log(res);
+
 
       if (!userId) return response.json(res);
 
@@ -93,6 +98,7 @@ module.exports = {
 
   rate: function(req, res){
     //console.dir(req.body);
+    if (!req.session.user) return;
     var userId = req.session.user.id;
     var movieId = req.body.id;
     var movieDbId = req.body.movieDbId;
@@ -127,7 +133,7 @@ module.exports = {
     var tmdb = require('moviedb')(sails.config.mdbApi.api_key);
 
     tmdb.movieInfo({id: req.body.movieDbId}, function(err, response){
-      if (err) console.log(err);
+      if (err) {return console.log(err);}
       res.json(response);
     });
   },
@@ -136,7 +142,8 @@ module.exports = {
     var tmdb = require('moviedb')(sails.config.mdbApi.api_key);
 
     tmdb.movieCredits({id: req.body.movieDbId}, function(err, response){
-      if (err) console.log(err);
+      if (err) {return console.log(err);}
+      console.dir(response.cast);
       res.json(response.cast);
     });
   },

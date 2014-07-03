@@ -18,12 +18,35 @@ function UserViewModel(parent){
   self.scrolledFriends = function(){}
 }
 
-function ListViewModel(parent){
+function MovieListViewModel(data, parent){
   var self = this;
   self.parent = parent;
-  self.id = ko.observable();
-  self.name = ko.observable();
-  self.movies = ko.observableArray([]);
+  self.id = ko.observable(data.id);
+  self.name = ko.observable(data.name);
+  self.movies = ko.observableArray(data.movieIds);
+
+  self.nameAndLength = ko.computed(function(){
+    return self.name() + "<div class='list-length'>(" + self.movies().length + ")</div>"
+  });
+
+  self.addToList = function(vm, e){
+    console.dir(parent.selectedMovie());
+    $.ajax({
+      type: "POST",
+      url: "/movielist/update",
+      data: {
+        userId: parent.user().id(),
+        listId: $(e.target).attr('list-id'),
+        movie: {
+          movieDbId: parent.selectedMovie().movieDbId(),
+          title: parent.selectedMovie().title(),
+          imageUrl: parent.selectedMovie().imageUrl() }},
+        success: function(data){
+          console.dir(data);
+          $('#addToListModal').modal('hide');
+        }
+    });
+  }
 }
 
 function CastMemberViewModel(data, parent){
@@ -37,7 +60,8 @@ function CastMemberViewModel(data, parent){
 function MovieViewModel(data, parent) {
   var self = this;
   self.parent = parent;
-  self.id = ko.observable(data && data.id || '');
+  self.id = ko.observable(data && data.id || '')
+  self.movieDbId = ko.observable(data && data.movieDbId || '');
   self.currentUserRating = ko.observable(data && data.currentUserRating || null);
   self.title = ko.observable(data && data.title || '');
   self.imageUrl = ko.observable();
@@ -66,6 +90,14 @@ function MovieViewModel(data, parent) {
     return 'rating-box-inactive';
   }
 
+  self.showListPopover = function(vm, e){
+    e.stopPropagation();
+    parent.selectedMovie(self);
+    parent.getMovieLists();
+
+    $('#addToListModal').modal();
+  }
+
   self.showDetails = function(){
     parent.movieDetails(self);
     self.loadingDetails(true);
@@ -74,7 +106,7 @@ function MovieViewModel(data, parent) {
     $.ajax({
       type: "POST",
       url: "/movie/details",
-      data: {movieDbId: self.id() },
+      data: {movieDbId: self.movieDbId() },
       cache: false,
       success: function(data){
         self.releaseDate(moment(data.release_date).format('LL'));
@@ -93,7 +125,7 @@ function MovieViewModel(data, parent) {
     $.ajax({
       type: "POST",
       url: "/movie/cast",
-      data: { movieDbId: self.id() },
+      data: { movieDbId: self.movieDbId() },
       success: function(data){
         if (data.length == 0) { $('.cast-container').html("(unavailable)"); }
           else{
@@ -119,8 +151,9 @@ function MovieViewModel(data, parent) {
     $.ajax({
       type: "POST",
       url: "/movie/rate",
-      data: { movieDbId: self.id(),
+      data: { movieDbId: self.movieDbId(),
               imdbId: self.imdbId(),
+              id: self.id(),
               rating: rating },
     });
   }
@@ -152,13 +185,57 @@ function MoviesViewModel(parent) {
   self.selectedGenres = ko.observableArray([]);
   self.selectedYear = ko.observable();
   self.movieLists = ko.observableArray([]);
+  self.newListName = ko.observable();
+  self.selectedMovie = ko.observable();
 
-  self.movieDetails = ko.observable(new MovieViewModel());
+  self.addToListModalTitle = ko.computed(function(){
+    if (self.selectedMovie()) return "Add \"" + self.selectedMovie().title() + "\" to list";
+    return "Add to list";
+  });
+
+  self.movieDetails = ko.observable(new MovieViewModel({}, self));
   self.user = ko.observable(new UserViewModel(self));
 
   self.showingFriends = ko.observable(false);
   self.showingMovies = ko.observable(true);
   self.showingLists = ko.observable(false);
+
+
+  self.getMovieLists = function(){
+    self.movieLists([]);
+    $.ajax({
+      type: "POST",
+      url: "/movielist/index",
+      data: { userId: self.user().id() },
+      success: function(data){
+        _.each(data, function(list){
+          self.movieLists.push(new MovieListViewModel(list, self));
+        });
+      }
+    });
+  }
+
+  self.addNewMovieList = function(vm, e){
+    $.ajax({
+      type: "POST",
+      url: "/movielist/add",
+      data: {
+        userId: self.user().id(),
+        name: self.newListName(),
+        movie: {
+          movieDbId: self.selectedMovie().movieDbId(),
+          title: self.selectedMovie().title(),
+          imageUrl: self.selectedMovie().imageUrl() } },
+      success: function(data){
+        console.dir(data);
+        _.each(data, function(list){
+          self.movieLists.push(new MovieListViewModel(list, self));
+        });
+        $('#addToListModal').modal('hide');
+        self.newListName('');
+      }
+    });
+  }
 
   self.showFriends = function(vm, e){
     $('.active').removeClass('active');
@@ -289,7 +366,6 @@ function MoviesViewModel(parent) {
   }
 
   self.init = function(){
-    self.user().id("<%= req.session.user ? session.user.id : '' %>");
     self.getConfigSettings();
     self.getGenres();
   }

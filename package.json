@@ -1,7 +1,7 @@
 {
     "name": "filmsie",
     "private": true,
-    "version": "0.0.0-47",
+    "version": "0.0.0-48",
     "description": "The social movie review site",
     "dependencies": {
         "sails": "0.9.15",
@@ -32,8 +32,8 @@
     "license": "",
     "subdomain": "filmsie",
     "domains": [
-      "filmsie.com",
-      "www.filmsie.com"
+        "filmsie.com",
+        "www.filmsie.com"
     ],
     "engines": {
         "node": "0.10.x"

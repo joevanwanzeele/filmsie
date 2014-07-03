@@ -31,7 +31,7 @@
       </div>
       <div id="genreContainer" class="panel">
         <div class="panel-body">
-          <select data-bind="attr: {'multiple': hasSelectedYear}, options: genres, optionsText: 'name', selectedOptions: selectedGenres, optionsCaption: 'any genre'"></select>
+          <select data-bind="options: genres, optionsText: 'name', selectedOptions: selectedGenres, optionsCaption: 'any genre'" multiple="true"></select>
         </div>
       </div>
     </div>
@@ -91,6 +91,81 @@
     </div>
   </div>
 </div>
+
+<div id="addToListModal" class="modal bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="addToListLabel" aria-hidden="true">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 id="addToListLabel" class="modal-title" data-bind="html: addToListModalTitle">Add to list</h4>
+      </div>
+      <div class="modal-body">
+        <ul data-bind="foreach: movieLists">
+          <li><button class="btn btn-default" data-bind="attr: {'list-id': id}, html: nameAndLength, click: addToList"></li>
+        </ul>
+        <div class="input-group">
+          <input type="text" data-bind="value: newListName" placeholder="new list" class="form-control" />
+          <span class="input-group-btn">
+            <button type="button" class="btn btn-default" data-bind="click: addNewMovieList">add</button>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script type="text/html" id="movie-template">
+  <div class="movie-container">
+    <div class="movie-title-container" data-bind="click: showDetails">
+      <h5 data-bind="text: title"></h5><div class="addToListButton" data-bind="click: showListPopover"><span class="glyphicon glyphicon-list"></span></div>
+      <!-- ko if: imageUrl -->
+      <img data-bind="attr: {src: imageUrl}" />
+      <!-- /ko -->
+      <!-- ko if: !imageUrl() -->
+      <br/><br/>
+      <span>(no image)</span>
+      <!-- /ko -->
+    </div>
+    <div class="rating-container">
+      <div class="rating-box" data-bind="css: ratingClass(1), click: function(){setRating(1)}">1</div>
+      <div class="rating-box" data-bind="css: ratingClass(2), click: function(){setRating(2)}">2</div>
+      <div class="rating-box" data-bind="css: ratingClass(3), click: function(){setRating(3)}">3</div>
+      <div class="rating-box" data-bind="css: ratingClass(4), click: function(){setRating(4)}">4</div>
+      <div class="rating-box" data-bind="css: ratingClass(5), click: function(){setRating(5)}">5</div>
+      <div class="rating-box" data-bind="css: ratingClass(6), click: function(){setRating(6)}">6</div>
+      <div class="rating-box" data-bind="css: ratingClass(7), click: function(){setRating(7)}">7</div>
+      <div class="rating-box" data-bind="css: ratingClass(8), click: function(){setRating(8)}">8</div>
+      <div class="rating-box" data-bind="css: ratingClass(9), click: function(){setRating(9)}">9</div>
+      <div class="rating-box" data-bind="css: ratingClass(10), click: function(){setRating(10)}">10</div>
+    </div>
+</div>
+</script>
+
+<script type="text/html" id="friend-template">
+  <div data-bind="text: name"></div>
+</script>
+
+<script type="text/html" id="list-template">
+  <div data-bind="text: name"></div>
+</script>
+
+<script type="text/html" id="cast-member-template">
+  <div class="cast-member-container container">
+    <span data-bind="text: name"></span><br/>
+    <img data-bind="attr: {src: imageUrl}" /><br/>
+  <div class="character-container" data-bind="text: character"></div>
+</script>
+
+<script type="text/javascript">
+  $(function(){
+    var vm = new MoviesViewModel();
+    vm.init();
+    vm.user().id("<%= req.session.user ? session.user.id : '' %>");
+    ko.applyBindings(vm);
+  });
+</script>
+
 
 <div id="privacyModal" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="privacyLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">
@@ -246,53 +321,3 @@
     </div>
   </div>
 </div>
-
-<script type="text/html" id="movie-template">
-  <div class="movie-container">
-    <div class="movie-title-container" data-bind="click: showDetails">
-      <h5 data-bind="text: title"></h5>
-      <!-- ko if: imageUrl -->
-      <img data-bind="attr: {src: imageUrl}" />
-      <!-- /ko -->
-      <!-- ko if: !imageUrl() -->
-      <br/><br/>
-      <span>(no image)</span>
-      <!-- /ko -->
-    </div>
-    <div class="rating-container">
-      <div class="rating-box" data-bind="css: ratingClass(1), click: function(){setRating(1)}">1</div>
-      <div class="rating-box" data-bind="css: ratingClass(2), click: function(){setRating(2)}">2</div>
-      <div class="rating-box" data-bind="css: ratingClass(3), click: function(){setRating(3)}">3</div>
-      <div class="rating-box" data-bind="css: ratingClass(4), click: function(){setRating(4)}">4</div>
-      <div class="rating-box" data-bind="css: ratingClass(5), click: function(){setRating(5)}">5</div>
-      <div class="rating-box" data-bind="css: ratingClass(6), click: function(){setRating(6)}">6</div>
-      <div class="rating-box" data-bind="css: ratingClass(7), click: function(){setRating(7)}">7</div>
-      <div class="rating-box" data-bind="css: ratingClass(8), click: function(){setRating(8)}">8</div>
-      <div class="rating-box" data-bind="css: ratingClass(9), click: function(){setRating(9)}">9</div>
-      <div class="rating-box" data-bind="css: ratingClass(10), click: function(){setRating(10)}">10</div>
-    </div>
-</div>
-</script>
-
-<script type="text/html" id="friend-template">
-  <div data-bind="text: name"></div>
-</script>
-
-<script type="text/html" id="list-template">
-  <div data-bind="text: name"></div>
-</script>
-
-<script type="text/html" id="cast-member-template">
-  <div class="cast-member-container container">
-    <span data-bind="text: name"></span><br/>
-    <img data-bind="attr: {src: imageUrl}" /><br/>
-  <div class="character-container" data-bind="text: character"></div>
-</script>
-
-<script type="text/javascript">
-  $(function(){
-    var vm = new MoviesViewModel();
-    vm.init();
-    ko.applyBindings(vm);
-  });
-</script>
