@@ -24,7 +24,7 @@ html, body{
 
 .main-content{
   margin-top:10px;
-  height: 90%;
+  height: 95%;
 }
 
 .left-panel{
@@ -84,6 +84,18 @@ td {
   position:absolute;
   overflow-x:hidden;
   margin-left:20px;
+}
+
+.movies-loading-placeholder{
+  background-color: rgb(0,0,0,0) !important;
+  float:none;
+  width:100%;
+  text-align:center;
+  img{
+    margin-top:50px !important;
+    width:70px !important;
+    height:70px !important;
+  }
 }
 
 .table-no-border>thead>tr>th,
@@ -147,22 +159,21 @@ td {
   clear:none;
   float:left;
   font-size:9px;
-  color:#ffffff;
+  color: rgba(255,255,255,0.3);
   line-height:2em;
 
   &:hover{
     background:none;
-    color:#000000;
+    color: rgba(0,0,0,1);
     font-weight:bold;
     cursor:pointer;
     height:20px;
-    display:box;
   }
 }
 
 .rating-box-active{
-  background-color: rgba(0, 0, 0, 0.0);
-  color:#000000;
+  background:none;
+  color: rgba(0, 0, 0, 1);
   font-weight:bold;
   height:20px;
 }
@@ -256,4 +267,17 @@ td {
 
 .profile-image{
   height:35px;
+}
+
+#showMovieListMenu{
+  background-color: #222222;
+  color: #999;
+  padding: 15px 15px;
+  border-radius: 0;
+  background-color: transparent;
+}
+
+#showMovieListMenu:hover{
+  color: #ffffff;
+  background-color: #333333;
 }

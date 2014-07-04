@@ -46,6 +46,12 @@ function MovieListViewModel(data, parent){
         }
     });
   }
+
+  self.viewList = function(vm, e){
+    var listId = $(e.target).attr('list-id');
+    console.dir(listId);
+    self.parent.showLists(vm, e);
+  }
 }
 
 function CastMemberViewModel(data, parent){
@@ -311,6 +317,31 @@ function MoviesViewModel(parent) {
     //show account options in modal dialog
   };
 
+  self.getting.subscribe(function(value){
+    if (value) $('.movie-container').last().after("<div id='loadingMoviesPlaceholder' class='movie-container movies-loading-placeholder' data-bind='visible: getting'><img src='/img/moviesloading.gif' alt='loading' /></div>");
+    else {
+      $('#loadingMoviesPlaceholder').remove();
+      $('.rating-box').on("mouseover", function(){
+        //add .rating-box-lower-score to less values
+        var ratedElement = $(this).siblings('.rating-box-active');
+
+        $(this).prevAll().addClass('rating-box-lower-score');
+        $(this).nextAll().removeClass('rating-box-lower-score');
+        ratedElement.prevAll().addClass('rating-box-lower-score');
+      });
+      $('.rating-container').on("mouseout", function(){
+        var ratedElement = $(this).children('.rating-box-active');
+        if (ratedElement.length > 0){
+          ratedElement.removeClass('rating-box-lower-score');
+          ratedElement.nextAll().removeClass('rating-box-lower-score');
+          ratedElement.prevAll().addClass('rating-box-lower-score');
+        } else {
+          $(this).children('.rating-box').removeClass('rating-box-lower-score');
+        }
+      });
+    }
+  });
+
   self.getMovies = function(){
     if (self.totalResults() == self.movies().length && self.movies().length != 0) return;
 
@@ -371,6 +402,7 @@ function MoviesViewModel(parent) {
   self.init = function(){
     self.getConfigSettings();
     self.getGenres();
+    self.getMovieLists();
   }
 
   self.selectedGenres.subscribe(self.search);

@@ -37,7 +37,7 @@
     </div>
   </div>
 
-  <footer class="footer pull-right">
+  <footer class="pull-left">
     <hr>
     powered by the <a href="http://www.themoviedb.org">TMDb</a> API
     <br/>
@@ -160,10 +160,11 @@
 <script type="text/javascript">
   $(function(){
     var vm = new MoviesViewModel();
-    vm.init();
     vm.user().id("<%= req.session.user ? session.user.id : '' %>");
     vm.user().profilePicUrl("<%= profile_pic_url %>");
+    vm.init();
     ko.applyBindings(vm);
+    
   });
 </script>
 
