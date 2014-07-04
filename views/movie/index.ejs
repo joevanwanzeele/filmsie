@@ -162,6 +162,7 @@
     var vm = new MoviesViewModel();
     vm.init();
     vm.user().id("<%= req.session.user ? session.user.id : '' %>");
+    vm.user().profilePicUrl("<%= profile_pic_url %>");
     ko.applyBindings(vm);
   });
 </script>

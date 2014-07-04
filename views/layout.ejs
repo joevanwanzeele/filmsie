@@ -63,19 +63,19 @@
           <% if (session.authenticated) { %>
             <div class="container">
           <ul class="nav navbar-nav">
-            <li class="active"><a href="#Movies" data-bind="click: showMovies">Movies</a></li>
-            <li><a href="#Friends" data-bind="click: showFriends">Friends</a></li>
-            <li><a href="#Lists" data-bind="click: showLists">Lists</a></li>
+            <li class="active"><a href="#Movies" data-bind="click: showMovies"><span class="glyphicon glyphicon-film"></span></a></li>
+            <li><a href="#Friends" data-bind="click: showFriends"><span class="glyphicon glyphicon-user"></span></a></li>
+            <li><a href="#Lists" data-bind="click: showLists"><span class="glyphicon glyphicon-list"></span></a></li>
             <% if (session.authenticated && session.user.admin) { %>
               <li><a href="/admin">Administration</a></li>
             <% } %>
           </ul>
+          <ul class="nav navbar-nav navbar-right">
+            <li><a class="profile-image-a" href="#Account" data-bind="click: openAccountModal"><img class="profile-image" src="<%= profile_pic_url %>"/></a></li>
+            <li><a href="#Account" data-bind="click: openAccountModal"><span class="glyphicon glyphicon-cog"></span></a></li>
+            <li><a href="/user/logout"><span class="glyphicon glyphicon-remove-circle"></span></a></li>
+          </ul>
         </div>
-
-          <!-- <ul class="nav navbar-nav navbar-right">
-            <li><a href="/user/show/<%= session.user.id %>"><img src="<%= profile_pic_url %>"/> </a>
-          </li>
-          </ul> -->
           <% } else { %>
           <form class="navbar-form navbar-right" action="/user/facebook">
             <button type="submit" class="btn btn-success">sign in with Facebook</button>

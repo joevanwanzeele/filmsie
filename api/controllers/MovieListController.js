@@ -23,7 +23,7 @@ module.exports = {
     MovieList.find({userId: req.body.userId })
       .done(function(err, existing) {
         if (err) console.log(err);
-        return res.json(existing.sort());
+        return res.json(existing.sort(function(a,b){return a.name > b.name;}));
       });
   },
 
@@ -47,6 +47,7 @@ module.exports = {
     movieHelper.addOrUpdateMovie(req.body.movie, function(movieId){
         MovieList.findOne(req.body.listId, function(err, movieList){
           movieList.movieIds.push(movieId);
+          movieList.movieIds = _.uniq(movieList.movieIds);
           movieList.save(function(err){
             if (err) return console.log(err);
             return res.json(movieList);

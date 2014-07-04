@@ -2,6 +2,7 @@ function UserViewModel(parent){
   var self = this;
   self.parent = parent;
   self.id = ko.observable();
+  self.profilePicUrl = ko.observable();
   self.friends = ko.observableArray([]);
 
   self.getFriends = function(){
@@ -30,7 +31,6 @@ function MovieListViewModel(data, parent){
   });
 
   self.addToList = function(vm, e){
-    console.dir(parent.selectedMovie());
     $.ajax({
       type: "POST",
       url: "/movielist/update",
@@ -42,7 +42,6 @@ function MovieListViewModel(data, parent){
           title: parent.selectedMovie().title(),
           imageUrl: parent.selectedMovie().imageUrl() }},
         success: function(data){
-          console.dir(data);
           $('#addToListModal').modal('hide');
         }
     });
@@ -239,7 +238,7 @@ function MoviesViewModel(parent) {
 
   self.showFriends = function(vm, e){
     $('.active').removeClass('active');
-    $(e.target).parent().addClass('active');
+    $(e.target).closest('li').addClass('active');
     if (self.user().friends().length == 0) self.user().getFriends();
     self.showingMovies(false);
     self.showingLists(false);
@@ -248,7 +247,7 @@ function MoviesViewModel(parent) {
 
   self.showMovies = function(vm, e){
     $('.active').removeClass('active');
-    $(e.target).parent().addClass('active');
+    $(e.target).closest('li').addClass('active');
     self.showingLists(false);
     self.showingFriends(false);
     self.showingMovies(true);
@@ -256,7 +255,7 @@ function MoviesViewModel(parent) {
 
   self.showLists = function(vm, e){
     $('.active').removeClass('active');
-    $(e.target).parent().addClass('active');
+    $(e.target).closest('li').addClass('active');
     self.showingMovies(false);
     self.showingFriends(false);
     self.showingLists(true);
@@ -307,6 +306,10 @@ function MoviesViewModel(parent) {
       }
     });
   }
+
+  self.openAccountModal = function(){
+    //show account options in modal dialog
+  };
 
   self.getMovies = function(){
     if (self.totalResults() == self.movies().length && self.movies().length != 0) return;

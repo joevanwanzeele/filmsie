@@ -82,14 +82,14 @@ module.exports = {
 
       if (!userId) return response.json(res);
 
-      var ids = _.map(res.results, function(item){ return item.id });
+      var ids = _.map(res.results, function(item){ return item.movieDbId });
 
       MovieUserRating.find()
       .where({movieDbId: ids, userId: req.session.user.id })
        .exec(function (err, ratings) {
            _.each(ratings, function(rating){
-             var found = _.findWhere(res.results, {id: rating.movieDbId});
-             found["currentUserRating"] = rating.rating;
+             var found = _.findWhere(res.results, {movieDbId: rating.movieDbId});
+             if (found) found["currentUserRating"] = rating.rating;
          });
          return response.json(res);
        });
@@ -143,7 +143,6 @@ module.exports = {
 
     tmdb.movieCredits({id: req.body.movieDbId}, function(err, response){
       if (err) {return console.log(err);}
-      console.dir(response.cast);
       res.json(response.cast);
     });
   },
