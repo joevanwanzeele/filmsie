@@ -20,5 +20,21 @@ module.exports = {
         return callback(existingMovie.id);
       }
     });
+  },
+
+  includeRatings: function(movies, userId, callback){
+    var ids = _.map(movies, function(movie){ return Number(movie.movieDbId); });
+    if (userId){ //include current user ratings
+    MovieUserRating.find()
+    .where({movieDbId: ids, userId: userId })
+     .exec(function (err, ratings) {
+         _.each(ratings, function(rating){
+           var found = _.findWhere(movies, {movieDbId: rating.movieDbId});
+           if (found) found["currentUserRating"] = rating.rating;
+       });
+       return callback(movies);
+     });
+   }
+   else return callback(movies); //no userId, so dont include user ratings.. but include averages
   }
 };

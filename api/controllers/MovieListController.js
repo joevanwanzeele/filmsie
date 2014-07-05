@@ -57,13 +57,14 @@ module.exports = {
   },
 
   getMoviesInList: function(req, res, next){
+    var userId = req.session.user.id;
     if (req.body.listId){
       //get specific list
       MovieList.findOne({id: req.body.listId })
         .done(function(err, list) {
           if (err) return console.log(err);
           Movie.find().where({ id: list.movieIds }).exec(function(err, movies) {
-            return res.json(movies);
+            movieHelper.includeRatings(movies, userId, function(moviesWithRatings){ return res.json(moviesWithRatings); });
           });
         });
     } else {
@@ -75,7 +76,7 @@ module.exports = {
             return rating.movieId;
           });
           Movie.find().where({ id: sortedIds }).exec(function(err, movies) {
-            return res.json(movies);
+            movieHelper.includeRatings(movies, userId, function(moviesWithRatings){ return res.json(moviesWithRatings); });
           });
         });
     }

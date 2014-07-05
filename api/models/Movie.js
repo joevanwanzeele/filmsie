@@ -20,6 +20,6 @@ attributes: {
 
     rottenTomatoesId: { type: 'string', required: false },
 
-    movieDbId: { type: 'string', required: false }
+    movieDbId: { type: 'integer', required: false }
   }
 };

@@ -71,30 +71,30 @@ module.exports = {
     } else tmdb.miscNowPlayingMovies({page: Number(req.body.page)}, processMovieResults);
 
     function processMovieResults(err,res) {
-      //link up user reviews (if user is logged in)
       _.each(res.results, function(movie){
         movie["movieDbId"] = movie.id;
-        movie.id = null; //this should be set to the local id in the future
+        movie.id = null; //this should be set to the local id in the futu
       });
 
       var userId = req.session.user ? req.session.user.id : null;
-      //console.log(res);
-
-
       if (!userId) return response.json(res);
 
-      var ids = _.map(res.results, function(item){ return item.movieDbId });
+      //link up user reviews (if user is logged in)
+      movieHelper.includeRatings(res.results, userId, function(){ return response.json(res); });
+    }
+    //   var ids = _.map(res.results, function(item){ return item.movieDbId });
+     //
+    //   MovieUserRating.find()
+    //   .where({movieDbId: ids, userId: req.session.user.id })
+    //    .exec(function (err, ratings) {
+    //        _.each(ratings, function(rating){
+    //          var found = _.findWhere(res.results, {movieDbId: rating.movieDbId});
+    //          if (found) found["currentUserRating"] = rating.rating;
+    //      });
+    //      return response.json(res);
+    //    });
+    //  }
 
-      MovieUserRating.find()
-      .where({movieDbId: ids, userId: req.session.user.id })
-       .exec(function (err, ratings) {
-           _.each(ratings, function(rating){
-             var found = _.findWhere(res.results, {movieDbId: rating.movieDbId});
-             if (found) found["currentUserRating"] = rating.rating;
-         });
-         return response.json(res);
-       });
-     }
   },
 
   rate: function(req, res){
