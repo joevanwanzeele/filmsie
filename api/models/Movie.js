@@ -14,7 +14,9 @@ attributes: {
 
     title: { type: 'string', required: false },
 
-    thumbnailImageUrl: { type: 'string', required: false },
+    imageUrl: { type: 'string', required: false },
+
+    bigImageUrl: { type: 'string', required: false },
 
     rottenTomatoesId: { type: 'string', required: false },
 

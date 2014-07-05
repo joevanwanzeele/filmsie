@@ -98,6 +98,12 @@ td {
   }
 }
 
+.movie-ad{
+  background-color: rgb(0,0,0,0) !important;
+  float:none;
+  width:100%;
+}
+
 .table-no-border>thead>tr>th,
 .table-no-border>tbody>tr>th,
 .table-no-border>tfoot>tr>th,
@@ -261,12 +267,12 @@ td {
 }
 
 .profile-image-a{
-  padding-top:5px !important;
+  padding-top:6px !important;
   padding-bottom:5px !important;
 }
 
 .profile-image{
-  height:35px;
+  height:40px;
 }
 
 #showMovieListMenu{
@@ -279,5 +285,30 @@ td {
 
 #showMovieListMenu:hover{
   color: #ffffff;
-  background-color: #333333;
+}
+
+#movieListNav{
+  ul {
+    list-style: none;
+    padding-left:0;
+    li{
+      margin-bottom:5px;
+      button{
+        width:200px;
+        text-align:left;
+        .list-length{
+          float:right;
+        }
+      }
+    }
+  }
+}
+
+.list-movie-row{
+  margin-bottom:15px;
+  line-height:2em;
+}
+
+.list-movie-image{
+  height:60px;
 }

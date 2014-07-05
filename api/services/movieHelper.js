@@ -7,12 +7,16 @@ module.exports = {
         Movie.create({
           movieDbId: movie.movieDbId,
           title: movie.title,
-          thumbnailImageUrl: movie.imageUrl
+          imageUrl: movie.imageUrl,
+          bigImageUrl: movie.bigImageUrl
         }).done(function(err, newMovie){
           if (err) return console.log(err);
           return callback(newMovie.id);
         });
       } else {
+        existingMovie.title = movie.title;
+        existingMovie.imageUrl = movie.imageUrl;
+        existingMovie.bigImageUrl = movie.bigImageUrl;
         return callback(existingMovie.id);
       }
     });

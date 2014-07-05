@@ -16,6 +16,7 @@
  */
 
 var graph = require('fbgraph');
+var movieHelper = require("../services/movieHelper");
 
 module.exports = {
 
@@ -100,32 +101,32 @@ module.exports = {
     //console.dir(req.body);
     if (!req.session.user) return;
     var userId = req.session.user.id;
-    var movieId = req.body.id;
-    var movieDbId = req.body.movieDbId;
-    var rottenTomatoesId = req.body.rottenTomatoesId;
-    var imdbId = req.body.imdbId;
+    var movie = req.body.movie;
     var rating = Number(req.body.rating);
 
-    MovieUserRating.findOne({movieDbId: movieDbId, userId: userId })
-      .done(function(err, existing) {
-        if (err) return console.log(err);
-        if (existing) {
-          MovieUserRating.update(existing.id, {rating: rating }).done(function(err, existing){
-            if (err) return console.log(err);
-          });
-        } else {
-          MovieUserRating.create({ userId: userId,
-                                   movieDbId: movieDbId,
-                                   rottenTomatoesId: rottenTomatoesId,
-                                   imdbId: imdbId,
-                                   rating: rating })
-                                   .done(function(err, rating) {
-                                    if (err) {
-                                      return console.log(err);
-                                    }else {
-                                      //return console.log(rating);
-                                    }});
-        }
+    movieHelper.addOrUpdateMovie(movie, function(movieId){
+      MovieUserRating.findOne({movieDbId: movie.movieDbId, userId: userId })
+        .done(function(err, existing) {
+          if (err) return console.log(err);
+          if (existing) {
+            MovieUserRating.update(existing.id, {rating: rating, movieId: movieId }).done(function(err, existing){
+              if (err) return console.log(err);
+            });
+          } else {
+            MovieUserRating.create({ userId: userId,
+                                     movieId: movieId,
+                                     movieDbId: movie.movieDbId,
+                                     rottenTomatoesId: movie.rottenTomatoesId,
+                                     imdbId: movie.imdbId,
+                                     rating: rating })
+                                     .done(function(err, rating) {
+                                      if (err) {
+                                        return console.log(err);
+                                      }else {
+                                        //return console.log(rating);
+                                      }});
+          }
+      });
     });
   },
 

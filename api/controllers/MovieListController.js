@@ -56,6 +56,31 @@ module.exports = {
     });
   },
 
+  getMoviesInList: function(req, res, next){
+    if (req.body.listId){
+      //get specific list
+      MovieList.findOne({id: req.body.listId })
+        .done(function(err, list) {
+          if (err) return console.log(err);
+          Movie.find().where({ id: list.movieIds }).exec(function(err, movies) {
+            return res.json(movies);
+          });
+        });
+    } else {
+      //get all rated movies, ordered by rating (favorites)
+      MovieUserRating.findAll({userId: req.body.userId})
+        .done(function(err, userRatings){
+          if (err) return console.log(err);
+          var sortedIds = _.map(userRatings.sort(function(a,b){ return a.rating - b.rating; }), function(rating){
+            return rating.movieId;
+          });
+          Movie.find().where({ id: sortedIds }).exec(function(err, movies) {
+            return res.json(movies);
+          });
+        });
+    }
+  },
+
 
   /**
    * Overrides for the settings in `config/controllers.js`

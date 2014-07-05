@@ -22,9 +22,9 @@ function UserViewModel(parent){
 function MovieListViewModel(data, parent){
   var self = this;
   self.parent = parent;
-  self.id = ko.observable(data.id);
-  self.name = ko.observable(data.name);
-  self.movies = ko.observableArray(data.movieIds);
+  self.id = ko.observable(data && data.id || null);
+  self.name = ko.observable(data && data.name || null);
+  self.movies = ko.observableArray(data && data.movieIds || data.movieIds);
 
   self.nameAndLength = ko.computed(function(){
     return self.name() + "<div class='list-length'>(" + self.movies().length + ")</div>"
@@ -40,7 +40,9 @@ function MovieListViewModel(data, parent){
         movie: {
           movieDbId: parent.selectedMovie().movieDbId(),
           title: parent.selectedMovie().title(),
-          imageUrl: parent.selectedMovie().imageUrl() }},
+          imageUrl: parent.selectedMovie().imageUrl(),
+          bigImageUrl: parent.selectedMovie().bigImageUrl() }},
+
         success: function(data){
           $('#addToListModal').modal('hide');
         }
@@ -48,9 +50,24 @@ function MovieListViewModel(data, parent){
   }
 
   self.viewList = function(vm, e){
-    var listId = $(e.target).attr('list-id');
-    console.dir(listId);
     self.parent.showLists(vm, e);
+    var listId = $(e.target).attr('list-id');
+    $.ajax({
+      type: "POST",
+      url: "/movieList/getMoviesInList",
+      data: {listId: listId},
+      success: function(data){
+        self.movies([]);
+        _.each(data, function(movie){
+          self.movies.push(new MovieViewModel(movie, self));
+        })
+        parent.selectedList(self);
+      }
+    });
+  }
+
+  self.movieDetails = function(movie){
+    self.parent.movieDetails(movie);
   }
 }
 
@@ -69,8 +86,8 @@ function MovieViewModel(data, parent) {
   self.movieDbId = ko.observable(data && data.movieDbId || '');
   self.currentUserRating = ko.observable(data && data.currentUserRating || null);
   self.title = ko.observable(data && data.title || '');
-  self.imageUrl = ko.observable();
-  self.bigImageUrl = ko.observable();
+  self.imageUrl = ko.observable(data && data.imageUrl || null);
+  self.bigImageUrl = ko.observable(data && data.bigImageUrl || null);
   self.releaseDate = ko.observable();
   self.genres = ko.observableArray([]);
   self.runtime = ko.observable();
@@ -104,7 +121,7 @@ function MovieViewModel(data, parent) {
   }
 
   self.showDetails = function(){
-    parent.movieDetails(self);
+    self.parent.movieDetails(self);
     self.loadingDetails(true);
     $('#movieDetailsModal').modal();
 
@@ -156,10 +173,15 @@ function MovieViewModel(data, parent) {
     $.ajax({
       type: "POST",
       url: "/movie/rate",
-      data: { movieDbId: self.movieDbId(),
-              imdbId: self.imdbId(),
-              id: self.id(),
-              rating: rating },
+      data: { movie: {
+                id: self.id(),
+                movieDbId: self.movieDbId(),
+                title: self.title(),
+                imageUrl: self.imageUrl(),
+                bigImageUrl: self.bigImageUrl(),
+                imdbId: self.imdbId() },
+              rating: rating
+            },
     });
   }
 
@@ -192,19 +214,18 @@ function MoviesViewModel(parent) {
   self.movieLists = ko.observableArray([]);
   self.newListName = ko.observable();
   self.selectedMovie = ko.observable();
+  self.selectedList = ko.observable(new MovieListViewModel({}, self));
+  self.movieDetails = ko.observable(new MovieViewModel({}, self));
+  self.user = ko.observable(new UserViewModel(self));
 
   self.addToListModalTitle = ko.computed(function(){
     if (self.selectedMovie()) return "Add \"" + self.selectedMovie().title() + "\" to list";
     return "Add to list";
   });
 
-  self.movieDetails = ko.observable(new MovieViewModel({}, self));
-  self.user = ko.observable(new UserViewModel(self));
-
   self.showingFriends = ko.observable(false);
   self.showingMovies = ko.observable(true);
   self.showingLists = ko.observable(false);
-
 
   self.getMovieLists = function(){
     self.movieLists([]);
@@ -232,7 +253,6 @@ function MoviesViewModel(parent) {
           title: self.selectedMovie().title(),
           imageUrl: self.selectedMovie().imageUrl() } },
       success: function(data){
-        console.dir(data);
         _.each(data, function(list){
           self.movieLists.push(new MovieListViewModel(list, self));
         });
@@ -318,8 +338,15 @@ function MoviesViewModel(parent) {
   };
 
   self.getting.subscribe(function(value){
-    if (value) $('.movie-container').last().after("<div id='loadingMoviesPlaceholder' class='movie-container movies-loading-placeholder' data-bind='visible: getting'><img src='/img/moviesloading.gif' alt='loading' /></div>");
-    else {
+    if (value){
+      var el = "<div id='loadingMoviesPlaceholder' class='movie-container movies-loading-placeholder' data-bind='visible: getting'><img src='/img/moviesloading.gif' alt='loading' /></div>";
+      if ($('.movie-container').length == 0) {
+        $('.movie-table-container').html(el);
+      }
+      else {
+        $('.movie-container').last().after(el);
+      }
+    } else {
       $('#loadingMoviesPlaceholder').remove();
       $('.rating-box').on("mouseover", function(){
         //add .rating-box-lower-score to less values

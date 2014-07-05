@@ -1,5 +1,6 @@
 <div class="fluid-container main-content">
   <div class="left-panel">
+    <!-- ko if: showingMovies -->
     <div class="row">
       <div class="col-sm-12 navbar-btn navbar-left">
         <div class="input-group">
@@ -36,6 +37,20 @@
       </div>
     </div>
   </div>
+  <!-- /ko -->
+
+  <!-- ko if: showingLists -->
+  <div id="movieListNav">
+    <ul data-bind="foreach: movieLists">
+      <li>
+        <button class="btn btn-default" data-bind="html: nameAndLength, attr: {'list-id': id}, click: viewList"></button>
+      </li>
+    </ul>
+  </div>
+  <!-- /ko -->
+
+  <!-- ko if: showingFriends -->
+  <!-- /ko -->
 
   <footer class="pull-left">
     <hr>
@@ -50,7 +65,7 @@
   <div class="right-panel">
     <div class="movie-table-container" data-bind="visible: showingMovies, template: {name: 'movie-template', foreach: movies}, event: {scroll: scrolled}"></div>
     <div class="friend-list-container" data-bind="visible: showingFriends, template: {name: 'friend-template', foreach: friends}, event: {scroll: scrolledFriends}"></div>
-    <div class="movie-list-container" data-bind="visible: showingLists, template: {name: 'list-template', foreach: movieLists}"></div>
+    <div class="movie-list-container" data-bind="visible: showingLists, template: {name: 'list-movie-template', foreach: selectedList().movies}"></div>
   </div>
 </div>
 
@@ -146,8 +161,16 @@
   <div data-bind="text: name"></div>
 </script>
 
-<script type="text/html" id="list-template">
-  <div data-bind="text: name"></div>
+<script type="text/html" id="list-movie-template">
+  <div class="row list-movie-row">
+  <div class="col-sm-4">
+    <a data-bind="click: showDetails">
+    <h4 data-bind="text: title"></h4>
+    <img class="list-movie-image" data-bind="attr: {src: imageUrl}" /></a>
+  </div>
+  <div class="col-sm-4">your rating: <span data-bind="text: currentUserRating"></div>
+  <div class="col-sm-4">links</div>
+  </div>
 </script>
 
 <script type="text/html" id="cast-member-template">
@@ -164,7 +187,7 @@
     vm.user().profilePicUrl("<%= profile_pic_url %>");
     vm.init();
     ko.applyBindings(vm);
-    
+
   });
 </script>
 
