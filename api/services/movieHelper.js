@@ -1,7 +1,7 @@
 module.exports = {
 
   addOrUpdateMovie: function(movie, callback){
-    Movie.findOne({ movieDbId: movie.movieDbId }).done(function(err, existingMovie){
+    Movie.findOne({ movieDbId: Number(movie.movieDbId) }).done(function(err, existingMovie){
       if (err) return console.log(err);
       if (!existingMovie){
         Movie.create({
