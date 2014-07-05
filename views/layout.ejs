@@ -65,17 +65,7 @@
           <ul class="nav navbar-nav">
             <li class="active"><a href="#Movies" data-bind="click: showMovies"><span class="glyphicon glyphicon-film"></span></a></li>
             <li><a href="#Friends" data-bind="click: showFriends"><span class="glyphicon glyphicon-user"></span></a></li>
-            <li class="dropdown">
-              <button class="btn dropdown-toggle" type="button" id="showMovieListMenu" data-toggle="dropdown">
-                <span class="glyphicon glyphicon-list"></span>
-                <!-- ko if: movieLists().length > 0 -->
-                <span class="caret"></span>
-                <!-- /ko -->
-              </button>
-              <ul class="dropdown-menu" role="menu" aria-labelledby="showMovieListMenu" data-bind="foreach: movieLists">
-                <li role="presentation"><a role="menuitem" tabindex="-1" href="#" data-bind="attr: {'list-id': id}, html: name, click: viewList"></a></li>
-              </ul>
-            </li>
+            <li><a href="#Lists" data-bind="click: showLists"><span class="glyphicon glyphicon-list"></span></a></li>
             <% if (session.authenticated && session.user.admin) { %>
               <li><a href="/admin">Administration</a></li>
             <% } %>

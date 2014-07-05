@@ -163,13 +163,18 @@
 
 <script type="text/html" id="list-movie-template">
   <div class="row list-movie-row">
-  <div class="col-sm-4">
-    <a data-bind="click: showDetails">
-    <h4 data-bind="text: title"></h4>
-    <img class="list-movie-image" data-bind="attr: {src: imageUrl}" /></a>
-  </div>
-  <div class="col-sm-4">your rating: <span data-bind="text: currentUserRating"></div>
-  <div class="col-sm-4">links</div>
+    <div class="col-sm-1">
+      <a data-bind="click: showDetails">
+        <img class="list-movie-image" data-bind="attr: {src: imageUrl}" />
+      </a>
+    </div>
+    <div class="col-sm-3">
+      <a data-bind="click: showDetails">
+        <h4 data-bind="text: title"></h4>
+      </a>
+    </div>
+    <div class="col-sm-4">your rating: <span data-bind="text: currentUserRating"></div>
+    <div class="col-sm-4">links</div>
   </div>
 </script>
 
@@ -187,7 +192,6 @@
     vm.user().profilePicUrl("<%= profile_pic_url %>");
     vm.init();
     ko.applyBindings(vm);
-
   });
 </script>
 

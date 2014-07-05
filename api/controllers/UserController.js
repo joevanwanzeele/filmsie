@@ -69,4 +69,5 @@ module.exports = {
   privacy: function(req, res, next){
     return res.view('privacy', { layout: null });
   }
+
 };

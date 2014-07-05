@@ -12,7 +12,7 @@ schema: true,
 
 attributes: {
 
-    title: { type: 'string', required: false },
+    title: { type: 'string', required: true },
 
     imageUrl: { type: 'string', required: false },
 

@@ -69,6 +69,8 @@ function MovieListViewModel(data, parent){
   self.movieDetails = function(movie){
     self.parent.movieDetails(movie);
   }
+
+  self.thumbnailBaseUrl = parent.thumbnailBaseUrl;
 }
 
 function CastMemberViewModel(data, parent){
@@ -118,6 +120,15 @@ function MovieViewModel(data, parent) {
     parent.getMovieLists();
 
     $('#addToListModal').modal();
+    $('.modal').on("click", function(e){
+      $(this).modal('hide');
+    });
+    $('.modal-dialog').on("click", function(e){
+      e.stopPropagation();
+    });
+    $('.close').on("click", function(e){
+      $(e.target).closest('.modal').modal('hide');
+    });
   }
 
   self.showDetails = function(){
@@ -280,6 +291,7 @@ function MoviesViewModel(parent) {
   }
 
   self.showLists = function(vm, e){
+    self.getMovieLists();
     $('.active').removeClass('active');
     $(e.target).closest('li').addClass('active');
     self.showingMovies(false);

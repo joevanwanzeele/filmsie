@@ -12,6 +12,8 @@
 html { -webkit-font-smoothing: antialiased; }
 
 body{
+  background-color: darkgray;
+  font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
   padding-top: 60px;
   padding-bottom: 40px;
   padding-right:20px;
@@ -69,11 +71,6 @@ html, body{
   float:right;
 }
 
-body {
-  background-color: #000000;
-  font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
-}
-
 td {
   text-align: center;
 }
@@ -124,6 +121,10 @@ td {
   text-align:center;
   position:relative;
 
+  -webkit-box-shadow: -3px 3px 5px 0px rgba(0,0,0,0.75);
+  -moz-box-shadow: -3px 3px 5px 0px rgba(0,0,0,0.75);
+  box-shadow: -3px 3px 5px 0px rgba(0,0,0,0.75);
+
   img{
     height:150px;
     margin-top:5px;
@@ -131,7 +132,7 @@ td {
 }
 
 .movie-title-container{
-  background-color: #DDDDDD;
+  /* background-color: #DDDDDD; */
   color: #000000;
   height: 160px;
   padding: 5px;
@@ -221,12 +222,33 @@ td {
   width:100%;
 
   .cast-member-container {
-    text-align:center;
+    background-color: #888888;
     height:200px;
     width:150px;
+    margin:10px;
+    border-radius: 4px;
+    padding:0;
+    padding-top:5px;
     float:left;
+    text-align:center;
+    position:relative;
+    line-height:1.5em;
+    font-weight:600;
+
+    -webkit-box-shadow: -3px 3px 5px 0px rgba(0,0,0,0.75);
+    -moz-box-shadow: -3px 3px 5px 0px rgba(0,0,0,0.75);
+    box-shadow: -3px 3px 5px 0px rgba(0,0,0,0.75);
+
     img{
       height:100px;
+      margin-top: 5px;
+      margin-bottom: 15px;
+    }
+
+    .character-container {
+      font-style:italic;
+      font-weight:normal;
+      line-height:1.2em;
     }
   }
 }
@@ -305,10 +327,15 @@ td {
 }
 
 .list-movie-row{
-  margin-bottom:15px;
-  line-height:2em;
+  margin-bottom: 15px;
+  line-height: 2em;
+  background-color: dimgrey;
+  margin-left: 20px;
+  margin-right: 130px;
+  padding-top: 10px;
+  padding-bottom: 10px;
 }
 
 .list-movie-image{
-  height:60px;
+  height:80px;
 }
