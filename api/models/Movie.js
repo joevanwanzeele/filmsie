@@ -14,6 +14,8 @@ attributes: {
 
     title: { type: 'string', required: true },
 
+    releaseDate: { type: 'string', required: false },
+
     imageUrl: { type: 'string', required: false },
 
     bigImageUrl: { type: 'string', required: false },

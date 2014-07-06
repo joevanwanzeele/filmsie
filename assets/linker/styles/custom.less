@@ -12,7 +12,7 @@
 html { -webkit-font-smoothing: antialiased; }
 
 body{
-  background-color: darkgray;
+  background-image: url("/img/dimension.png");
   font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
   padding-top: 60px;
   padding-bottom: 40px;
@@ -92,10 +92,8 @@ td {
   float:none;
   width:100%;
   text-align:center;
-  img{
+  span{
     margin-top:50px !important;
-    width:70px !important;
-    height:70px !important;
   }
 }
 
@@ -330,6 +328,15 @@ td {
   }
 }
 
+.movie-list-header{
+  height:40px;
+  margin-bottom:20px;
+  .movie-list-title{
+    font-size:2em;
+    font-weight:bold;
+  }
+}
+
 .list-movie-row{
   margin-bottom: 15px;
   line-height: 2em;
@@ -338,6 +345,10 @@ td {
   margin-right: 130px;
   padding-top: 10px;
   padding-bottom: 10px;
+
+  h4{
+    font-weight:bold;
+  }
 }
 
 .list-movie-image{

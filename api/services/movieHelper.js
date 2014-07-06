@@ -8,7 +8,8 @@ module.exports = {
           movieDbId: movie.movieDbId,
           title: movie.title,
           imageUrl: movie.imageUrl,
-          bigImageUrl: movie.bigImageUrl
+          bigImageUrl: movie.bigImageUrl,
+          releaseDate: movie.releaseDate
         }).done(function(err, newMovie){
           if (err) return console.log(err);
           return callback(newMovie.id);

@@ -65,7 +65,24 @@
   <div class="right-panel">
     <div class="movie-table-container" data-bind="visible: showingMovies, template: {name: 'movie-template', foreach: movies}, event: {scroll: scrolled}"></div>
     <div class="friend-list-container" data-bind="visible: showingFriends, template: {name: 'friend-template', foreach: friends}, event: {scroll: scrolledFriends}"></div>
-    <div class="movie-list-container" data-bind="visible: showingLists, template: {name: 'list-movie-template', foreach: selectedList().movies}"></div>
+    <div class="movie-list-content" data-bind="visible: showingLists, with: selectedList" >
+      <div class="movie-list-header container" data-bind="visible: name()">
+        <div class="row">
+          <div class="col-sm-4">
+            <span class="movie-list-title" data-bind="text: name() + ' (' + movies().length + ')'"></span>
+          </div>
+          <div class="col-sm-4">
+            <h4>public: <input type="checkbox" data-bind="checked: isPublic" /></h4>
+          </div>
+          <div class="col-sm-4">
+            <span class="fa fa-2x fa-facebook-square"></span>
+            <span class="fa fa-2x fa-twitter-square"></span>
+            <span class="fa fa-2x fa-reddit-square"></span>
+          </div>
+        </div>
+      </div>
+      <div class="movie-list-container" data-bind="template: {name: 'list-movie-template', foreach: movies}"></div>
+    </div>
   </div>
 </div>
 
@@ -84,14 +101,14 @@
         <br/>
         <p data-bind="text: synopsis"></p>
         <ul>
-          <li><span>Released <span data-bind="text: releaseDate"></span></span></li>
+          <li><span>Released <span data-bind="text: formattedReleaseDate"></span></span></li>
           <!-- ko if: currentUserRating -->
           <li><span>Your rating: <span data-bind="text: currentUserRating"></span></span></li>
           <!-- /ko -->
           <li><span data-bind="text: genresString"></li>
-          <li><span data-bind="click: toggleCast, css: { 'glyphicon-plus' : castHidden, 'glyphicon-minus' : !castHidden() }" class="glyphicon pointer"></span> Cast
+          <li><span data-bind="click: toggleCast, css: { 'fa-plus-square' : castHidden, 'fa-minus-square' : !castHidden() }" class="fa pointer"></span> Cast
           <!-- ko if: !castHidden() -->
-            <div data-bind="template: { name: 'cast-member-template', foreach: castMembers }" class="container cast-container panel"><img src="/img/ajax-loading.gif" alt="loading" /></div>
+            <div data-bind="template: { name: 'cast-member-template', foreach: castMembers }" class="container cast-container panel"><span class="fa fa-5x fa-spin fa-cog"></span></div>
           <!-- /ko -->
           </li>
 
@@ -100,7 +117,7 @@
         <a data-bind="attr: {href: imdbUrl }" target="_blank">IMDB info</a>
         <!-- /ko -->
         <!-- ko if: loadingDetails() -->
-        <div class="container" style="width:100%;text-align:center"><img src="/img/ajax-loading.gif" alt="loading" /></div>
+        <div class="container" style="width:100%;text-align:center"><span class="fa fa-5x fa-spin fa-cog"></span></div>
         <!-- /ko -->
       </div>
     </div>
@@ -163,15 +180,11 @@
 
 <script type="text/html" id="list-movie-template">
   <div class="row list-movie-row">
-    <div class="col-sm-1">
-      <a data-bind="click: showDetails">
-        <img class="list-movie-image" data-bind="attr: {src: imageUrl}" />
-      </a>
+    <div class="col-sm-1" data-bind="click: showDetails">
+      <img class="list-movie-image" data-bind="attr: {src: imageUrl}" />
     </div>
-    <div class="col-sm-3">
-      <a data-bind="click: showDetails">
-        <h4 data-bind="text: title"></h4>
-      </a>
+    <div class="col-sm-3" data-bind="click: showDetails">
+      <h4 data-bind="text: titleAndYear"></h4>
     </div>
     <div class="col-sm-4">your rating: <span data-bind="text: currentUserRating"></div>
     <div class="col-sm-4">links</div>
