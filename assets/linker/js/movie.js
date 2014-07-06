@@ -314,8 +314,8 @@ function MoviesViewModel(parent) {
           movieDbId: self.selectedMovie().movieDbId(),
           title: self.selectedMovie().title(),
           imageUrl: self.selectedMovie().imageUrl(),
-          bigImageUrl: parent.selectedMovie().bigImageUrl(),
-          releaseDate: parent.selectedMovie().releaseDate()
+          bigImageUrl: self.selectedMovie().bigImageUrl(),
+          releaseDate: self.selectedMovie().releaseDate()
         }
       },
       success: function(data){
