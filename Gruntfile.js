@@ -409,7 +409,16 @@ module.exports = function (grunt) {
         // When assets are changed:
         tasks: ['compileAssets', 'linkAssets']
       }
-    }
+    },
+
+    mochaTest: {
+      test: {
+        options: {
+          reporter: 'nyan'
+        },
+        src: ['tests/**/*.spec.js']
+      }
+    },
   });
 
   // When Sails is lifted:
@@ -465,6 +474,10 @@ module.exports = function (grunt) {
     'sails-linker:prodStylesJADE',
     'sails-linker:devTplJADE'
   ]);
+
+  grunt.loadNpmTasks('grunt-mocha-test');
+
+  grunt.registerTask('test', ['mochaTest']);
 
   // When API files are changed:
   // grunt.event.on('watch', function(action, filepath) {
