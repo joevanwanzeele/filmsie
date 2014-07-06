@@ -56,7 +56,7 @@
     <hr>
     powered by the <a href="http://www.themoviedb.org">TMDb</a> API
     <br/>
-    <div>Copyright Zeele Inc., 2014</div>
+    <div>&copy; Zeele Inc., 2014</div>
     <br/>
     <a data-bind="click: function(){ $('#privacyModal').modal(); }">Privacy Policy</a>
   </footer>
@@ -151,14 +151,9 @@
   <div class="movie-container">
     <div class="movie-title-container" data-bind="click: showDetails">
       <h5 data-bind="text: title"></h5><div class="addToListButton" data-bind="click: showListPopover"><span class="glyphicon glyphicon-list"></span></div>
-      <!-- ko if: imageUrl -->
       <img data-bind="attr: {src: imageUrl}" />
-      <!-- /ko -->
-      <!-- ko if: !imageUrl() -->
-      <br/><br/>
-      <span>(no image)</span>
-      <!-- /ko -->
     </div>
+    <!--
     <div class="rating-container">
       <div class="rating-box" data-bind="css: ratingClass(1), click: function(){setRating(1)}">1</div>
       <div class="rating-box" data-bind="css: ratingClass(2), click: function(){setRating(2)}">2</div>
@@ -170,6 +165,29 @@
       <div class="rating-box" data-bind="css: ratingClass(8), click: function(){setRating(8)}">8</div>
       <div class="rating-box" data-bind="css: ratingClass(9), click: function(){setRating(9)}">9</div>
       <div class="rating-box" data-bind="css: ratingClass(10), click: function(){setRating(10)}">10</div>
+    </div>
+    -->
+    <div class="star-rating-container pointer" data-bind="event: {'mouseout': resetRatingClasses }">
+      <div class="star-rating fa-stack" data-bind="event: {'mousemove': updateRatingClass }, click: function(vm, event){setRating(1, event)}">
+        <span class="fa fa-stack-2x fa-star-o"></span>
+        <span class="fa fa-stack-2x top-star-stack" star="1" data-bind="css: ratingClass(1)"></span>
+      </div>
+      <div class="star-rating fa-stack" data-bind="event: {'mousemove': updateRatingClass }, click: function(vm, event){setRating(2, event)}">
+        <span class="fa fa-stack-2x fa-star-o"></span>
+        <span class="fa fa-stack-2x top-star-stack" star="2" data-bind="css: ratingClass(2)"></span>
+      </div>
+      <div class="star-rating fa-stack" data-bind="event: {'mousemove': updateRatingClass }, click: function(vm, event){setRating(3, event)}">
+        <span class="fa fa-stack-2x fa-star-o"></span>
+        <span class="fa fa-stack-2x top-star-stack" star="3" data-bind="css: ratingClass(3)"></span>
+      </div>
+      <div class="star-rating fa-stack" data-bind="event: {'mousemove': updateRatingClass }, click: function(vm, event){setRating(4, event)}">
+        <span class="fa fa-stack-2x fa-star-o"></span>
+        <span class="fa fa-stack-2x top-star-stack" star="4" data-bind="css: ratingClass(4)"></span>
+      </div>
+      <div class="star-rating fa-stack" data-bind="event: {'mousemove': updateRatingClass }, click: function(vm, event){setRating(5, event)}">
+        <span class="fa fa-stack-2x fa-star-o"></span>
+        <span class="fa fa-stack-2x top-star-stack" star="5" data-bind="css: ratingClass(5)"></span>
+      </div>
     </div>
 </div>
 </script>

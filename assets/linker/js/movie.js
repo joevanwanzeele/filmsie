@@ -101,6 +101,7 @@ function MovieViewModel(data, parent) {
   self.loadingDetails = ko.observable(true);
   self.castMembers = ko.observableArray([]);
   self.castHidden = ko.observable(true);
+  self.tempRating = ko.observable(self.currentUserRating());
 
   self.genresString = ko.computed(function(){
     return self.genres().join(", ");
@@ -118,13 +119,6 @@ function MovieViewModel(data, parent) {
   self.imdbUrl = ko.computed(function(){
     return "http://www.imdb.com/title/" + self.imdbId() + "/";
   });
-
-  self.ratingClass = function(value){
-    if (self.currentUserRating() == null) return '';
-    if (self.currentUserRating() == value) return 'rating-box-active';
-    if (self.currentUserRating() > value) return 'rating-box-lower-score';
-    return 'rating-box-inactive';
-  }
 
   self.showListPopover = function(vm, e){
     e.stopPropagation();
@@ -187,11 +181,53 @@ function MovieViewModel(data, parent) {
     self.castHidden(!self.castHidden());
   }
 
-  self.setRating = function(rating) {
-    if (self.currentUserRating() == rating){
-      rating = null;
+  self.ratingClass = function(value, event){
+    if (self.tempRating() == null) return '';
+
+    //values will be 1-5 while currentUserRating is stored as 1-10
+    var tempRating = self.tempRating() / 2;
+
+    if (tempRating == value || (tempRating - .5) >= value) return 'fa-star golden';
+    if (tempRating == value - .5) return 'fa-star-half-o golden';
+    return 'fa-star-o';
+  }
+
+  self.updateRatingClass = function(vm, event){
+    var el = $(event.target);
+    var starValue = Number($(el).attr('star')) * 2;
+
+    var xCoord = event.pageX - el.offset().left;
+
+    var inLeftHalf = xCoord < el.width() / 2;
+
+    if (inLeftHalf){
+      self.tempRating(starValue - 1);
+      return;
     }
-    self.currentUserRating(rating);
+    self.tempRating(starValue);
+  }
+
+  self.resetRatingClasses = function(){
+    self.tempRating(self.currentUserRating());
+  }
+
+  self.setRating = function(rating, event) {
+    var el = $(event.target);
+
+    var ratingValue = rating * 2;
+    var xCoord = event.pageX - el.offset().left;
+    var inLeftHalf = xCoord < el.width() / 2;
+
+    if (inLeftHalf){
+      ratingValue -= 1;
+    }
+
+    if (self.currentUserRating() == ratingValue){
+      ratingValue = null; //allows user to clear their rating
+    }
+
+    self.currentUserRating(ratingValue);
+
     if (!parent.user().id()) return;
     $.ajax({
       type: "POST",
@@ -204,10 +240,12 @@ function MovieViewModel(data, parent) {
                 bigImageUrl: self.bigImageUrl(),
                 imdbId: self.imdbId(),
                 releaseDate: self.releaseDate() },
-              rating: rating
+              rating: ratingValue
             },
     });
   }
+
+
 
   self.amazonLink = ko.computed(function(){
     return "http://www.amazon.com/s/?tag=filmsie03-20&search-alias=dvd&keywords=%22"+self.title()+"%22";
@@ -422,6 +460,9 @@ function MoviesViewModel(parent) {
               if (movie.poster_path){
                 newMovie.imageUrl(self.thumbnailBaseUrl() + movie.poster_path);
                 newMovie.bigImageUrl(self.largeImageBaseUrl() + (movie.backdrop_path || movie.poster_path));
+              }
+              else{
+                newMovie.imageUrl("../img/unavailable-image.jpeg");
               }
               self.movies.push(newMovie);
             });

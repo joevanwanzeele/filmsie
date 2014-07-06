@@ -98,7 +98,6 @@ module.exports = {
   },
 
   rate: function(req, res){
-    console.dir(req.body);
     if (!req.session.user) return;
     var userId = req.session.user.id;
     var movie = req.body.movie;

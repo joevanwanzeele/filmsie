@@ -128,7 +128,7 @@ td {
   box-shadow: -3px 3px 5px 0px rgba(0,0,0,0.75);
 
   img{
-    height:150px;
+    width:100px;
     margin-top:5px;
   }
 }
@@ -160,41 +160,25 @@ td {
   background: linear-gradient(to right,  #ff6666 0%,#8ced80 100%); /* W3C */
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ff6666', endColorstr='#8ced80',GradientType=1 ); /* IE6-9 */
 }
-.rating-box{
-  background-color: #353225;
-  opacity:.75;
-  width:16px;
+
+.star-rating-container{
+  padding-left:12px;
+  position:relative;
+  top:60px;
+  height:40px;
+}
+
+.star-rating{
   height:100%;
   clear:none;
   float:left;
-  font-size:9px;
-  color: rgba(255,255,255,0.3);
   line-height:2em;
-
-  &:hover{
-    background:none;
-    color: rgba(0,0,0,1);
-    font-weight:bold;
-    cursor:pointer;
-    height:20px;
-  }
+  position:relative;
+  opacity:.75;
 }
 
-.rating-box-active{
-  background:none;
-  color: rgba(0, 0, 0, 1);
-  font-weight:bold;
-  height:20px;
-}
-
-.rating-box-inactive{
-  background-color: rgba(0, 0, 0, 1);
-  color:#000000;
-}
-
-.rating-box-lower-score{
-  background-color: rgba(0, 0, 0, 0);
-  color: rgba(0, 0, 0, 0);
+.golden{
+  color:#F3DA20;
 }
 
 .detail-image-container{
@@ -356,5 +340,6 @@ td {
 }
 
 .amazon-button-small{
+  margin-left:20px;
   width:150px;
 }
