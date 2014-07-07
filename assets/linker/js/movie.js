@@ -263,8 +263,6 @@ function MovieViewModel(data, parent) {
     });
   }
 
-
-
   self.amazonLink = ko.computed(function(){
     return "http://www.amazon.com/s/?tag=filmsie03-20&search-alias=dvd&keywords=%22"+self.title()+"%22";
   });
@@ -434,24 +432,6 @@ function MoviesViewModel(parent) {
       }
     } else {
       $('#loadingMoviesPlaceholder').remove();
-      $('.rating-box').on("mouseover", function(){
-        //add .rating-box-lower-score to less values
-        var ratedElement = $(this).siblings('.rating-box-active');
-
-        $(this).prevAll().addClass('rating-box-lower-score');
-        $(this).nextAll().removeClass('rating-box-lower-score');
-        ratedElement.prevAll().addClass('rating-box-lower-score');
-      });
-      $('.rating-container').on("mouseout", function(){
-        var ratedElement = $(this).children('.rating-box-active');
-        if (ratedElement.length > 0){
-          ratedElement.removeClass('rating-box-lower-score');
-          ratedElement.nextAll().removeClass('rating-box-lower-score');
-          ratedElement.prevAll().addClass('rating-box-lower-score');
-        } else {
-          $(this).children('.rating-box').removeClass('rating-box-lower-score');
-        }
-      });
     }
   });
 
@@ -491,17 +471,27 @@ function MoviesViewModel(parent) {
   }
 
   self.scrolled = function(data, event){
-    var el = event.target;
-    var cols = Math.floor($(el).width() / 166);
-    var totalRows = self.movies().length / cols;
-    var rowHeight = 265;
-    var viewRows = Math.floor($(el).height() / rowHeight);
+    var lastMovie = self.movies(self.movies())
 
-    var triggerBottomPosition = rowHeight * (totalRows - 1);
-
-    if ($(el).scrollTop() > triggerBottomPosition){
+    var viewPortEl = $(event.target);
+    var lastMoviePosition = viewPortEl
+                              .children('.movie-container')
+                              .last()
+                              .offset().top;
+    if (lastMoviePosition < viewPortEl.height()){
       self.getMovies();
     }
+
+    // var cols = Math.floor($(viewPortEl).width() / 180);
+    // var totalRows = self.movies().length / cols;
+    // var rowHeight = 278;
+    // var viewRows = Math.floor($(viewPortEl).height() / rowHeight);
+    //
+    // var triggerBottomPosition = rowHeight * (totalRows - 1);
+    //
+    // if ($(viewPortEl).scrollTop() > triggerBottomPosition){
+    //   self.getMovies();
+    // }
   }
 
   self.search = function(){
