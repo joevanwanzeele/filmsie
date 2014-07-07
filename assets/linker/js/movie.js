@@ -481,17 +481,6 @@ function MoviesViewModel(parent) {
     if (lastMoviePosition < viewPortEl.height()){
       self.getMovies();
     }
-
-    // var cols = Math.floor($(viewPortEl).width() / 180);
-    // var totalRows = self.movies().length / cols;
-    // var rowHeight = 278;
-    // var viewRows = Math.floor($(viewPortEl).height() / rowHeight);
-    //
-    // var triggerBottomPosition = rowHeight * (totalRows - 1);
-    //
-    // if ($(viewPortEl).scrollTop() > triggerBottomPosition){
-    //   self.getMovies();
-    // }
   }
 
   self.search = function(){
