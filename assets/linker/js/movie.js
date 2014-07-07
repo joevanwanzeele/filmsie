@@ -465,6 +465,7 @@ function MoviesViewModel(parent) {
               }
               self.movies.push(newMovie);
             });
+            $('.movie-table-container').scroll();
             self.getting(false);
           }
     });
