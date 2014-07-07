@@ -56,7 +56,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="/">Filmsie</a>
+          <a class="navbar-brand logo-container" href="/"><img src="img/logo.png" class="logo" /></a>
         </div>
 
         <!-- Collect the nav links, forms, and other content for toggling -->
@@ -79,7 +79,7 @@
         </div>
           <% } else { %>
           <form class="navbar-form navbar-right" action="/user/facebook">
-            <button type="submit" class="btn btn-success">sign in with Facebook</button>
+            <button type="submit" class="btn btn-primary login-button"><span class="fa fa-facebook-square"> &nbsp; sign in</span></button>
             <input type="hidden" name="_csrf" value="<%= _csrf %>" />
           </form>
           <% } %>

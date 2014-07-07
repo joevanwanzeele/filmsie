@@ -24,11 +24,13 @@ function MovieListViewModel(data, parent){
   self.parent = parent;
   self.id = ko.observable(data && data.id || null);
   self.name = ko.observable(data && data.name || null);
-  self.movies = ko.observableArray(data && data.movieIds || data.movieIds);
+  self.movieIds = ko.observableArray(data && data.movieIds || data.movieIds);
+  self.movies = ko.observableArray();
   self.isPublic = ko.observable(data.isPublic);
 
   self.nameAndLength = ko.computed(function(){
-    return self.name() + "<div class='list-length'>(" + self.movies().length + ")</div>"
+    self.movieIds();
+    return self.name() + "<div class='list-length'>(" + self.movieIds().length + ")</div>"
   });
 
   self.addToList = function(vm, e){
@@ -36,7 +38,7 @@ function MovieListViewModel(data, parent){
       type: "POST",
       url: "/movielist/update",
       data: {
-        userId: parent.user().id(),
+        userId: self.parent.user().id(),
         listId: $(e.target).attr('list-id'),
         movie: {
           movieDbId: parent.selectedMovie().movieDbId(),
@@ -52,13 +54,31 @@ function MovieListViewModel(data, parent){
     });
   }
 
+  self.removeMovie = function(movie){
+    var movieId = movie.id();
+
+    $.ajax({
+      type: "POST",
+      url: "/movielist/removeMovie",
+      data: { listId: self.id(), movieId: movieId },
+      success: function(movieIds){
+        self.movieIds(_.without(self.movieIds(), movieId));
+        self.movies(_.without(self.movies(), movie));
+      }
+    });
+  }
+
   self.viewList = function(vm, e){
     self.parent.showLists(vm, e);
-    var listId = $(e.target).attr('list-id');
+    self.id($(e.target).attr('list-id'));
+    self.getList();
+  }
+
+  self.getList = function(){
     $.ajax({
       type: "POST",
       url: "/movieList/getMoviesInList",
-      data: {listId: listId},
+      data: {listId: self.id()},
       success: function(data){
         self.movies([]);
         _.each(data, function(movie){
@@ -69,11 +89,9 @@ function MovieListViewModel(data, parent){
     });
   }
 
-  self.movieDetails = function(movie){
-    self.parent.movieDetails(movie);
-  }
-
-  self.thumbnailBaseUrl = parent.thumbnailBaseUrl;
+  self.movieDetails = self.parent.movieDetails;
+  self.thumbnailBaseUrl = self.parent.thumbnailBaseUrl;
+  self.user = self.parent.user;
 }
 
 function CastMemberViewModel(data, parent){
@@ -228,7 +246,7 @@ function MovieViewModel(data, parent) {
 
     self.currentUserRating(ratingValue);
 
-    if (!parent.user().id()) return;
+    if (!self.parent.user().id()) return;
     $.ajax({
       type: "POST",
       url: "/movie/rate",
@@ -266,7 +284,6 @@ function MoviesViewModel(parent) {
   self.searchParameters = ko.observable();
   self.page = ko.observable(0);
   self.getting = ko.observable(false);
-  self.maxInView = self.itemsToGet * 3;
   self.searchQuery = ko.observable();
   self.thumbnailBaseUrl = ko.observable();
   self.largeImageBaseUrl = ko.observable();
@@ -338,6 +355,7 @@ function MoviesViewModel(parent) {
   }
 
   self.showMovies = function(vm, e){
+    self.search();
     $('.active').removeClass('active');
     $(e.target).closest('li').addClass('active');
     self.showingLists(false);
@@ -347,6 +365,7 @@ function MoviesViewModel(parent) {
 
   self.showLists = function(vm, e){
     self.getMovieLists();
+    self.selectedList().getList();
     $('.active').removeClass('active');
     $(e.target).closest('li').addClass('active');
     self.showingMovies(false);
@@ -475,7 +494,7 @@ function MoviesViewModel(parent) {
     var el = event.target;
     var cols = Math.floor($(el).width() / 166);
     var totalRows = self.movies().length / cols;
-    var rowHeight = 170;
+    var rowHeight = 265;
     var viewRows = Math.floor($(el).height() / rowHeight);
 
     var triggerBottomPosition = rowHeight * (totalRows - 1);

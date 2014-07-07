@@ -69,7 +69,7 @@ module.exports = {
         });
     } else {
       //get all rated movies, ordered by rating (favorites)
-      MovieUserRating.findAll({userId: req.body.userId})
+      MovieUserRating.find({userId: req.body.userId})
         .done(function(err, userRatings){
           if (err) return console.log(err);
           var sortedIds = _.map(userRatings.sort(function(a,b){ return a.rating - b.rating; }), function(rating){
@@ -80,6 +80,20 @@ module.exports = {
           });
         });
     }
+  },
+
+  removeMovie: function(req, res, next){
+    if (!req.body.listId || !req.body.movieId) return res.json(-1);
+
+    MovieList.findOne({ id: req.body.listId })
+      .done(function(err, list){
+        if (err) return console.log(err);
+        list.movieIds = _.without(list.movieIds, req.body.movieId);
+        list.save(function(err){
+          if (err) return console.log(err);
+          return res.json(list.movieIds);
+        });
+    });
   },
 
 
