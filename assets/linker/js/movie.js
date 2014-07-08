@@ -488,6 +488,13 @@ function MoviesViewModel(parent) {
                               .children('.movie-container')
                               .last()
                               .offset().top;
+    var lastMovieInList = viewPortEl.children('.movie-container').last();
+
+    if (!lastMovieInList){
+      self.getMovies();
+      return;
+    }
+
     if (lastMoviePosition < viewPortEl.height()){
       self.getMovies();
     }

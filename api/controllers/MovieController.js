@@ -122,7 +122,7 @@ module.exports = {
                                       if (err) {
                                         return console.log(err);
                                       }else {
-                                        //return console.log(rating);
+                                        return res.json(rating);
                                       }});
           }
       });
