@@ -4,6 +4,14 @@ function UserViewModel(parent){
   self.id = ko.observable();
   self.profilePicUrl = ko.observable();
   self.friends = ko.observableArray([]);
+  self.firstName = ko.observable();
+  self.lastName = ko.observable();
+  self.email = ko.observable();
+  self.fbProfileUrl = ko.observable();
+
+  self.name = ko.computed(function(){
+    return self.firstName() + " " + self.lastName();
+  });
 
   self.getFriends = function(){
     $.ajax({
@@ -417,8 +425,9 @@ function MoviesViewModel(parent) {
     });
   }
 
-  self.openAccountModal = function(){
+  self.openProfileModal = function(){
     //show account options in modal dialog
+    $('#userProfileModal').modal();
   };
 
   self.getting.subscribe(function(value){
@@ -465,7 +474,7 @@ function MoviesViewModel(parent) {
               }
               self.movies.push(newMovie);
             });
-            $('.movie-table-container').scroll();
+            $('.movie-table-container').scroll(); //this is to load more if the initial load doesn't fill the view area
             self.getting(false);
           }
     });

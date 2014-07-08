@@ -44,13 +44,15 @@ module.exports = {
       }, function (accessToken, refreshToken, profile, done) {
         findByFacebookId(profile.id, function (err, user) {
           // Create a new User if it doesn't exist yet
+          //console.dir(profile._json);
           if (!user) {
             User.create({
               facebookId: profile._json.id,
               facebookAccessToken: accessToken,
               email: profile._json.email,
               firstName: profile._json.first_name,
-              lastName: profile._json.last_name
+              lastName: profile._json.last_name,
+              facebookProfileUrl: profile._json.link,
 
             }).done(function (err, user) {
               if (user) {
@@ -65,9 +67,14 @@ module.exports = {
               }
             });
 
-          // If there is already a user, return it
+          // If there is already a user update and return it
           } else {
-            User.update(user.id, {facebookAccessToken: accessToken});
+            User.update(user.id, {
+              facebookAccessToken: accessToken,
+              email: profile._json.email,
+              firstName: profile._json.first_name,
+              lastName: profile._json.last_name,
+              facebookProfileUrl: profile._json.link });
             return done(null, user, {
               message: 'Logged In Successfully'
             });

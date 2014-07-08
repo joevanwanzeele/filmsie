@@ -66,14 +66,14 @@
           <ul class="nav navbar-nav">
             <li class="active"><a href="#Movies" data-bind="click: showMovies"><span class="fa fa-film"></span></a></li>
             <li><a href="#Friends" data-bind="click: showFriends"><span class="fa fa-users"></span></a></li>
-            <li><a href="#Lists" data-bind="click: showLists"><span class="glyphicon glyphicon-list"></span></a></li>
+            <li><a href="#Lists" data-bind="click: showLists"><span class="fa fa-list"></span></a></li>
             <% if (session.authenticated && session.user.admin) { %>
               <li><a href="/admin">Administration</a></li>
             <% } %>
           </ul>
           <ul class="nav navbar-nav navbar-right">
-            <li><a class="profile-image-a" href="#Account" data-bind="click: openAccountModal"><img class="profile-image" src="<%= profile_pic_url %>"/></a></li>
-            <li><a href="#Account" data-bind="click: openAccountModal"><span class="glyphicon glyphicon-cog"></span></a></li>
+            <li><a class="profile-image-a" href="#Account" data-bind="click: openProfileModal"><img class="profile-image" src="<%= profile_pic_url %>"/></a></li>
+            <li><a href="#Account" data-bind="click: openProfileModal"><span class="glyphicon glyphicon-cog"></span></a></li>
             <li><a href="/user/logout"><span class="fa fa-sign-out"></span></a></li>
           </ul>
         </div>
@@ -136,6 +136,16 @@
           + Use a different preprocessor, like TypeScript
 
     -->
+
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-52631020-1', 'auto');
+      ga('send', 'pageview');
+    </script>
 
     <!--SCRIPTS-->
     <script src="/linker/js/socket.io.js"></script>

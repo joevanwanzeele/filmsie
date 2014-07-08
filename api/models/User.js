@@ -24,6 +24,11 @@ module.exports = {
       required: true
     },
 
+    facebookProfileUrl: {
+      type: 'string',
+      required: false
+    },
+
     firstName: {
       type: 'string'
     },

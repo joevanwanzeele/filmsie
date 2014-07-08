@@ -146,11 +146,25 @@
   </div>
 </div>
 
+<div id="userProfileModal" class="modal bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="userProfile" aria-hidden="true">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content" data-bind="with: user">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 id="addToListLabel" class="modal-title" data-bind="html: name"></h4>
+      </div>
+      <div class="modal-body">
+        <img class="profile-image-large" data-bind="attr: {'src': profilePicUrl }" />
+      </div>
+    </div>
+  </div>
+</div>
+
 
 <script type="text/html" id="movie-template">
   <div class="movie-container">
     <div class="movie-title-container" data-bind="click: showDetails">
-      <h5 data-bind="text: title"></h5><div class="btn addToListButton" data-bind="click: showListPopover"><span class="glyphicon glyphicon-list"></span></div>
+      <h5 data-bind="text: title"></h5><div class="btn add-to-list-button" data-bind="click: showListPopover"><span class="fa fa-list"></span></div>
       <img data-bind="attr: {src: imageUrl}" />
     </div>
     <div class="star-rating-container" data-bind="template: {name: 'ratings-template'}"></div>
@@ -217,7 +231,11 @@
   $(function(){
     var vm = new MoviesViewModel();
     vm.user().id("<%= req.session.user ? session.user.id : '' %>");
+    vm.user().firstName("<%= req.session.user ? session.user.firstName : '' %>");
+    vm.user().lastName("<%= req.session.user ? session.user.lastName : '' %>");
+    vm.user().email("<%= req.session.user ? session.user.email : '' %>");
     vm.user().profilePicUrl("<%= profile_pic_url %>");
+
     vm.init();
     ko.applyBindings(vm);
   });
