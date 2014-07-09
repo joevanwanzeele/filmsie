@@ -64,9 +64,9 @@
           <% if (session.authenticated) { %>
             <div class="container">
           <ul class="nav navbar-nav">
-            <li class="active"><a href="#Movies" data-bind="click: showMovies"><span class="fa fa-film"></span></a></li>
-            <li><a href="#Friends" data-bind="click: showFriends"><span class="fa fa-users"></span></a></li>
-            <li><a href="#Lists" data-bind="click: showLists"><span class="fa fa-list"></span></a></li>
+            <li class="active" id="showMoviesNavButton"><a href="#movies"><span class="fa fa-film"></span></a></li>
+            <li id="showPeopleNavButton"><a href="#people" ><span class="fa fa-users"></span></a></li>
+            <li id="showListsNavButton"><a href="#lists" ><span class="fa fa-list"></span></a></li>
             <% if (session.authenticated && session.user.admin) { %>
               <li><a href="/admin">Administration</a></li>
             <% } %>
@@ -157,6 +157,7 @@
     <script src="/linker/js/filmsie.js"></script>
     <script src="/linker/js/moment.min.js"></script>
     <script src="/linker/js/movie.js"></script>
+    <script src="/linker/js/sammy-latest.min.js"></script>
     <script src="/linker/js/user.js"></script>
     <!--SCRIPTS END-->
 

@@ -77,9 +77,8 @@ function MovieListViewModel(data, parent){
   }
 
   self.viewList = function(vm, e){
-    self.parent.showLists(vm, e);
-    self.id($(e.target).attr('list-id'));
-    self.getList();
+    var listId = $(e.target).attr('list-id');
+    location.hash = "lists" + '/' + listId;
   }
 
   self.getList = function(){
@@ -302,17 +301,18 @@ function MoviesViewModel(parent) {
   self.selectedList = ko.observable(new MovieListViewModel({}, self));
   self.movieDetails = ko.observable(new MovieViewModel({}, self));
   self.user = ko.observable(new UserViewModel(self));
+  self.initialized = ko.observable(false);
 
   self.addToListModalTitle = ko.computed(function(){
     if (self.selectedMovie()) return "Add \"" + self.selectedMovie().title() + "\" to list";
     return "Add to list";
   });
 
-  self.showingFriends = ko.observable(false);
-  self.showingMovies = ko.observable(true);
+  self.showingPeople = ko.observable(false);
+  self.showingMovies = ko.observable(false);
   self.showingLists = ko.observable(false);
 
-  self.getMovieLists = function(){
+  self.getMovieLists = function(callback){
     self.movieLists([]);
     $.ajax({
       type: "POST",
@@ -322,6 +322,7 @@ function MoviesViewModel(parent) {
         _.each(data, function(list){
           self.movieLists.push(new MovieListViewModel(list, self));
         });
+        if (callback) callback();
       }
     });
   }
@@ -351,32 +352,16 @@ function MoviesViewModel(parent) {
     });
   }
 
-  self.showFriends = function(vm, e){
-    $('.active').removeClass('active');
-    $(e.target).closest('li').addClass('active');
-    if (self.user().friends().length == 0) self.user().getFriends();
-    self.showingMovies(false);
-    self.showingLists(false);
-    self.showingFriends(true);
+  self.showPeople = function(vm, e){
+
   }
 
   self.showMovies = function(vm, e){
-    self.search();
-    $('.active').removeClass('active');
-    $(e.target).closest('li').addClass('active');
-    self.showingLists(false);
-    self.showingFriends(false);
-    self.showingMovies(true);
+    location.hash = "movies";
   }
 
   self.showLists = function(vm, e){
-    self.getMovieLists();
-    self.selectedList().getList();
-    $('.active').removeClass('active');
-    $(e.target).closest('li').addClass('active');
-    self.showingMovies(false);
-    self.showingFriends(false);
-    self.showingLists(true);
+    location.hash = "lists";
   }
 
   self.friends = ko.computed(function(){
@@ -385,7 +370,7 @@ function MoviesViewModel(parent) {
 
   self.scrolledFriends = self.user().scrolledFriends;
 
-  self.getConfigSettings = function(){
+  self.getConfigSettings = function(callback, p){
     if (!self.thumbnailBaseUrl()){
       $.ajax({
         type: "POST",
@@ -393,7 +378,9 @@ function MoviesViewModel(parent) {
         success: function(data){
             self.thumbnailBaseUrl(data.images.base_url + data.images.poster_sizes[2]);
             self.largeImageBaseUrl(data.images.base_url + data.images.poster_sizes[5]);
+            self.initialized(true);
             self.getMovies();
+            if (callback) callback(p);
         }
       });
     }
@@ -511,11 +498,80 @@ function MoviesViewModel(parent) {
     return true;
   }
 
-  self.init = function(){
-    self.getConfigSettings();
+  self.init = function(callback, p){
+    self.getConfigSettings(callback, p);
     self.getGenres();
     self.getMovieLists();
   }
+
+  self.loadLists = function(){
+    self.getMovieLists();
+    $('.active').removeClass('active');
+    $('#showListsNavButton').addClass('active');
+    self.showingMovies(false);
+    self.showingPeople(false);
+    self.showingLists(true);
+  }
+
+  self.loadList = function(list_id){
+    self.getMovieLists(function(){
+        var list = _.find(self.movieLists(), function(list){return list.id() == list_id;});
+        self.selectedList(list);
+        self.selectedList().getList();
+    });
+    $('.active').removeClass('active');
+    $('#showListsNavButton').addClass('active');
+    self.showingMovies(false);
+    self.showingPeople(false);
+    self.showingLists(true);
+  }
+
+  self.loadPeople = function(){
+    self.user().getFriends();
+    $('.active').removeClass('active');
+    $('#showPeopleNavButton').addClass('active');
+    self.showingMovies(false);
+    self.showingPeople(true);
+    self.showingLists(false);
+  }
+
+  self.loadMovies = function(){
+    $('.active').removeClass('active');
+    $('#showMoviesNavButton').addClass('active');
+    self.showingLists(false);
+    self.showingPeople(false);
+    self.showingMovies(true);
+    self.search();
+  }
+
+  //client-side routing
+
+  Sammy(function() {
+        this.get('/#lists', function() {
+          return self.initialized() ? self.loadLists() : self.init(self.loadLists);
+        });
+
+        this.get('/#lists/:list_id', function() {
+          return self.initialized() ? self.loadList(this.params.list_id) : self.init(self.loadList, this.params.list_id);
+        });
+
+        this.get('/#movies', function() {
+          return self.initialized() ? self.loadMovies() : self.init(self.loadMovies);
+        });
+
+        this.get('/#people', function(){
+          return self.initialized() ? self.loadPeople() : self.init(self.loadPeople);
+        });
+
+        //default root
+        this.get('/', function() {
+          location.hash = "movies";
+        });
+
+        get('#/by_name/:name', function() {
+          this.redirect('#', this.params['name']);
+        });
+    }).run();
 
   self.selectedGenres.subscribe(self.search);
   self.selectedYear.subscribe(self.search);

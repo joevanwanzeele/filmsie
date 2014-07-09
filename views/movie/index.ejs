@@ -43,13 +43,13 @@
   <div id="movieListNav">
     <ul data-bind="foreach: movieLists">
       <li>
-        <button class="btn btn-default" data-bind="html: name() + '<div class=\'list-length\'> (' + movieIds().length + ')</div>', attr: {'list-id': id}, click: viewList"></button>
+        <a class="btn btn-default" data-bind="html: nameAndLength(), attr: {'href': '#lists/' + id() }"></a>
       </li>
     </ul>
   </div>
   <!-- /ko -->
 
-  <!-- ko if: showingFriends -->
+  <!-- ko if: showingPeople -->
   <!-- /ko -->
 
   <footer class="pull-left">
@@ -64,7 +64,7 @@
 
   <div class="right-panel">
     <div class="movie-table-container" data-bind="visible: showingMovies, template: {name: 'movie-template', foreach: movies}, event: {scroll: scrolled}"></div>
-    <div class="friend-list-container" data-bind="visible: showingFriends, template: {name: 'friend-template', foreach: friends}, event: {scroll: scrolledFriends}"></div>
+    <div class="people-container" data-bind="visible: showingPeople">People</div>
     <div class="movie-list-content" data-bind="visible: showingLists, with: selectedList" >
       <div class="movie-list-header container" data-bind="visible: name()">
         <div class="row">
@@ -236,7 +236,7 @@
     vm.user().email("<%= req.session.user ? session.user.email : '' %>");
     vm.user().profilePicUrl("<%= profile_pic_url %>");
 
-    vm.init();
+    //vm.init();
     ko.applyBindings(vm);
   });
 </script>
