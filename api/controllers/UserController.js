@@ -39,7 +39,7 @@ module.exports = {
     graph.setAccessToken(req.session.user.facebookAccessToken);
     //graph.setAppSecret(sails.config.facebook.client_secret);
     graph.get(req.session.user.facebookId + "/friends?fields=name,picture", function(err, response) {
-      console.dir(response.data);
+      res.json(response.data);
     });
   },
 

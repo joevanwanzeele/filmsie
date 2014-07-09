@@ -40,16 +40,29 @@
   <!-- /ko -->
 
   <!-- ko if: showingLists -->
-  <div id="movieListNav">
+  <div class="sectionNav">
     <ul data-bind="foreach: movieLists">
       <li>
-        <a class="btn btn-default" data-bind="html: nameAndLength(), attr: {'href': '#lists/' + id() }"></a>
+        <a class="btn btn-default" data-bind="css: {'active': $parent.selectedList() == $data }, html: nameAndLength(), attr: {'href': '#lists/' + id() }"></a>
       </li>
     </ul>
   </div>
   <!-- /ko -->
 
   <!-- ko if: showingPeople -->
+  <div class="sectionNav" data-bind="with: user">
+    <ul>
+      <li>
+        <a class="btn btn-default" data-bind="css: {'active': showingMatches }" href="#people/matches">My Matches</a>
+      </li>
+      <li>
+        <a class="btn btn-default" data-bind="css: {'active': showingFriends }" href="#people/friends">My friends</a>
+      </li>
+      <li>
+        <a class="btn btn-default" href="#people/invite">Invite Friends</a>
+      </li>
+    </ul>
+  </div>
   <!-- /ko -->
 
   <footer class="pull-left">
@@ -64,7 +77,27 @@
 
   <div class="right-panel">
     <div class="movie-table-container" data-bind="visible: showingMovies, template: {name: 'movie-template', foreach: movies}, event: {scroll: scrolled}"></div>
-    <div class="people-container" data-bind="visible: showingPeople">People</div>
+
+    <div class="people-container" data-bind="with: user, visible: showingPeople">
+      <!-- ko if: showingMatches -->
+      <div data-bind="foreach: matches">
+        <div>
+          <h4 data-bind="text: name"><h4>
+          <img class="profile-image-large" data-bind="attr: {'src': profilePicUrl }" />
+        </div>
+      </div>
+      <!-- /ko -->
+
+      <!-- ko if: showingFriends -->
+      <div data-bind="foreach: friends">
+        <div class="person-container">
+          <h4 data-bind="text: firstName"><h4>
+          <img class="profile-image-large" data-bind="attr: {'src': profilePicUrl }" />
+        </div>
+      </div>
+      <!-- /ko -->
+    </div>
+
     <div class="movie-list-content" data-bind="visible: showingLists, with: selectedList" >
       <div class="movie-list-header container" data-bind="visible: name()">
         <div class="row">
@@ -84,7 +117,7 @@
       <div class="movie-list-container" data-bind="template: {name: 'list-movie-template', foreach: movies}"></div>
     </div>
   </div>
-</div>
+</div> <!-- right panel -->
 
 <div id="movieDetailsModal" data-bind="with: movieDetails" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="movieDetailsLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">
@@ -146,7 +179,21 @@
   </div>
 </div>
 
-<div id="userProfileModal" class="modal bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="userProfile" aria-hidden="true">
+<div id="userProfileModal" class="modal bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="userProfileLabel" aria-hidden="true">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content" data-bind="with: user">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 id="userProfileLabel" class="modal-title" data-bind="html: name"></h4>
+      </div>
+      <div class="modal-body">
+        <img class="profile-image-large" data-bind="attr: {'src': profilePicUrl }" />
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="inviteFriendsModal" class="modal bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="inviteFriends" aria-hidden="true">
   <div class="modal-dialog modal-sm">
     <div class="modal-content" data-bind="with: user">
       <div class="modal-header">
@@ -159,7 +206,6 @@
     </div>
   </div>
 </div>
-
 
 <script type="text/html" id="movie-template">
   <div class="movie-container">

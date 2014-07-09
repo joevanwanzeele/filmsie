@@ -1,10 +1,13 @@
-function UserViewModel(parent){
+function UserViewModel(parent, data){
+  console.dir(data);
   var self = this;
   self.parent = parent;
-  self.id = ko.observable();
-  self.profilePicUrl = ko.observable();
+  self.id = ko.observable(data && data.id || '');
+  self.profilePicUrl = ko.observable(data && data.picture && data.picture.data.url || '');
   self.friends = ko.observableArray([]);
-  self.firstName = ko.observable();
+  self.matches = ko.observableArray([]);
+
+  self.firstName = ko.observable(data && data.name || '');
   self.lastName = ko.observable();
   self.email = ko.observable();
   self.fbProfileUrl = ko.observable();
@@ -13,18 +16,28 @@ function UserViewModel(parent){
     return self.firstName() + " " + self.lastName();
   });
 
+  self.showingMatches = ko.observable(false);
+  self.showingFriends = ko.observable(false);
+
   self.getFriends = function(){
+    self.friends([]);
     $.ajax({
       type: "POST",
       url: "/user/facebookFriends",
       cache: false,
       success: function(data){
-        console.dir(data);
+        _.each(data, function(friend){
+          self.friends.push(new UserViewModel(self, friend));
+        });
       }
     });
   }
 
-  self.scrolledFriends = function(){}
+  self.getMatches = function(){
+
+  }
+
+  self.scrolledPeople = function(){}
 }
 
 function MovieListViewModel(data, parent){
@@ -526,8 +539,18 @@ function MoviesViewModel(parent) {
     self.showingLists(true);
   }
 
-  self.loadPeople = function(){
-    self.user().getFriends();
+  self.loadPeople = function(who){
+    if (who == "friends") {
+      self.user().getFriends();
+      self.user().showingFriends(true);
+      self.user().showingMatches(false);
+    }
+    else {
+      self.user().getMatches();
+      self.user().showingFriends(false);
+      self.user().showingMatches(true);
+    }
+
     $('.active').removeClass('active');
     $('#showPeopleNavButton').addClass('active');
     self.showingMovies(false);
@@ -563,14 +586,19 @@ function MoviesViewModel(parent) {
           return self.initialized() ? self.loadPeople() : self.init(self.loadPeople);
         });
 
+        this.get('/#people/matches', function(){
+          return self.initialized() ? self.loadPeople("matches") : self.init(self.loadPeople, "matches");
+        });
+
+        this.get('/#people/friends', function(){
+          return self.initialized() ? self.loadPeople("friends") : self.init(self.loadPeople, "friends");
+        });
+
         //default root
         this.get('/', function() {
           location.hash = "movies";
         });
 
-        get('#/by_name/:name', function() {
-          this.redirect('#', this.params['name']);
-        });
     }).run();
 
   self.selectedGenres.subscribe(self.search);
