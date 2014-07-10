@@ -13,8 +13,9 @@ module.exports = {
   	user_id: 'string',
 
     name: {type: 'string', unique: true },
-    
-    movie_ids: 'array'
 
+    movie_ids: 'array',
+
+    is_public: {type: 'boolean', defaultsTo: true }
   }
 };

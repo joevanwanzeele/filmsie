@@ -20,7 +20,7 @@ var graph = require('fbgraph');
 
 module.exports = {
 
-  logIn: function (req, res) {
+  login: function (req, res) {
     userHelper.addOrUpdateUser(req.body, function(err, user){
       req.session.user = user;
       req.session.authenticated = true;
@@ -35,7 +35,6 @@ module.exports = {
   logout: function (req, res){
     req.session.user = null;
     req.session.authenticated = false;
-    req.session.flash = 'You have logged out';
     res.redirect('/');
   },
 

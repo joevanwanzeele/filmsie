@@ -56,27 +56,16 @@ module.exports = {
     });
   },
 
-  getMoviesInList: function(req, res, next){
-    var user_id = req.session.user.id;
+  getList: function(req, res, next){
+    var user_id = req.session.user && req.session.user.id || null;
     if (req.body.list_id){
       //get specific list
       MovieList.findOne({id: req.body.list_id })
         .done(function(err, list) {
           if (err) return console.log(err);
           Movie.find().where({ id: list.movie_ids }).exec(function(err, movies) {
-            movieHelper.includeRatings(movies, user_id, function(movies_with_ratings){ return res.json(movies_with_ratings); });
-          });
-        });
-    } else {
-      //get all rated movies, ordered by rating (favorites)
-      MovieUserRating.find({user_id: req.body.user_id})
-        .done(function(err, user_ratings){
-          if (err) return console.log(err);
-          var sorted_ids = _.map(user_ratings.sort(function(a,b){ return a.rating - b.rating; }), function(rating){
-            return rating.movie_id;
-          });
-          Movie.find().where({ id: sorted_ids }).exec(function(err, movies) {
-            movieHelper.includeRatings(movies, user_id, function(movies_with_ratings){ return res.json(movies_with_ratings); });
+            if (err) return console.log(err);
+            movieHelper.includeRatings(movies, user_id, function(movies_with_ratings){ return res.json({list: list, movies: movies_with_ratings}); });
           });
         });
     }

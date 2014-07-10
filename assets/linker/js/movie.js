@@ -15,41 +15,59 @@ function UserViewModel(parent, data){
   self.fb_profile_url = ko.observable();
   self.name = ko.observable();
 
-  self.processLogin = function(){
-    FB.api('/me', function(user) {
-      if (user.error) return console.log(user.error);
-      self.facebook_id(user.id);
-      self.first_name(user.first_name);
-      self.last_name(user.last_name);
-      self.name(user.name);
-      self.email(user.email);
-      self.gender(user.gender);
-      self.fb_profile_url(user.link);
+  self.processLogin = function(callback){
+    FB.getLoginStatus(function(response) {
+     if (response.status == "connected"){
+       FB.api('/me', function(user) {
+         if (user.error) return console.log(user.error);
+         self.facebook_id(user.id);
+         self.first_name(user.first_name);
+         self.last_name(user.last_name);
+         self.name(user.name);
+         self.email(user.email);
+         self.gender(user.gender);
+         self.fb_profile_url(user.link);
 
-      user["_csrf"] = window.filmsie.csrf;
-      $.ajax({
-        type: "POST",
-        url: "/user/logIn",
-        data: user,
-        cache: false,
-        success: function(data){
-          self.id(data.id);
-          self.authenticated(true);
-        }
-      })
+         user["_csrf"] = window.filmsie.csrf;
+         $.ajax({
+           type: "POST",
+           url: "/user/login",
+           data: user,
+           cache: false,
+           success: function(data){
+             self.id(data.id);
+             self.authenticated(true);
+             parent.init();
+           }
+         });
+       });
+     }
     });
   }
 
-  self.login = function(){
+  self.processLogout = function(){
+    $.ajax({
+      type: "POST",
+      url: "/user/logout",
+      data: {"_csrf": window.filmsie.csrf },
+      cache: false,
+      success: function(data){
+        self.reset();
+        parent.init();
+      }
+    });
+  }
+
+  self.login = function(callback){
     FB.login(function(response) {
-      self.processLogin(response);
+      self.processLogin(response, callback);
     }, {scope: 'public_profile,email,user_friends'});
   }
 
   self.logout = function(){
     FB.logout(function(response) {
       // Person is now logged out
-      self.reset();
+      self.processLogout();
     });
   }
 
@@ -104,7 +122,7 @@ function MovieListViewModel(data, parent){
   self.name = ko.observable(data && data.name || null);
   self.movie_ids = ko.observableArray(data && data.movie_ids || data.movie_ids);
   self.movies = ko.observableArray();
-  self.is_public = ko.observable(data.is_public);
+  self.is_public = ko.observable(true && (data ? data.is_public : true));
 
   self.name_and_length = ko.computed(function(){
     self.movie_ids();
@@ -151,21 +169,18 @@ function MovieListViewModel(data, parent){
     });
   }
 
-  self.viewList = function(vm, e){
-    var list_id = $(e.target).attr('list-id');
-    location.hash = "lists" + '/' + list_id;
-  }
-
   self.getList = function(){
     $.ajax({
       type: "POST",
-      url: "/movieList/getMoviesInList",
+      url: "/movieList/getList",
       data: {
         list_id: self.id(),
         '_csrf': window.filmsie.csrf },
       success: function(data){
         self.movies([]);
-        _.each(data, function(movie){
+        self.name(data.list.name);
+        self.is_public(data.list.is_public);
+        _.each(data.movies, function(movie){
           self.movies.push(new MovieViewModel(movie, self));
         })
       }
@@ -383,23 +398,29 @@ function MoviesViewModel(parent) {
   self.selected_list = ko.observable(new MovieListViewModel({}, self));
   self.movie_details = ko.observable(new MovieViewModel({}, self));
   self.user = ko.observable(new UserViewModel(self));
-  self.initialized = ko.observable(false);
 
   self.addToListModalTitle = ko.computed(function(){
     if (self.selected_movie()) return "Add \"" + self.selected_movie().title() + "\" to list";
     return "Add to list";
   });
 
-  self.selected_list.subscribe(function(list){
-    if (list) list.getList();
+  self.selected_list().id.subscribe(function(id){
+    if (id) self.selected_list().getList();
   });
 
   self.is_showing_people = ko.observable(false);
   self.is_showing_movies = ko.observable(false);
   self.is_showing_lists = ko.observable(false);
 
-  self.get_movie_lists = function(callback){
+  self.get_movie_lists = function(list_id){
     self.movie_lists([]);
+
+    if (!self.user().authenticated()){
+        self.selected_list().id(list_id);
+        self.selected_list().getList();
+        return;
+    }
+
     $.ajax({
       type: "POST",
       url: "/movielist/index",
@@ -409,14 +430,18 @@ function MoviesViewModel(parent) {
       },
       success: function(data){
         _.each(data, function(list){
-          self.movie_lists.push(new MovieListViewModel(list, self));
+          var newList = new MovieListViewModel(list, self);
+          self.movie_lists.push(newList);
+          if (newList.id() == list_id){
+            self.selected_list(newList);
+            self.selected_list().getList();
+          }
         });
-        if (callback) callback(self.movie_lists());
       }
     });
   }
 
-  self.addnew_movieList = function(vm, e){
+  self.add_new_movie_list = function(vm, e){
     $.ajax({
       type: "POST",
       url: "/movielist/add",
@@ -460,7 +485,7 @@ function MoviesViewModel(parent) {
 
   self.scrolledFriends = self.user().scrolledFriends;
 
-  self.getConfigSettings = function(callback, p){
+  self.getConfigSettings = function(callback){
     if (!self.thumbnail_base_url()){
       $.ajax({
         type: "POST",
@@ -471,9 +496,8 @@ function MoviesViewModel(parent) {
         success: function(data){
             self.thumbnail_base_url(data.images.base_url + data.images.poster_sizes[2]);
             self.large_image_base_url(data.images.base_url + data.images.poster_sizes[5]);
-            self.initialized(true);
             self.getMovies();
-            if (callback) callback(p);
+            if (callback) callback();
         }
       });
     }
@@ -595,24 +619,14 @@ function MoviesViewModel(parent) {
   }
 
   self.init = function(callback, p){
-    self.getConfigSettings(callback, p);
+    self.getConfigSettings(self.search);
     self.getGenres();
     self.get_movie_lists();
+    self.setUpRouting();
   }
 
-  self.loadLists = function(){
-    self.get_movie_lists();
-    $('.active').removeClass('active');
-    $('#showListsNavButton').addClass('active');
-    self.is_showing_movies(false);
-    self.is_showing_people(false);
-    self.is_showing_lists(true);
-  }
-
-  self.loadList = function(list_id){
-    self.get_movie_lists(function(lists){
-      self.selected_list(_.find(lists, function(list){return list.id() == list_id;}));
-    });
+  self.loadLists = function(list_id){
+    self.get_movie_lists(list_id);
     $('.active').removeClass('active');
     $('#showListsNavButton').addClass('active');
     self.is_showing_movies(false);
@@ -648,49 +662,50 @@ function MoviesViewModel(parent) {
   }
 
   //client-side routing
+  self.setUpRouting = function(){
+    Sammy(function() {
+          this.get('/#lists', function() {
+            self.loadLists();
+          });
 
-  Sammy(function() {
-        this.get('/#lists', function() {
-          return self.initialized() ? self.loadLists() : self.init(self.loadLists);
-        });
+          this.get('/#lists/:list_id', function() {
+            self.loadLists(this.params.list_id);
+          });
 
-        this.get('/#lists/:list_id', function() {
-          return self.initialized() ? self.loadList(this.params.list_id) : self.init(self.loadList, this.params.list_id);
-        });
+          this.get('/#movies', function() {
+            self.loadMovies();
+          });
 
-        this.get('/#movies', function() {
-          return self.initialized() ? self.loadMovies() : self.init(self.loadMovies);
-        });
+          this.get('/#people', function(){
+            self.loadPeople()
+          });
 
-        this.get('/#people', function(){
-          return self.initialized() ? self.loadPeople() : self.init(self.loadPeople);
-        });
+          this.get('/#people/matches', function(){
+            self.loadPeople("matches")
+          });
 
-        this.get('/#people/matches', function(){
-          return self.initialized() ? self.loadPeople("matches") : self.init(self.loadPeople, "matches");
-        });
+          this.get('/#people/friends', function(){
+            self.loadPeople("friends")
+          });
 
-        this.get('/#people/friends', function(){
-          return self.initialized() ? self.loadPeople("friends") : self.init(self.loadPeople, "friends");
-        });
+          this.get('/#_=_', function(){
+            return this.redirect('/');
+          });
 
-        this.get('/#_=_', function(){
-          return this.redirect('/');
-        });
+          this.get('/', function(){
+            return this.redirect('/#movies');
+          });
 
-        this.get('/', function(){
-          return this.redirect('/#movies');
-        });
+          this.get('/#user/login', function(){
+            return self.user().login();
+          });
 
-        this.get('/#user/login', function(){
-          return self.user().login();
-        });
-
-        this.get('/#user/logout', function(){
-          return self.user().logout();
-        });
-
-    }).run('');
+          this.get('/#user/logout', function(){
+            self.user().logout();
+            return this.redirect('/#movies');
+          });
+      }).run();
+  }
 
   self.selected_genres.subscribe(self.search);
   self.selected_year.subscribe(self.search);

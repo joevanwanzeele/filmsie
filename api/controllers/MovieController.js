@@ -63,15 +63,14 @@ module.exports = {
     function processMovieResults(err,res) {
       _.each(res.results, function(movie){
         movie["tmdb_id"] = movie.id;
-        movie.id = null; //this should be set to the local id in the futu
+        movie.id = null;
       });
-
       var user_id = req.session.user ? req.session.user.id : null;
       if (!user_id) return response.json(res);
-
       //link up user reviews (if user is logged in)
       movieHelper.includeRatings(res.results, user_id, function(){ return response.json(res); });
     }
+
   },
 
   rate: function(req, res){
