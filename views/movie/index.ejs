@@ -104,11 +104,11 @@
           <div class="col-sm-4">
             <span class="movie-list-title" data-bind="text: name() + ' (' + movies().length + ')'"></span>
           </div>
-          <div class="col-sm-4">
+          <div class="col-sm-5">
             <h4>public: <input type="checkbox" data-bind="checked: is_public" /></h4>
           </div>
-          <div class="col-sm-4">
-            <span class="fa fa-2x fa-facebook-square"></span>
+          <div class="col-sm-3 sm-links">
+            <span class="fa fa-2x fa-facebook-square pointer" data-bind="click: $parent.shareOnFacebook"></span>
             <span class="fa fa-2x fa-twitter-square"></span>
             <span class="fa fa-2x fa-reddit-square"></span>
           </div>
@@ -119,12 +119,12 @@
   </div> <!-- right panel -->
 </div> <!-- main content -->
 
-<div id="movie_details_modal" data-bind="with: movie_details" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="movie_detailsLabel" aria-hidden="true">
+<div id="movie_details_modal" data-bind="with: movie_details" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="movie_details_label" aria-hidden="true">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h4 class="modal-title" id="movie_detailsLabel" data-bind="text: title"></h4>
+        <h4 class="modal-title" id="movie_details_label" data-bind="text: title"></h4>
       </div>
       <div class="modal-body movie-details">
         <!-- ko if: !is_loading_details() -->

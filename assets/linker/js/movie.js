@@ -37,7 +37,7 @@ function UserViewModel(parent, data){
            success: function(data){
              self.id(data.id);
              self.authenticated(true);
-             parent.init();
+             self.parent.init();
            }
          });
        });
@@ -45,7 +45,7 @@ function UserViewModel(parent, data){
     });
   }
 
-  self.processLogout = function(){
+  self.processLogout = function(callback){
     $.ajax({
       type: "POST",
       url: "/user/logout",
@@ -64,10 +64,10 @@ function UserViewModel(parent, data){
     }, {scope: 'public_profile,email,user_friends'});
   }
 
-  self.logout = function(){
+  self.logout = function(callback){
     FB.logout(function(response) {
       // Person is now logged out
-      self.processLogout();
+      self.processLogout(callback);
     });
   }
 
@@ -408,6 +408,16 @@ function MoviesViewModel(parent) {
     if (id) self.selected_list().getList();
   });
 
+  self.shareOnFacebook = function(){
+    FB.ui({
+      method: 'share_open_graph',
+      action_type: 'og.likes',
+      action_properties: JSON.stringify({
+          object: window.location.href,
+      })
+    }, function(response){});
+  }
+
   self.is_showing_people = ko.observable(false);
   self.is_showing_movies = ko.observable(false);
   self.is_showing_lists = ko.observable(false);
@@ -623,6 +633,9 @@ function MoviesViewModel(parent) {
     self.getGenres();
     self.get_movie_lists();
     self.setUpRouting();
+    if (self.is_showing_movies()){
+      self.search();
+    }
   }
 
   self.loadLists = function(list_id){
@@ -696,13 +709,9 @@ function MoviesViewModel(parent) {
             return this.redirect('/#movies');
           });
 
-          this.get('/#user/login', function(){
-            return self.user().login();
-          });
-
           this.get('/#user/logout', function(){
-            self.user().logout();
-            return this.redirect('/#movies');
+            var route = this;
+            self.user().logout(function(){ return route.redirect("/#movies"); });
           });
       }).run();
   }
