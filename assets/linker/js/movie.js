@@ -41,6 +41,8 @@ function UserViewModel(parent, data){
            }
          });
        });
+     } else {
+       self.parent.init();
      }
     });
   }
@@ -54,6 +56,7 @@ function UserViewModel(parent, data){
       success: function(data){
         self.reset();
         parent.init();
+        self.parent.loadMovies();
       }
     });
   }
@@ -123,16 +126,20 @@ function MovieListViewModel(data, parent){
   self.movie_ids = ko.observableArray(data && data.movie_ids || data.movie_ids);
   self.movies = ko.observableArray();
   self.is_public = ko.observable(true && (data ? data.is_public : true));
-
+  self.user_id = ko.observable(data && data.user_id);
   self.name_and_length = ko.computed(function(){
     self.movie_ids();
     return self.name() + "<div class='list-length'>(" + self.movie_ids().length + ")</div>"
   });
 
-  self.addToList = function(vm, e){
+  self.is_owner = ko.computed(function(){
+    return self.user_id() == self.parent.user().id();
+  });
+
+  self.addMovie = function(vm, e){
     $.ajax({
       type: "POST",
-      url: "/movielist/update",
+      url: "/movielist/addMovie",
       data: {
         user_id: self.parent.user().id(),
         list_id: $(e.target).attr('list-id'),
@@ -169,20 +176,40 @@ function MovieListViewModel(data, parent){
     });
   }
 
+  self.saveChanges = function(){
+    $.ajax({
+      type: "POST",
+      url: "/movielist/update",
+      data: {
+        list_id: self.id(),
+        name: self.name(),
+        is_public: self.is_public(),
+        '_csrf': window.filmsie.csrf
+      },
+      success: function(list){
+        console.log("saved changes to " + self.name());
+      }
+    });
+  }
+
   self.getList = function(){
     $.ajax({
       type: "POST",
       url: "/movieList/getList",
       data: {
         list_id: self.id(),
-        '_csrf': window.filmsie.csrf },
+        '_csrf': window.filmsie.csrf
+      },
       success: function(data){
         self.movies([]);
         self.name(data.list.name);
         self.is_public(data.list.is_public);
+        self.user_id(data.list.user_id);
         _.each(data.movies, function(movie){
           self.movies.push(new MovieViewModel(movie, self));
         })
+        self.name.subscribe(self.saveChanges);
+        self.is_public.subscribe(self.saveChanges);
       }
     });
   }
@@ -379,9 +406,8 @@ function GenreViewModel(data){
   self.name = ko.observable(data.name);
 }
 
-function MoviesViewModel(parent) {
+function MoviesViewModel() {
   var self = this;
-  self.parent = parent;
   self.total_results = ko.observable(0);
   self.movies = ko.observableArray([]);
   self.page = ko.observable(0);
@@ -395,17 +421,13 @@ function MoviesViewModel(parent) {
   self.movie_lists = ko.observableArray([]);
   self.new_list_name = ko.observable();
   self.selected_movie = ko.observable();
+  self.user = ko.observable(new UserViewModel(self));
   self.selected_list = ko.observable(new MovieListViewModel({}, self));
   self.movie_details = ko.observable(new MovieViewModel({}, self));
-  self.user = ko.observable(new UserViewModel(self));
 
   self.addToListModalTitle = ko.computed(function(){
     if (self.selected_movie()) return "Add \"" + self.selected_movie().title() + "\" to list";
     return "Add to list";
-  });
-
-  self.selected_list().id.subscribe(function(id){
-    if (id) self.selected_list().getList();
   });
 
   self.shareOnFacebook = function(){
@@ -428,7 +450,7 @@ function MoviesViewModel(parent) {
     if (!self.user().authenticated()){
         self.selected_list().id(list_id);
         self.selected_list().getList();
-        return;
+        return; //returning before user authentication has a chance to happen.
     }
 
     $.ajax({
@@ -629,9 +651,8 @@ function MoviesViewModel(parent) {
   }
 
   self.init = function(callback, p){
-    self.getConfigSettings(self.search);
+    self.getConfigSettings();
     self.getGenres();
-    self.get_movie_lists();
     self.setUpRouting();
     if (self.is_showing_movies()){
       self.search();
@@ -711,7 +732,8 @@ function MoviesViewModel(parent) {
 
           this.get('/#user/logout', function(){
             var route = this;
-            self.user().logout(function(){ return route.redirect("/#movies"); });
+            self.user().logout();
+            location.hash = "movies";
           });
       }).run();
   }

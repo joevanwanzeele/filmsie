@@ -99,13 +99,15 @@
     </div>
 
     <div class="movie-list-content" data-bind="visible: is_showing_lists, with: selected_list" >
-      <div class="movie-list-header container" data-bind="visible: name()">
-        <div class="row">
+      <div class="movie-list-header container" data-bind="visible: id()">
+        <div class="row" data-bind="visible: is_public() || is_owner()">
           <div class="col-sm-4">
             <span class="movie-list-title" data-bind="text: name() + ' (' + movies().length + ')'"></span>
           </div>
           <div class="col-sm-5">
+            <!-- ko if: is_owner() -->
             <h4>public: <input type="checkbox" data-bind="checked: is_public" /></h4>
+            <!-- /ko -->
           </div>
           <div class="col-sm-3 sm-links">
             <span class="fa fa-2x fa-facebook-square pointer" data-bind="click: $parent.shareOnFacebook"></span>
@@ -114,8 +116,15 @@
           </div>
         </div>
       </div>
+      <!-- ko if: is_public() || is_owner() -->
       <div class="movie-list-container" data-bind="template: {name: 'list-movie-template', foreach: movies}"></div>
-    </div>
+      <!-- /ko -->
+      <div class="row" data-bind="visible: !is_public() && !is_owner()">
+        <div class="container col-sm-12">
+          <h3>This list is private.</h3>
+        </div>
+      </div>
+    </div> <!-- movie-list-content -->
   </div> <!-- right panel -->
 </div> <!-- main content -->
 
@@ -166,7 +175,7 @@
       </div>
       <div class="modal-body">
         <ul data-bind="foreach: movie_lists">
-          <li><button class="btn btn-default" data-bind="attr: {'list-id': id}, html: name() + '<div class=\'list-length\'> (' + movie_ids().length + ')</div>', click: addToList"></li>
+          <li><button class="btn btn-default" data-bind="attr: {'list-id': id}, html: name() + '<div class=\'list-length\'> (' + movie_ids().length + ')</div>', click: addMovie"></li>
         </ul>
         <div class="input-group">
           <input type="text" data-bind="value: new_list_name" placeholder="new list" class="form-control" />
@@ -251,13 +260,13 @@
     <div class="col-sm-1 pointer" data-bind="click: showDetails">
       <img class="list-movie-image" data-bind="attr: {src: image_url}" />
     </div>
-    <div class="col-sm-3 pointer">
+    <div class="col-sm-4 pointer">
       <h4 data-bind="click: showDetails, text: title_and_year"></h4>
       <a data-bind="attr: {href: amazon_link }" target="_blank">
         <img class="amazon-button-small amazon-list-item-button" src="/img/amazon.png" alt="find on amazon" />
       </a>
     </div>
-    <div class="col-sm-4">your rating: <div data-bind="template: {name: 'ratings-template'}"></div></div>
+    <div class="col-sm-3">your rating: <div data-bind="template: {name: 'ratings-template'}"></div></div>
     <div class="col-sm-4" style="text-align:right">
       <div class="delete-list-item-button pointer" data-bind="click: $parent.removeMovie">
         <span class="fa fa-lg fa-times-circle"></span>
@@ -277,7 +286,6 @@
   $(function(){
     var vm = new MoviesViewModel();
     processLogin = vm.user().processLogin;
-    vm.init();
     // vm.user().id("<%= req.session.user ? session.user.id : '' %>");
     // vm.user().first_name("<%= req.session.user ? session.user.first_name : '' %>");
     // vm.user().last_name("<%= req.session.user ? session.user.last_name : '' %>");

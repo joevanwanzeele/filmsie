@@ -12,10 +12,19 @@ module.exports = {
 
   	user_id: 'string',
 
-    name: {type: 'string', unique: true },
+    name: {type: 'string' },
 
     movie_ids: 'array',
 
     is_public: {type: 'boolean', defaultsTo: true }
-  }
+  },
+
+  beforeValidation: function(values, next){
+
+    if (typeof values.is_public !== 'boolean'){
+      values.is_public = values.is_public == 'true';
+    }
+
+    next();
+  },
 };

@@ -43,7 +43,7 @@ module.exports = {
     });
   },
 
-  update: function(req, res, next){
+  addMovie: function(req, res, next){
     movieHelper.addOrUpdateMovie(req.body.movie, function(movie_id){
         MovieList.findOne(req.body.list_id, function(err, movie_list){
           movie_list.movie_ids.push(movie_id);
@@ -53,6 +53,17 @@ module.exports = {
             return res.json(movie_list);
           });
         });
+    });
+  },
+
+  update: function(req, res, next){
+    MovieList.findOne(req.body.list_id, function(err, movie_list){
+      movie_list.name = req.body.name;
+      movie_list.is_public = req.body.is_public;
+      movie_list.save(function(err){
+        if (err) return console.log(err);
+        return res.json(movie_list);
+      });
     });
   },
 
