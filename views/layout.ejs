@@ -46,6 +46,36 @@
   </head>
 
   <body>
+    <script>
+      window.fbAsyncInit = function() {
+        FB.init({
+          appId      : '248849825312110',
+          cookie     : true,
+          xfbml      : true,
+          version    : 'v2.0'
+        });
+
+        FB.getLoginStatus(function(response) {
+          if (response.status === 'connected') {
+            processLogin();
+          }
+          else {
+            FB.login(function(response) {
+              processLogin();
+            }, {scope: 'public_profile,email,user_friends'});
+          }
+        });
+      };
+
+      (function(d, s, id){
+         var js, fjs = d.getElementsByTagName(s)[0];
+         if (d.getElementById(id)) {return;}
+         js = d.createElement(s); js.id = id;
+         js.src = "//connect.facebook.net/en_US/sdk.js";
+         fjs.parentNode.insertBefore(js, fjs);
+       }(document, 'script', 'facebook-jssdk'));
+
+    </script>
     <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
       <div class="container-fluid">
         <!-- Brand and toggle get grouped for better mobile display -->
@@ -61,28 +91,23 @@
 
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-          <% if (session.authenticated) { %>
-            <div class="container">
-          <ul class="nav navbar-nav">
-            <li class="active" id="showMoviesNavButton"><a href="#movies"><span class="fa fa-film"></span></a></li>
-            <li id="showPeopleNavButton"><a href="#people" ><span class="fa fa-users"></span></a></li>
-            <li id="showListsNavButton"><a href="#lists" ><span class="fa fa-list"></span></a></li>
-            <% if (session.authenticated && session.user.admin) { %>
-              <li><a href="/admin">Administration</a></li>
-            <% } %>
-          </ul>
-          <ul class="nav navbar-nav navbar-right">
-            <li><a class="profile-image-a" href="#Account" data-bind="click: openProfileModal"><img class="profile-image" src="<%= profile_pic_url %>"/></a></li>
-            <li><a href="#Account" data-bind="click: openProfileModal"><span class="glyphicon glyphicon-cog"></span></a></li>
-            <li><a href="/user/logout"><span class="fa fa-sign-out"></span></a></li>
-          </ul>
-        </div>
-          <% } else { %>
-          <form class="navbar-form navbar-right" action="/user/facebook">
-            <button type="submit" class="btn btn-primary login-button"><span class="fa fa-facebook-square"> &nbsp; sign in</span></button>
-            <input type="hidden" name="_csrf" value="<%= _csrf %>" />
-          </form>
-          <% } %>
+          <div class="container">
+            <ul class="nav navbar-nav" data-bind="if: user().authenticated()">
+              <li class="active" id="showMoviesNavButton"><a href="#movies"><span class="fa fa-lg fa-film"></span></a></li>
+              <li id="showPeopleNavButton"><a href="#people" ><span class="fa fa-lg fa-users"></span></a></li>
+              <li id="showListsNavButton"><a href="#lists" ><span class="fa fa-lg fa-list"></span></a></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right" data-bind="if: user().authenticated()">
+              <li><a class="profile-image-a" href="#Account" data-bind="click: openProfileModal"><img class="profile-image" data-bind="attr: {src: user().profile_pic_url()}" /></a></li>
+              <li><a href="#Account" data-bind="click: openProfileModal"><span class="fa fa-lg fa-cog"></span></a></li>
+              <li><a href="/#user/logout"><span class="fa fa-lg fa-sign-out"></span></a></li>
+            </ul>
+              <div class="nav navbar-nav navbar-right navbar-form" data-bind="if: !user().authenticated()">
+                <a class="btn btn-primary login-button" href="/#user/login"><span class="fa fa-lg fa-facebook-square"> &nbsp; sign in</span></a>
+                  <!-- <fb:login-button scope="public_profile,email,user_friends" onlogin="processLogin">
+                  </fb:login-button> -->
+              </div>
+          </div>
         </div><!-- /.navbar-collapse -->
       </div><!-- /.container-fluid -->
     </nav>

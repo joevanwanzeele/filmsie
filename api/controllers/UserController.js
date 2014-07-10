@@ -15,13 +15,17 @@
  * @docs        :: http://sailsjs.org/#!documentation/controllers
  */
 
-var passport = require('passport');
+var userHelper = require("../services/UserHelper");
 var graph = require('fbgraph');
 
 module.exports = {
 
-  login: function (req, res) {
-    res.view();
+  logIn: function (req, res) {
+    userHelper.addOrUpdateUser(req.body, function(err, user){
+      req.session.user = user;
+      req.session.authenticated = true;
+      res.json(user);
+    });
   },
 
   dashboard: function (req, res) {

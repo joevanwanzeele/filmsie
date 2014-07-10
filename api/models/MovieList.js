@@ -10,9 +10,11 @@ module.exports = {
 
   attributes: {
 
-  	userId: 'string',
+  	user_id: 'string',
+
     name: {type: 'string', unique: true },
-    movieIds: 'array'
+    
+    movie_ids: 'array'
 
   }
 };

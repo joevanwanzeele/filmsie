@@ -1,10 +1,10 @@
 <div class="fluid-container main-content">
   <div class="left-panel">
-    <!-- ko if: showingMovies -->
+    <!-- ko if: is_showing_movies -->
     <div class="row">
       <div class="col-sm-12 navbar-btn navbar-left">
         <div class="input-group">
-          <input type="text" data-bind="value: searchQuery, valueUpdate: 'afterkeydown', event: {keypress: searchOnEnter }" placeholder="search by title" class="form-control">
+          <input type="text" data-bind="value: search_query, valueUpdate: 'afterkeydown', event: {keypress: searchOnEnter }" placeholder="search by title" class="form-control">
           <span class="input-group-btn">
             <button class="btn btn-default" data-bind="click: search" type="button"><span class="glyphicon glyphicon-search"></span></button>
           </span>
@@ -20,7 +20,7 @@
       </div>
       <div id="years" class="panel">
         <div class="panel-body">
-          <select multiple="false" data-bind="options: years, value: selectedYear, optionsCaption: 'any year'"></select>
+          <select multiple="false" data-bind="options: years, value: selected_year, optionsCaption: 'any year'"></select>
         </div>
       </div>
     </div>
@@ -32,31 +32,31 @@
       </div>
       <div id="genreContainer" class="panel">
         <div class="panel-body">
-          <select data-bind="options: genres, optionsText: 'name', selectedOptions: selectedGenres, optionsCaption: 'any genre'" multiple="true"></select>
+          <select data-bind="options: genres, optionsText: 'name', selectedOptions: selected_genres, optionsCaption: 'any genre'" multiple="true"></select>
         </div>
       </div>
     </div>
   </div>
   <!-- /ko -->
 
-  <!-- ko if: showingLists -->
+  <!-- ko if: is_showing_lists -->
   <div class="sectionNav">
-    <ul data-bind="foreach: movieLists">
+    <ul data-bind="foreach: movie_lists">
       <li>
-        <a class="btn btn-default" data-bind="css: {'active': $parent.selectedList() == $data }, html: nameAndLength(), attr: {'href': '#lists/' + id() }"></a>
+        <a class="btn btn-default" data-bind="css: {'active': $parent.selected_list() == $data }, html: name_and_length(), attr: {'href': '#lists/' + id() }"></a>
       </li>
     </ul>
   </div>
   <!-- /ko -->
 
-  <!-- ko if: showingPeople -->
+  <!-- ko if: is_showing_people -->
   <div class="sectionNav" data-bind="with: user">
     <ul>
       <li>
-        <a class="btn btn-default" data-bind="css: {'active': showingMatches }" href="#people/matches">My Matches</a>
+        <a class="btn btn-default" data-bind="css: {'active': is_showing_matches }" href="#people/matches">My Matches</a>
       </li>
       <li>
-        <a class="btn btn-default" data-bind="css: {'active': showingFriends }" href="#people/friends">My friends</a>
+        <a class="btn btn-default" data-bind="css: {'active': is_showing_friends }" href="#people/friends">My friends</a>
       </li>
       <li>
         <a class="btn btn-default" href="#people/invite">Invite Friends</a>
@@ -76,36 +76,36 @@
 </div> <!-- left panel -->
 
   <div class="right-panel">
-    <div class="movie-table-container" data-bind="visible: showingMovies, template: {name: 'movie-template', foreach: movies}, event: {scroll: scrolled}"></div>
+    <div class="movie-table-container" data-bind="visible: is_showing_movies, template: {name: 'movie-template', foreach: movies}, event: {scroll: scrolled}"></div>
 
-    <div class="people-container" data-bind="with: user, visible: showingPeople">
-      <!-- ko if: showingMatches -->
+    <div class="people-container" data-bind="with: user, visible: is_showing_people">
+      <!-- ko if: is_showing_matches -->
       <div data-bind="foreach: matches">
         <div>
           <h4 data-bind="text: name"><h4>
-          <img class="profile-image-large" data-bind="attr: {'src': profilePicUrl }" />
+          <img class="profile-image-large" data-bind="attr: {'src': profile_pic_url }" />
         </div>
       </div>
       <!-- /ko -->
 
-      <!-- ko if: showingFriends -->
+      <!-- ko if: is_showing_friends -->
       <div data-bind="foreach: friends">
         <div class="person-container">
-          <h4 data-bind="text: firstName"><h4>
-          <img class="profile-image-large" data-bind="attr: {'src': profilePicUrl }" />
+          <h4 data-bind="text: first_name"><h4>
+          <img class="profile-image-large" data-bind="attr: {'src': profile_pic_url }" />
         </div>
       </div>
       <!-- /ko -->
     </div>
 
-    <div class="movie-list-content" data-bind="visible: showingLists, with: selectedList" >
+    <div class="movie-list-content" data-bind="visible: is_showing_lists, with: selected_list" >
       <div class="movie-list-header container" data-bind="visible: name()">
         <div class="row">
           <div class="col-sm-4">
             <span class="movie-list-title" data-bind="text: name() + ' (' + movies().length + ')'"></span>
           </div>
           <div class="col-sm-4">
-            <h4>public: <input type="checkbox" data-bind="checked: isPublic" /></h4>
+            <h4>public: <input type="checkbox" data-bind="checked: is_public" /></h4>
           </div>
           <div class="col-sm-4">
             <span class="fa fa-2x fa-facebook-square"></span>
@@ -119,37 +119,37 @@
   </div>
 </div> <!-- right panel -->
 
-<div id="movieDetailsModal" data-bind="with: movieDetails" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="movieDetailsLabel" aria-hidden="true">
+<div id="movie_details_modal" data-bind="with: movie_details" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="movie_detailsLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h4 class="modal-title" id="movieDetailsLabel" data-bind="text: title"></h4>
+        <h4 class="modal-title" id="movie_detailsLabel" data-bind="text: title"></h4>
       </div>
       <div class="modal-body movie-details">
-        <!-- ko if: !loadingDetails() -->
+        <!-- ko if: !is_loading_details() -->
         <div class="detail-image-container">
-          <img data-bind="attr: {src: bigImageUrl}" />
+          <img data-bind="attr: {src: big_image_url}" />
         </div>
         <br/>
         <p data-bind="text: synopsis"></p>
         <ul>
-          <li><span>Released <span data-bind="text: formattedReleaseDate"></span></span></li>
-          <!-- ko if: currentUserRating -->
-          <li><span>Your rating: <span data-bind="text: currentUserRating"></span></span></li>
+          <li><span>Released <span data-bind="text: formatted_release_date"></span></span></li>
+          <!-- ko if: current_user_rating -->
+          <li><span>Your rating: <span data-bind="text: current_user_rating"></span></span></li>
           <!-- /ko -->
           <li><span data-bind="text: genresString"></li>
-          <li><span data-bind="click: toggleCast, css: { 'fa-plus-square' : castHidden, 'fa-minus-square' : !castHidden() }" class="fa pointer"></span> Cast
-          <!-- ko if: !castHidden() -->
-            <div data-bind="template: { name: 'cast-member-template', foreach: castMembers }" class="container cast-container panel"><span class="fa fa-5x fa-spin fa-cog"></span></div>
+          <li><span data-bind="click: toggleCast, css: { 'fa-plus-square' : cast_is_hidden, 'fa-minus-square' : !cast_is_hidden() }" class="fa pointer"></span> Cast
+          <!-- ko if: !cast_is_hidden() -->
+            <div data-bind="template: { name: 'cast-member-template', foreach: cast_members }" class="container cast-container panel"><span class="fa fa-5x fa-spin fa-cog"></span></div>
           <!-- /ko -->
           </li>
 
         </ul>
-        <a data-bind="attr: {href: amazonLink }" target="_blank"><img class="amazon-button-small" src="/img/amazon.png" alt="find on amazon" /></a><br/><br/>
-        <a data-bind="attr: {href: imdbUrl }" target="_blank">IMDB info</a>
+        <a data-bind="attr: {href: amazon_link }" target="_blank"><img class="amazon-button-small" src="/img/amazon.png" alt="find on amazon" /></a><br/><br/>
+        <a data-bind="attr: {href: imdb_url }" target="_blank">IMDB info</a>
         <!-- /ko -->
-        <!-- ko if: loadingDetails() -->
+        <!-- ko if: is_loading_details() -->
         <div class="container" style="width:100%;text-align:center"><span class="fa fa-5x fa-spin fa-cog"></span></div>
         <!-- /ko -->
       </div>
@@ -165,13 +165,13 @@
         <h4 id="addToListLabel" class="modal-title" data-bind="html: addToListModalTitle">Add to list</h4>
       </div>
       <div class="modal-body">
-        <ul data-bind="foreach: movieLists">
-          <li><button class="btn btn-default" data-bind="attr: {'list-id': id}, html: name() + '<div class=\'list-length\'> (' + movieIds().length + ')</div>', click: addToList"></li>
+        <ul data-bind="foreach: movie_lists">
+          <li><button class="btn btn-default" data-bind="attr: {'list-id': id}, html: name() + '<div class=\'list-length\'> (' + movie_ids().length + ')</div>', click: addToList"></li>
         </ul>
         <div class="input-group">
-          <input type="text" data-bind="value: newListName" placeholder="new list" class="form-control" />
+          <input type="text" data-bind="value: new_list_name" placeholder="new list" class="form-control" />
           <span class="input-group-btn">
-            <button type="button" class="btn btn-default" data-bind="click: addNewMovieList">add</button>
+            <button type="button" class="btn btn-default" data-bind="click: addnew_movieList">add</button>
           </span>
         </div>
       </div>
@@ -187,7 +187,7 @@
         <h4 id="userProfileLabel" class="modal-title" data-bind="html: name"></h4>
       </div>
       <div class="modal-body">
-        <img class="profile-image-large" data-bind="attr: {'src': profilePicUrl }" />
+        <img class="profile-image-large" data-bind="attr: {'src': profile_pic_url }" />
       </div>
     </div>
   </div>
@@ -201,7 +201,7 @@
         <h4 id="addToListLabel" class="modal-title" data-bind="html: name"></h4>
       </div>
       <div class="modal-body">
-        <img class="profile-image-large" data-bind="attr: {'src': profilePicUrl }" />
+        <img class="profile-image-large" data-bind="attr: {'src': profile_pic_url }" />
       </div>
     </div>
   </div>
@@ -211,7 +211,7 @@
   <div class="movie-container">
     <div class="movie-title-container" data-bind="click: showDetails">
       <h5 data-bind="text: title"></h5><div class="btn add-to-list-button" data-bind="click: showListPopover"><span class="fa fa-list"></span></div>
-      <img data-bind="attr: {src: imageUrl}" />
+      <img data-bind="attr: {src: image_url}" />
     </div>
     <div class="star-rating-container" data-bind="template: {name: 'ratings-template'}"></div>
   </div>
@@ -219,23 +219,23 @@
 
 <script type="text/html" id="ratings-template">
   <div class="pointer" data-bind="event: {'mouseout': resetRatingClasses }">
-    <div class="star-rating fa-stack" data-bind="style: {opacity: tempRating() ? '1' : '.5'}, event: {'mousemove': updateRatingClass }, click: function(vm, event){setRating(1, event)}">
+    <div class="star-rating fa-stack" data-bind="style: {opacity: temp_rating() ? '1' : '.5'}, event: {'mousemove': updateRatingClass }, click: function(vm, event){setRating(1, event)}">
       <span class="fa fa-stack-2x fa-star-o"></span>
       <span class="fa fa-stack-2x top-star-stack" star="1" data-bind="css: ratingClass(1)"></span>
     </div>
-    <div class="star-rating fa-stack" data-bind="style: {opacity: tempRating() ? '1' : '.5'}, event: {'mousemove': updateRatingClass }, click: function(vm, event){setRating(2, event)}">
+    <div class="star-rating fa-stack" data-bind="style: {opacity: temp_rating() ? '1' : '.5'}, event: {'mousemove': updateRatingClass }, click: function(vm, event){setRating(2, event)}">
       <span class="fa fa-stack-2x fa-star-o"></span>
       <span class="fa fa-stack-2x top-star-stack" star="2" data-bind="css: ratingClass(2)"></span>
     </div>
-    <div class="star-rating fa-stack" data-bind="style: {opacity: tempRating() ? '1' : '.5'}, event: {'mousemove': updateRatingClass }, click: function(vm, event){setRating(3, event)}">
+    <div class="star-rating fa-stack" data-bind="style: {opacity: temp_rating() ? '1' : '.5'}, event: {'mousemove': updateRatingClass }, click: function(vm, event){setRating(3, event)}">
       <span class="fa fa-stack-2x fa-star-o"></span>
       <span class="fa fa-stack-2x top-star-stack" star="3" data-bind="css: ratingClass(3)"></span>
     </div>
-    <div class="star-rating fa-stack" data-bind="style: {opacity: tempRating() ? '1' : '.5'}, event: {'mousemove': updateRatingClass }, click: function(vm, event){setRating(4, event)}">
+    <div class="star-rating fa-stack" data-bind="style: {opacity: temp_rating() ? '1' : '.5'}, event: {'mousemove': updateRatingClass }, click: function(vm, event){setRating(4, event)}">
       <span class="fa fa-stack-2x fa-star-o"></span>
       <span class="fa fa-stack-2x top-star-stack" star="4" data-bind="css: ratingClass(4)"></span>
     </div>
-    <div class="star-rating fa-stack" data-bind="style: {opacity: tempRating() ? '1' : '.5'}, event: {'mousemove': updateRatingClass }, click: function(vm, event){setRating(5, event)}">
+    <div class="star-rating fa-stack" data-bind="style: {opacity: temp_rating() ? '1' : '.5'}, event: {'mousemove': updateRatingClass }, click: function(vm, event){setRating(5, event)}">
       <span class="fa fa-stack-2x fa-star-o"></span>
       <span class="fa fa-stack-2x top-star-stack" star="5" data-bind="css: ratingClass(5)"></span>
     </div>
@@ -249,11 +249,11 @@
 <script type="text/html" id="list-movie-template">
   <div class="row list-movie-row">
     <div class="col-sm-1 pointer" data-bind="click: showDetails">
-      <img class="list-movie-image" data-bind="attr: {src: imageUrl}" />
+      <img class="list-movie-image" data-bind="attr: {src: image_url}" />
     </div>
     <div class="col-sm-3 pointer">
-      <h4 data-bind="click: showDetails, text: titleAndYear"></h4>
-      <a data-bind="attr: {href: amazonLink }" target="_blank">
+      <h4 data-bind="click: showDetails, text: title_and_year"></h4>
+      <a data-bind="attr: {href: amazon_link }" target="_blank">
         <img class="amazon-button-small amazon-list-item-button" src="/img/amazon.png" alt="find on amazon" />
       </a>
     </div>
@@ -269,22 +269,29 @@
 <script type="text/html" id="cast-member-template">
   <div class="cast-member-container container">
     <span data-bind="text: name"></span><br/>
-    <img data-bind="attr: {src: imageUrl}" /><br/>
+    <img data-bind="attr: {src: image_url}" /><br/>
   <div class="character-container" data-bind="text: character"></div>
 </script>
 
 <script type="text/javascript">
   $(function(){
     var vm = new MoviesViewModel();
-    vm.user().id("<%= req.session.user ? session.user.id : '' %>");
-    vm.user().firstName("<%= req.session.user ? session.user.firstName : '' %>");
-    vm.user().lastName("<%= req.session.user ? session.user.lastName : '' %>");
-    vm.user().email("<%= req.session.user ? session.user.email : '' %>");
-    vm.user().profilePicUrl("<%= profile_pic_url %>");
+    processLogin = vm.user().processLogin;
+
+    // vm.user().id("<%= req.session.user ? session.user.id : '' %>");
+    // vm.user().first_name("<%= req.session.user ? session.user.first_name : '' %>");
+    // vm.user().last_name("<%= req.session.user ? session.user.last_name : '' %>");
+    // vm.user().email("<%= req.session.user ? session.user.email : '' %>");
+    // vm.user().profile_pic_url("<%= profile_pic_url %>");
 
     //vm.init();
+
     ko.applyBindings(vm);
   });
+
+function processLogin(){};
+
+function logIn(){}
 </script>
 
 <% include privacyModal.ejs %>

@@ -12,27 +12,27 @@ schema: true,
 
 attributes: {
 
-  movieId: {
+  movie_id: {
     type: 'string',
     required: false
   },
 
-  rottenTomatoesId: {
+  rotten_tomatoes_id: {
     type: 'string',
     required: false
   },
 
-  imdbId: {
+  imdb_id: {
     type: 'string',
     required: false
   },
 
-  movieDbId: {
+  tmdb_id: {
     type: 'integer',
     required: false
   },
 
-  userId: {
+  user_id: {
     type: 'string',
     required: true
   },

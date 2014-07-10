@@ -16,20 +16,12 @@
  */
 
 var graph = require('fbgraph');
-var movieHelper = require("../services/movieHelper");
+var movieHelper = require("../services/MovieHelper");
 
 module.exports = {
 
   index: function(req, res){
-    if (req.session.user){
-      graph.setAccessToken(req.session.user.facebookAccessToken);
-      graph.get(req.session.user.facebookId + "?fields=picture", function(err, response) {
-        res.view({profile_pic_url: response.picture.data.url});
-      });
-    }
-    else{
-      res.view({profile_pic_url: "/img/not-found.png"});  //image doesn't exist yet
-    }
+      res.view({profile_pic_url: ""});  //image doesn't exist yet
   },
 
   getConfigSettings: function(req, res){
@@ -48,8 +40,6 @@ module.exports = {
 
   search: function(req, response){ //use internet movie db api
     var tmdb = require('moviedb')(sails.config.mdbApi.api_key);
-
-    //console.log(req.body);
 
     if (req.body.q){
       tmdb.searchMovie({
@@ -72,51 +62,38 @@ module.exports = {
 
     function processMovieResults(err,res) {
       _.each(res.results, function(movie){
-        movie["movieDbId"] = movie.id;
+        movie["tmdb_id"] = movie.id;
         movie.id = null; //this should be set to the local id in the futu
       });
 
-      var userId = req.session.user ? req.session.user.id : null;
-      if (!userId) return response.json(res);
+      var user_id = req.session.user ? req.session.user.id : null;
+      if (!user_id) return response.json(res);
 
       //link up user reviews (if user is logged in)
-      movieHelper.includeRatings(res.results, userId, function(){ return response.json(res); });
+      movieHelper.includeRatings(res.results, user_id, function(){ return response.json(res); });
     }
-    //   var ids = _.map(res.results, function(item){ return item.movieDbId });
-     //
-    //   MovieUserRating.find()
-    //   .where({movieDbId: ids, userId: req.session.user.id })
-    //    .exec(function (err, ratings) {
-    //        _.each(ratings, function(rating){
-    //          var found = _.findWhere(res.results, {movieDbId: rating.movieDbId});
-    //          if (found) found["currentUserRating"] = rating.rating;
-    //      });
-    //      return response.json(res);
-    //    });
-    //  }
-
   },
 
   rate: function(req, res){
     if (!req.session.user) return;
-    var userId = req.session.user.id;
+    var user_id = req.session.user.id;
     var movie = req.body.movie;
     var rating = Number(req.body.rating);
 
-    movieHelper.addOrUpdateMovie(movie, function(movieId){
-      MovieUserRating.findOne({movieDbId: movie.movieDbId, userId: userId })
+    movieHelper.addOrUpdateMovie(movie, function(movie_id){
+      MovieUserRating.findOne({tmdb_id: movie.tmdb_id, user_id: user_id })
         .done(function(err, existing) {
           if (err) return console.log(err);
           if (existing) {
-            MovieUserRating.update(existing.id, {rating: rating, movieId: movieId }).done(function(err, existing){
+            MovieUserRating.update(existing.id, {rating: rating, movie_id: movie_id }).done(function(err, existing){
               if (err) return console.log(err);
             });
           } else {
-            MovieUserRating.create({ userId: userId,
-                                     movieId: movieId,
-                                     movieDbId: movie.movieDbId,
-                                     rottenTomatoesId: movie.rottenTomatoesId,
-                                     imdbId: movie.imdbId,
+            MovieUserRating.create({ user_id: user_id,
+                                     movie_id: movie_id,
+                                     tmdb_id: movie.tmdb_id,
+                                     rotten_tomatoes_id: movie.rotten_tomatoes_id,
+                                     imdb_id: movie.imdb_id,
                                      rating: rating })
                                      .done(function(err, rating) {
                                       if (err) {
@@ -132,8 +109,8 @@ module.exports = {
   details: function(req, res){
     var tmdb = require('moviedb')(sails.config.mdbApi.api_key);
 
-    tmdb.movieInfo({id: req.body.movieDbId}, function(err, response){
-      if (err) {return console.log(err);}
+    tmdb.movieInfo({id: req.body.tmdb_id}, function(err, response){
+      if (err) {return console.dir(err);}
       res.json(response);
     });
   },
@@ -141,7 +118,7 @@ module.exports = {
   cast: function(req, res){
     var tmdb = require('moviedb')(sails.config.mdbApi.api_key);
 
-    tmdb.movieCredits({id: req.body.movieDbId}, function(err, response){
+    tmdb.movieCredits({id: req.body.tmdb_id}, function(err, response){
       if (err) {return console.log(err);}
       res.json(response.cast);
     });

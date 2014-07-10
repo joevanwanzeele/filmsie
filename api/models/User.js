@@ -13,31 +13,26 @@ module.exports = {
 
   attributes: {
 
-    facebookId: {
+    facebook_id: {
       type: 'string',
       required: true,
       unique: true
     },
 
-    facebookAccessToken: {
-      type: 'string',
-      required: true
-    },
-
-    facebookProfileUrl: {
+    fb_profile_url: {
       type: 'string',
       required: false
     },
 
-    firstName: {
+    first_name: {
       type: 'string'
     },
 
-    lastName: {
+    last_name: {
       type: 'string'
     },
 
-    userName: {
+    name: {
       type: 'string'
     },
 
@@ -63,7 +58,11 @@ module.exports = {
       defaultsTo: false
     },
 
-    encryptedPassword: {
+    profile_pic_url: {
+      type: 'string'
+    },
+
+    encrypted_password: {
       type: 'string'
     }
   },
@@ -78,6 +77,10 @@ module.exports = {
     //     values.admin = true;
     //   }
     // }
+    if (typeof values.verified !== 'boolean'){
+      values.verified = values.verified == 'true';
+    }
+
     next();
   },
 

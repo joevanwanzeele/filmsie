@@ -14,14 +14,14 @@ attributes: {
 
     title: { type: 'string', required: true },
 
-    releaseDate: { type: 'string', required: false },
+    release_date: { type: 'string', required: false },
 
-    imageUrl: { type: 'string', required: false },
+    image_url: { type: 'string', required: false },
 
-    bigImageUrl: { type: 'string', required: false },
+    big_image_url: { type: 'string', required: false },
 
-    rottenTomatoesId: { type: 'string', required: false },
+    rotten_tomatoes_id: { type: 'string', required: false },
 
-    movieDbId: { type: 'integer', required: false }
+    movie_db_id: { type: 'integer', required: false }
   }
 };

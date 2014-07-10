@@ -1,37 +1,38 @@
 module.exports = {
 
   addOrUpdateMovie: function(movie, callback){
-    Movie.findOne({ movieDbId: Number(movie.movieDbId) }).done(function(err, existingMovie){
+    Movie.findOne({ tmdb_id: Number(movie.tmdb_id) }).done(function(err, existing_movie){
       if (err) return console.log(err);
-      if (!existingMovie){
+      if (!existing_movie){
         Movie.create({
-          movieDbId: movie.movieDbId,
+          tmdb_id: movie.tmdb_id,
           title: movie.title,
-          imageUrl: movie.imageUrl,
-          bigImageUrl: movie.bigImageUrl,
-          releaseDate: movie.releaseDate
-        }).done(function(err, newMovie){
+          image_url: movie.image_url,
+          big_image_url: movie.big_image_url,
+          release_date: movie.release_date
+        }).done(function(err, new_movie){
           if (err) return console.log(err);
-          return callback(newMovie.id);
+          return callback(new_movie.id);
         });
       } else {
-        existingMovie.title = movie.title;
-        existingMovie.imageUrl = movie.imageUrl;
-        existingMovie.bigImageUrl = movie.bigImageUrl;
-        return callback(existingMovie.id);
+        existing_movie.title = movie.title;
+        existing_movie.image_url = movie.image_url;
+        existing_movie.big_image_url = movie.big_image_url;
+        existing_movie.release_date = existing_movie.release_date;
+        return callback(existing_movie.id);
       }
     });
   },
 
-  includeRatings: function(movies, userId, callback){
-    var ids = _.map(movies, function(movie){ return Number(movie.movieDbId); });
-    if (userId){ //include current user ratings
+  includeRatings: function(movies, user_id, callback){
+    var ids = _.map(movies, function(movie){ return Number(movie.tmdb_id); });
+    if (user_id){ //include current user ratings
     MovieUserRating.find()
-    .where({movieDbId: ids, userId: userId })
+    .where({tmdb_id: ids, user_id: user_id })
      .exec(function (err, ratings) {
          _.each(ratings, function(rating){
-           var found = _.findWhere(movies, {movieDbId: rating.movieDbId});
-           if (found) found["currentUserRating"] = rating.rating;
+           var found = _.findWhere(movies, {tmdb_id: rating.tmdb_id});
+           if (found) found["current_user_rating"] = rating.rating;
        });
        return callback(movies);
      });

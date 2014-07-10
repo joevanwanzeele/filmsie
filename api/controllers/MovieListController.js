@@ -14,13 +14,13 @@
  *
  * @docs        :: http://sailsjs.org/#!documentation/controllers
  */
-var movieHelper = require("../services/movieHelper");
+var movieHelper = require("../services/MovieHelper");
 
 module.exports = {
 
   index: function(req, res, next){
     //console.dir(req.body);
-    MovieList.find({userId: req.body.userId })
+    MovieList.find({user_id: req.body.user_id })
       .done(function(err, existing) {
         if (err) console.log(err);
         return res.json(existing.sort(function(a,b){return a.name > b.name;}));
@@ -30,68 +30,68 @@ module.exports = {
   add: function(req, res, next){
     //console.dir(req.body)
     //add the movie to the movie database if it's not there, then get the id
-    movieHelper.addOrUpdateMovie(req.body.movie, function(movieId){
-        MovieList.create({ userId: req.body.userId,
+    movieHelper.addOrUpdateMovie(req.body.movie, function(movie_id){
+        MovieList.create({ user_id: req.body.user_id,
                            name: req.body.name,
-                           movieIds: [movieId]})
-                           .done(function(err, movieList) {
+                           movie_ids: [movie_id]})
+                           .done(function(err, movie_list) {
                             if (err) {
                               return console.log(err);
                             }else {
-                              return res.json(movieList);
+                              return res.json(movie_list);
                             }});
     });
   },
 
   update: function(req, res, next){
-    movieHelper.addOrUpdateMovie(req.body.movie, function(movieId){
-        MovieList.findOne(req.body.listId, function(err, movieList){
-          movieList.movieIds.push(movieId);
-          movieList.movieIds = _.uniq(movieList.movieIds);
-          movieList.save(function(err){
+    movieHelper.addOrUpdateMovie(req.body.movie, function(movie_id){
+        MovieList.findOne(req.body.list_id, function(err, movie_list){
+          movie_list.movie_ids.push(movie_id);
+          movie_list.movie_ids = _.uniq(movie_list.movie_ids);
+          movie_list.save(function(err){
             if (err) return console.log(err);
-            return res.json(movieList);
+            return res.json(movie_list);
           });
         });
     });
   },
 
   getMoviesInList: function(req, res, next){
-    var userId = req.session.user.id;
-    if (req.body.listId){
+    var user_id = req.session.user.id;
+    if (req.body.list_id){
       //get specific list
-      MovieList.findOne({id: req.body.listId })
+      MovieList.findOne({id: req.body.list_id })
         .done(function(err, list) {
           if (err) return console.log(err);
-          Movie.find().where({ id: list.movieIds }).exec(function(err, movies) {
-            movieHelper.includeRatings(movies, userId, function(moviesWithRatings){ return res.json(moviesWithRatings); });
+          Movie.find().where({ id: list.movie_ids }).exec(function(err, movies) {
+            movieHelper.includeRatings(movies, user_id, function(movies_with_ratings){ return res.json(movies_with_ratings); });
           });
         });
     } else {
       //get all rated movies, ordered by rating (favorites)
-      MovieUserRating.find({userId: req.body.userId})
-        .done(function(err, userRatings){
+      MovieUserRating.find({user_id: req.body.user_id})
+        .done(function(err, user_ratings){
           if (err) return console.log(err);
-          var sortedIds = _.map(userRatings.sort(function(a,b){ return a.rating - b.rating; }), function(rating){
-            return rating.movieId;
+          var sorted_ids = _.map(user_ratings.sort(function(a,b){ return a.rating - b.rating; }), function(rating){
+            return rating.movie_id;
           });
-          Movie.find().where({ id: sortedIds }).exec(function(err, movies) {
-            movieHelper.includeRatings(movies, userId, function(moviesWithRatings){ return res.json(moviesWithRatings); });
+          Movie.find().where({ id: sorted_ids }).exec(function(err, movies) {
+            movieHelper.includeRatings(movies, user_id, function(movies_with_ratings){ return res.json(movies_with_ratings); });
           });
         });
     }
   },
 
   removeMovie: function(req, res, next){
-    if (!req.body.listId || !req.body.movieId) return res.json(-1);
+    if (!req.body.list_id || !req.body.movie_id) return res.json(-1);
 
-    MovieList.findOne({ id: req.body.listId })
+    MovieList.findOne({ id: req.body.list_id })
       .done(function(err, list){
         if (err) return console.log(err);
-        list.movieIds = _.without(list.movieIds, req.body.movieId);
+        list.movie_ids = _.without(list.movie_ids, req.body.movie_id);
         list.save(function(err){
           if (err) return console.log(err);
-          return res.json(list.movieIds);
+          return res.json(list.movie_ids);
         });
     });
   },
