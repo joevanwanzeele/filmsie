@@ -30,9 +30,9 @@ module.exports = {
     MovieUserRating.find()
     .where({tmdb_id: ids, user_id: user_id })
      .exec(function (err, ratings) {
-         _.each(ratings, function(rating){
-           var found = _.findWhere(movies, {tmdb_id: rating.tmdb_id});
-           if (found) found["current_user_rating"] = rating.rating;
+       _.each(ratings, function(rating){
+         var found = _.findWhere(movies, {tmdb_id: rating.tmdb_id});
+         if (found) found["current_user_rating"] = rating.rating;
        });
        return callback(movies);
      });

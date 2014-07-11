@@ -64,7 +64,7 @@ function UserViewModel(parent, data){
   self.login = function(callback){
     FB.login(function(response) {
       self.processLogin(response, callback);
-    }, {scope: 'public_profile,email,user_friends'});
+    }, {scope: 'public_profile, email, user_friends'});
   }
 
   self.logout = function(callback){
@@ -98,17 +98,26 @@ function UserViewModel(parent, data){
 
   self.getFriends = function(){
     self.friends([]);
-    $.ajax({
-      type: "POST",
-      url: "/user/facebookFriends",
-      data: { '_csrf': window.filmsie.csrf },
-      cache: false,
-      success: function(data){
-        _.each(data, function(friend){
-          self.friends.push(new UserViewModel(self, friend));
-        });
-      }
+
+    FB.api(
+      "/me/friends",
+      function (response) {
+        if (response && !response.error) {
+          console.dir(response);
+        }
     });
+    //
+    // $.ajax({
+    //   type: "POST",
+    //   url: "/user/get",
+    //   data: { '_csrf': window.filmsie.csrf },
+    //   cache: false,
+    //   success: function(data){
+    //     _.each(data, function(friend){
+    //       self.friends.push(new UserViewModel(self, friend));
+    //     });
+    //   }
+    // });
   }
 
   self.getMatches = function(){

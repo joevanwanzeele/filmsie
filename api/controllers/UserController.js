@@ -39,11 +39,10 @@ module.exports = {
   },
 
   facebookFriends: function(req, res, next){
-    graph.setAccessToken(req.session.user.facebookAccessToken);
-    //graph.setAppSecret(sails.config.facebook.client_secret);
-    graph.get(req.session.user.facebookId + "/friends?fields=name,picture", function(err, response) {
-      res.json(response.data);
-    });
+    var facebook_user_ids = _.map(req.users.data, function(fb_user){ return fb_user.id; });
+
+    userHelper.getUsersByFacebookIds(current_user_id, facebook_user_ids,
+      function(users){ res.json(users); });
   },
 
   'facebook': function (req, res, next) {
