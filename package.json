@@ -4,11 +4,11 @@
     "version": "0.0.0-78",
     "description": "The social movie review site",
     "dependencies": {
-        "sails": "0.9.15",
+        "sails": "0.9.16",
         "grunt": "0.4.1",
         "ejs": "0.8.4",
         "optimist": "0.3.4",
-        "sails-mongo": "0.9.8",
+        "sails-mongo": "0.9.x",
         "passport": "0.2.0",
         "passport-local": "1.0.0",
         "passport-facebook": "1.0.3",

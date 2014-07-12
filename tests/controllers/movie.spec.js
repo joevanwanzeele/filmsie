@@ -1,16 +1,50 @@
-var MovieController = require('../../api/controllers/MovieController'),
-    sinon = require('sinon'),
-    assert = require('assert');
+var supertest = require("supertest");
 
-describe('The Movie Controller', function () {
-    describe('when we load the index page', function () {
-        it ('should render the view', function () {
-            var view = sinon.spy();
-            MovieController.index({session: { user: null } }, {
-                view: view
-            });
-            assert.ok(view.called);
+
+describe('The Movie Controller:', function () {
+    /*
+       Global before() and after() launcher for Sails application
+       to run tests like Controller and Models test
+    */
+    before(function(done) {
+      // Lift Sails and store the app reference
+      require('sails').lift({
+
+        // turn down the log level so we can view the test results
+        log: {
+          level: 'error'
+        },
+        adapters: {
+          default: 'test'
+        }
+
+      }, function(err, sails) {
+           // export properties for upcoming tests with supertest.js
+           sails.localAppURL = localAppURL = ( sails.usingSSL ? 'https' : 'http' ) + '://' + sails.config.host + ':' + sails.config.port + '';
+           // save reference for teardown function
+           done(err);
+         });
+
+    });
+
+    // After Function
+    after(function(done) {
+      sails.lower(done);
+    });
+
+    describe('when we load the index page:', function () {
+        it ('should render the view', function (done) {
+        supertest(sails.express.app)
+        .get('/')
+        .expect(200, done);
         });
+    });
+
+    describe('when we rate a movie:', function(){
+      it ('should create a new movie if it does not exist', function(){
+        // supertest(sails.express.app).
+        //   .post()
+      });
     });
 
     // describe('when we request the config settings from the movie db api', function(){

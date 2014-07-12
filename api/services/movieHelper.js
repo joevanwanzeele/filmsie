@@ -1,7 +1,7 @@
 module.exports = {
 
   addOrUpdateMovie: function(movie, cb){
-    Movie.findOneByTmdb_id(movie.tmdb_id).done(function(err, existing_movie){
+    Movie.findOneByTmdb_id(Number(movie.tmdb_id)).done(function(err, existing_movie){
       if (err) return console.log(err);
       if (!existing_movie){
         Movie.create({

@@ -9,7 +9,7 @@ describe('User Helper Tests:', function () {
             assert.equal(result, 1);
         });
 
-        it ('should return -1 for users with no rated movies in common:', function(){
+        it ('should return -1 for users with no rated movies in common', function(){
           var user_a_id = "12345";
           var user_b_id = "67890";
 
@@ -25,7 +25,7 @@ describe('User Helper Tests:', function () {
           assert.equal(user.c_score, -1);
         });
 
-        it ('should return the correct value for users with 2 rated movies in common:', function(){
+        it ('should return the correct value for users with 2 rated movies in common', function(){
           var user_a_id = "12345";
           var user_b_id = "67890";
 
@@ -45,7 +45,7 @@ describe('User Helper Tests:', function () {
           assert.equal(user.c_score, .4);
         });
 
-        it ('should return the correct value for users with 5 rated movies in common:', function(){
+        it ('should return the correct value for users with 5 rated movies in common', function(){
           var user_a_id = "12345";
           var user_b_id = "67890";
 

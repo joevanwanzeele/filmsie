@@ -440,6 +440,7 @@ function GenreViewModel(data){
 
 function MoviesViewModel() {
   var self = this;
+  self.user = ko.observable(new UserViewModel(self));
   self.total_results = ko.observable(0);
   self.movies = ko.observableArray([]);
   self.page = ko.observable(0);
@@ -448,12 +449,12 @@ function MoviesViewModel() {
   self.thumbnail_base_url = ko.observable();
   self.large_image_base_url = ko.observable();
   self.genres = ko.observableArray([]);
+
   self.selected_genres = ko.observableArray([]);
   self.selected_year = ko.observable();
   self.movie_lists = ko.observableArray([]);
   self.new_list_name = ko.observable();
   self.selected_movie = ko.observable();
-  self.user = ko.observable(new UserViewModel(self));
   self.selected_list = ko.observable(new MovieListViewModel({}, self));
   self.movie_details = ko.observable(new MovieViewModel({}, self));
 
@@ -676,6 +677,14 @@ function MoviesViewModel() {
   }
 
   self.init = function(callback, p){
+    self.selected_genres([]);
+    self.selected_year(null);
+    self.movie_lists([]);
+    self.new_list_name('');
+    self.selected_movie(null);
+    self.selected_list(null);
+    self.movie_details(null);
+
     self.getConfigSettings();
     self.getGenres();
     self.setUpRouting();
