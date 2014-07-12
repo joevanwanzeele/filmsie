@@ -1,5 +1,6 @@
 var async = require('async');
 var _ = require("underscore");
+
 module.exports = {
 
   findByFacebookId: function(id, fn){
@@ -78,9 +79,7 @@ module.exports = {
 
 function calculateScore(user, combined_ratings, cb){
 
-  var grouped = _.groupBy(combined_ratings, 'movie_id');
-
-  grouped = _.values(grouped);
+  var grouped = _.values(_.groupBy(combined_ratings, 'movie_id'));
 
   var two_ratings = _.compact(_.map(grouped, function(group){
     return group.length == 2 ? _.pluck(group, "rating") : false }));
@@ -91,7 +90,6 @@ function calculateScore(user, combined_ratings, cb){
   }
 
   var getDifference = _.memoize(function(both_ratings){ return Math.abs(both_ratings[0] - both_ratings[1]) + 1; });
-
   var differences = _.map(two_ratings, getDifference);
 
   var score = two_ratings.length / _.reduce(differences, function(mem, val){ return mem + val});
