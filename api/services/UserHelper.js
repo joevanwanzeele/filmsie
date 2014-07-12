@@ -1,5 +1,5 @@
-
-
+var async = require('async');
+var _ = require("underscore");
 module.exports = {
 
   findByFacebookId: function(id, fn){
@@ -14,7 +14,7 @@ module.exports = {
     });
   },
 
-  addOrUpdateUser: function(profile, cb){
+  addOrUpdateFacebookUser: function(profile, cb){
     this.findByFacebookId(profile.id, function (err, user) {
       // Create a new User if it doesn't exist yet
       //console.dir(profile._json);
@@ -57,42 +57,16 @@ module.exports = {
     });
   },
 
+  calculateScore: calculateScore,
+
+  includeCorrelationScore: includeCorrelationScore,
+
   getUsersByFacebookIds: function(current_user_id, facebook_ids, cb){
     User.find().where({facebook_id: facebook_ids})
-      .then(function (err, users) {
-        _.each(users, function(user){
-          var c_score = this.getCorrelationScore(current_user_id, user.id);
-          user["c_score"] = c_score;
-        });
-        return callback(users);
+      .done(function (err, users) {
+        users = _.map(users, function(user){ user["current_user_id"] = current_user_id; return user; });
+        async.each(users, includeCorrelationScore, function(){ cb(users);});
       });
-  },
-
-  getCorrelationScore: function(user_a_id, user_b_id){
-    MovieUserRating.find().where({user_id: [user_a_id, user_b_id]})
-      .sort("movie_id")
-      .then(this.calculateScore);
-  },
-
-  calculateScore: function(combined_ratings){
-    _ = require("underscore");
-
-    var grouped = _.groupBy(combined_ratings, 'movie_id');
-
-    grouped = _.values(grouped);
-
-    var two_ratings = _.compact(_.map(grouped, function(group){
-      return group.length == 2 ? _.pluck(group, "rating") : false }));
-
-    if (two_ratings.length == 0) return -1; //they haven't rated any of the same movies
-
-    var getDifference = _.memoize(function(both_ratings){ return Math.abs(both_ratings[0] - both_ratings[1]) + 1; });
-
-    var differences = _.map(two_ratings, getDifference);
-
-    var score = two_ratings.length / _.reduce(differences, function(mem, val){ return mem + val});
-
-    return score;
   },
 
   returnMin: function(array){
@@ -100,5 +74,37 @@ module.exports = {
 
     return _.min(array);
   }
+}
 
+function calculateScore(user, combined_ratings, cb){
+
+  var grouped = _.groupBy(combined_ratings, 'movie_id');
+
+  grouped = _.values(grouped);
+
+  var two_ratings = _.compact(_.map(grouped, function(group){
+    return group.length == 2 ? _.pluck(group, "rating") : false }));
+
+  if (two_ratings.length == 0) {
+    user["c_score"] = -1; //they haven't rated any of the same movies
+    return cb();
+  }
+
+  var getDifference = _.memoize(function(both_ratings){ return Math.abs(both_ratings[0] - both_ratings[1]) + 1; });
+
+  var differences = _.map(two_ratings, getDifference);
+
+  var score = two_ratings.length / _.reduce(differences, function(mem, val){ return mem + val});
+
+  user["c_score"] = score.toFixed(2);
+  return cb();
+}
+
+function includeCorrelationScore(user, cb){
+  console.dir(user.current_user_id);
+  var user_a_id = user.current_user_id;
+  var user_b_id = user.id;
+  MovieUserRating.find().where({user_id: [user_a_id, user_b_id]})
+    .sort("movie_id")
+    .exec(function(combined_ratings){ calculateScore(user, combined_ratings, cb); });
 }

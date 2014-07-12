@@ -21,7 +21,7 @@ var graph = require('fbgraph');
 module.exports = {
 
   login: function (req, res) {
-    userHelper.addOrUpdateUser(req.body, function(err, user){
+    userHelper.addOrUpdateFacebookUser(req.body, function(err, user){
       req.session.user = user;
       req.session.authenticated = true;
       res.json(user);
@@ -39,7 +39,14 @@ module.exports = {
   },
 
   facebookFriends: function(req, res, next){
-    var facebook_user_ids = _.map(req.users.data, function(fb_user){ return fb_user.id; });
+    if (!req.session.user){
+      console.log("not logged in");
+      return res.json(-1);
+    }
+
+    var facebook_user_ids = _.map(req.body.data, function(fb_user){ return fb_user.id; });
+
+    var current_user_id = req.session.user.id;
 
     userHelper.getUsersByFacebookIds(current_user_id, facebook_user_ids,
       function(users){ res.json(users); });

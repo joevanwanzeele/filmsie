@@ -3,6 +3,7 @@ module.exports = {
   addOrUpdateMovie: function(movie, callback){
     Movie.findOne({ tmdb_id: movie.tmdb_id }).done(function(err, existing_movie){
       if (err) return console.log(err);
+      console.dir(movie);
       if (!existing_movie){
         Movie.create({
           tmdb_id: movie.tmdb_id,

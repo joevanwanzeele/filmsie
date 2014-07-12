@@ -22,6 +22,8 @@ attributes: {
 
     rotten_tomatoes_id: { type: 'string', required: false },
 
-    tmdb_id: { type: 'integer', required: false }
+    tmdb_id: { type: 'integer', required: false },
+
+    imdb_id: { type: 'integer', required: false }
   }
 };

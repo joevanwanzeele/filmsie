@@ -2,18 +2,21 @@ function UserViewModel(parent, data){
   var self = this;
   self.parent = parent;
   self.id = ko.observable(data && data.id || '');
+
+  self.authenticated = ko.observable(false);
+  self.c_score = ko.observable(data && data.c_score || null)
+  self.first_name = ko.observable(data && data.first_name || '');
+  self.last_name = ko.observable(data && data.last_name || '');
+  self.name = ko.observable(data && data.name || '');
+  self.email = ko.observable(data && data.email || '');
+  self.gender = ko.observable();
+  self.facebook_id = ko.observable(data && data.facebook_id || null);
+  self.fb_profile_url = ko.observable(data && data.fb_profile_url || '');
   self.profile_pic_url = ko.observable(data && data.profile_pic_url || '');
+
   self.friends = ko.observableArray([]);
   self.matches = ko.observableArray([]);
-  self.facebook_id = ko.observable();
-  self.authenticated = ko.observable(false);
 
-  self.first_name = ko.observable(data && data.name || '');
-  self.last_name = ko.observable();
-  self.email = ko.observable();
-  self.gender = ko.observable();
-  self.fb_profile_url = ko.observable();
-  self.name = ko.observable();
 
   self.processLogin = function(callback){
     FB.getLoginStatus(function(response) {
@@ -89,6 +92,7 @@ function UserViewModel(parent, data){
     if (value){
       FB.api('/me?fields=picture', function(response) {
         self.profile_pic_url(response.picture.data.url);
+        console.dir(response);
       });
     }
   });
@@ -101,23 +105,29 @@ function UserViewModel(parent, data){
 
     FB.api(
       "/me/friends",
-      function (response) {
-        if (response && !response.error) {
-          console.dir(response);
+      function (friends) {
+        console.dir(friends);
+        if (friends && !friends.error) {
+          friends['_csrf'] = window.filmsie.csrf;
+
+          $.ajax({
+            type: "POST",
+            url: "/user/facebookFriends",
+            data: friends,
+            cache: false,
+            success: function(data){
+              console.dir(data);
+              _.each(data, function(friend){
+                self.friends.push(new UserViewModel(self, friend));
+              });
+            }
+          });
         }
     });
-    //
-    // $.ajax({
-    //   type: "POST",
-    //   url: "/user/get",
-    //   data: { '_csrf': window.filmsie.csrf },
-    //   cache: false,
-    //   success: function(data){
-    //     _.each(data, function(friend){
-    //       self.friends.push(new UserViewModel(self, friend));
-    //     });
-    //   }
-    // });
+  },
+
+  self.save = function(){
+
   }
 
   self.getMatches = function(){
