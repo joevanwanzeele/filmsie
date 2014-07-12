@@ -45,7 +45,7 @@ module.exports = {
       return res.json(-1);
     }
 
-    var facebook_user_ids = _.map(req.body.data, function(fb_user){ return fb_user.id; });
+    var facebook_user_ids = _.map(req.body.data, function(fb_user){ return Number(fb_user.id); });
 
     var current_user_id = req.session.user.id;
 

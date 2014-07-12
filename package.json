@@ -1,7 +1,7 @@
 {
     "name": "filmsie",
     "private": true,
-    "version": "0.0.0-78",
+    "version": "0.0.0-79",
     "description": "The social movie review site",
     "dependencies": {
         "sails": "0.9.16",

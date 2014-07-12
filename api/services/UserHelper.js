@@ -47,8 +47,10 @@ module.exports = {
   includeCorrelationScore: includeCorrelationScore,
 
   getUsersByFacebookIds: function(current_user_id, facebook_ids, cb){
+    console.dir(current_user_id);
     User.find().where({facebook_id: facebook_ids})
       .done(function (err, users) {
+        console.dir(current_user_id);
         users = _.map(users, function(user){ user["current_user_id"] = current_user_id; return user; });
         async.each(users, includeCorrelationScore, function(){ cb(users);});
       });
@@ -64,7 +66,7 @@ module.exports = {
 function calculateScore(user, combined_ratings, cb){
 
   var grouped = _.values(_.groupBy(combined_ratings, 'movie_id'));
-
+  console.dir(combined_ratings);
   var two_ratings = _.compact(_.map(grouped, function(group){
     return group.length == 2 ? _.pluck(group, "rating") : false }));
 
@@ -87,5 +89,5 @@ function includeCorrelationScore(user, cb){
   var user_b_id = user.id;
   MovieUserRating.find().where({user_id: [user_a_id, user_b_id]})
     .sort("movie_id")
-    .exec(function(combined_ratings){ calculateScore(user, combined_ratings, cb); });
+    .done(function(err, combined_ratings){ calculateScore(user, combined_ratings, cb); });
 }
