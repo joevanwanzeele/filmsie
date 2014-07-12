@@ -1,9 +1,8 @@
 module.exports = {
 
-  addOrUpdateMovie: function(movie, callback){
-    Movie.findOne({ tmdb_id: movie.tmdb_id }).done(function(err, existing_movie){
+  addOrUpdateMovie: function(movie, cb){
+    Movie.findOneByTmdb_id(movie.tmdb_id).done(function(err, existing_movie){
       if (err) return console.log(err);
-      console.dir(movie);
       if (!existing_movie){
         Movie.create({
           tmdb_id: movie.tmdb_id,
@@ -11,16 +10,13 @@ module.exports = {
           image_url: movie.image_url,
           big_image_url: movie.big_image_url,
           release_date: movie.release_date
-        }).done(function(err, new_movie){
-          if (err) return console.log(err);
-          return callback(new_movie.id);
-        });
+        }).done(cb);
       } else {
         existing_movie.title = movie.title;
         existing_movie.image_url = movie.image_url;
         existing_movie.big_image_url = movie.big_image_url;
         existing_movie.release_date = existing_movie.release_date;
-        return callback(existing_movie.id);
+        existing_movie.save(function(err){return cb(err, existing_movie);});
       }
     });
   },

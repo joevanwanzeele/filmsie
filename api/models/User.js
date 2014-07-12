@@ -20,8 +20,7 @@ module.exports = {
     },
 
     fb_profile_url: {
-      type: 'string',
-      required: false
+      type: 'string'
     },
 
     first_name: {
@@ -39,8 +38,11 @@ module.exports = {
   	email: {
       type: 'string',
       email: true,
-      //required: true,
       unique: true
+    },
+
+    gender: {
+      type: 'string'
     },
 
     online: {
@@ -82,27 +84,25 @@ module.exports = {
     }
 
     next();
-  },
-
-  beforeCreate: function(user, next){
+  }
+}
 
     // if (!values.password || values.password != values.confirmation){
     //   return next({err: ["Password doesn't match password confirmation."]});
     // }
-    if (user.password != null)
-    {
-      bcrypt.genSalt(10, function(err, salt) {
-        bcrypt.hash(values.password, salt, function(err, hash) {
-          if (err) {
-            console.log(err);
-            next(err);
-          }else{
-            values.password = hash;
-            next(null, user);
-          }
-        });
-      });
-    }
-    else{ return next(null, user); }
-  }
-};
+  //   if (user.password != null)
+  //   {
+  //     bcrypt.genSalt(10, function(err, salt) {
+  //       bcrypt.hash(values.password, salt, function(err, hash) {
+  //         if (err) {
+  //           console.log(err);
+  //           next(err);
+  //         }else{
+  //           values.password = hash;
+  //           next(null, user);
+  //         }
+  //       });
+  //     });
+  //   }
+  //   else{ return next(null, user); }
+  // }

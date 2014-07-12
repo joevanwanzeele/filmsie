@@ -5,55 +5,39 @@ module.exports = {
 
   findByFacebookId: function(id, fn){
     User.findOne({
-      facebook_id: id
+      facebook_id: Number(id)
     }).done(function (err, user) {
       if (err) {
-        return fn(null, null);
+        return fn(err, null, cb);
       } else {
-        return fn(null, user);
+        return fn(null, user, cb);
       }
     });
   },
 
   addOrUpdateFacebookUser: function(profile, cb){
-    this.findByFacebookId(profile.id, function (err, user) {
-      // Create a new User if it doesn't exist yet
-      //console.dir(profile._json);
-      if (!user) {
+    User.findOneByFacebook_id(Number(profile.id)).done(function(err, user){
+      if (err) return console.log(err);
+      if (!user){
         User.create({
           facebook_id: profile.id,
           email: profile.email,
           first_name: profile.first_name,
           last_name: profile.last_name,
-          fb_profile_url: profile.link,
+          name: profile.name,
           gender: profile.gender,
-          verified: profile.verified
-        }).done(function (err, user) {
-          if (user) {
-            return cb(null, user, {
-              message: 'Logged In Successfully'
-            });
-          } else {
-            console.dir(err);
-            return cb(err, null, {
-              message: 'There was an error logging you in with Facebook'
-            });
-          }
-        });
-
-      // If there is already a user update and return it
-      } else {
-        User.update(user.id, {
-          email: profile.email,
-          first_name: profile.first_name,
-          last_name: profile.last_name,
           fb_profile_url: profile.link,
-          verified: profile.verified })
-          .done(function(err, user){
-            return cb(null, user[0], {
-              message: 'Logged In Successfully'
-            });
-          });
+          verified: profile.verified
+        }).done(cb);
+      } else {
+        user.email = profile.email;
+        user.first_name = profile.first_name;
+        user.last_name = profile.last_name;
+        user.name = profile.name;
+        user.gender = profile.gender;
+        user.fb_profile_url = profile.link;
+        user.verified = profile.verified;
+        user.save(function(err){return cb(err, user);});
       }
     });
   },
@@ -99,7 +83,6 @@ function calculateScore(user, combined_ratings, cb){
 }
 
 function includeCorrelationScore(user, cb){
-  console.dir(user.current_user_id);
   var user_a_id = user.current_user_id;
   var user_b_id = user.id;
   MovieUserRating.find().where({user_id: [user_a_id, user_b_id]})

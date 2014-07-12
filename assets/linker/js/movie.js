@@ -21,6 +21,7 @@ function UserViewModel(parent, data){
   self.processLogin = function(callback){
     FB.getLoginStatus(function(response) {
      if (response.status == "connected"){
+       self.authenticated(true);
        FB.api('/me', function(user) {
          if (user.error) return console.log(user.error);
          self.facebook_id(user.id);
@@ -30,7 +31,6 @@ function UserViewModel(parent, data){
          self.email(user.email);
          self.gender(user.gender);
          self.fb_profile_url(user.link);
-
          user["_csrf"] = window.filmsie.csrf;
          $.ajax({
            type: "POST",
@@ -39,7 +39,6 @@ function UserViewModel(parent, data){
            cache: false,
            success: function(data){
              self.id(data.id);
-             self.authenticated(true);
              self.parent.init();
            }
          });
@@ -92,7 +91,6 @@ function UserViewModel(parent, data){
     if (value){
       FB.api('/me?fields=picture', function(response) {
         self.profile_pic_url(response.picture.data.url);
-        console.dir(response);
       });
     }
   });
@@ -106,7 +104,6 @@ function UserViewModel(parent, data){
     FB.api(
       "/me/friends",
       function (friends) {
-        console.dir(friends);
         if (friends && !friends.error) {
           friends['_csrf'] = window.filmsie.csrf;
 
@@ -156,12 +153,13 @@ function MovieListViewModel(data, parent){
   });
 
   self.addMovie = function(vm, e){
+    console.dir(self.id());
     $.ajax({
       type: "POST",
       url: "/movielist/addMovie",
       data: {
         user_id: self.parent.user().id(),
-        list_id: $(e.target).attr('list-id'),
+        list_id: self.id(),
         movie: {
           tmdb_id: parent.selected_movie().tmdb_id(),
           title: parent.selected_movie().title(),
@@ -253,9 +251,9 @@ function MovieViewModel(data, parent) {
   self.tmdb_id = ko.observable(data && data.tmdb_id || '');
   self.current_user_rating = ko.observable(data && data.current_user_rating || null);
   self.title = ko.observable(data && data.title || '');
+  self.poster_path = ko.observable(data && data.poster_path || '');
+  self.backdrop_path = ko.observable(data && data.backdrop_path || '');
   self.image_url = ko.observable(data && data.image_url || null);
-  self.big_image_url = ko.observable(data && data.big_image_url || null);
-  self.release_date = ko.observable(data && data.release_date || data.release_date);
   self.genres = ko.observableArray([]);
   self.runtime = ko.observable();
   self.synopsis = ko.observable();
@@ -264,6 +262,21 @@ function MovieViewModel(data, parent) {
   self.cast_members = ko.observableArray([]);
   self.cast_is_hidden = ko.observable(true);
   self.temp_rating = ko.observable(self.current_user_rating());
+
+  var not_found_image_url = "../img/unavailable-image.jpeg";
+
+  self.big_image_url = ko.computed(function(){
+    if (!self.poster_path()) return '';
+    var image_path = self.backdrop_path() || self.poster_path();
+    return self.parent.large_image_base_url() + image_path;
+  });
+
+  self.image_url = ko.computed(function(){
+    if (!self.poster_path()) return not_found_image_url;
+    return self.parent.thumbnail_base_url() + self.poster_path();
+  });
+
+  self.release_date = ko.observable(data && data.release_date || data.release_date);
 
   self.genresString = ko.computed(function(){
     return self.genres().join(", ");
@@ -623,13 +636,6 @@ function MoviesViewModel() {
             _.each(data.results, function(movie, i){
               if (i == data.results.length) return;
               var new_movie = new MovieViewModel(movie, self);
-              if (movie.poster_path){
-                new_movie.image_url(self.thumbnail_base_url() + movie.poster_path);
-                new_movie.big_image_url(self.large_image_base_url() + (movie.backdrop_path || movie.poster_path));
-              }
-              else{
-                new_movie.image_url("../img/unavailable-image.jpeg");
-              }
               self.movies.push(new_movie);
             });
             $('.movie-table-container').scroll(); //this is to load more if the initial load doesn't fill the view area

@@ -22,6 +22,7 @@ module.exports = {
 
   login: function (req, res) {
     userHelper.addOrUpdateFacebookUser(req.body, function(err, user){
+      if (user instanceof Array) user = user[0];
       req.session.user = user;
       req.session.authenticated = true;
       res.json(user);
