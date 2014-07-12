@@ -16,9 +16,9 @@ attributes: {
 
     release_date: { type: 'string', required: false },
 
-    image_url: { type: 'string', required: false },
+    poster_path: { type: 'string', required: false },
 
-    big_image_url: { type: 'string', required: false },
+    backdrop_path: { type: 'string', required: false },
 
     rotten_tomatoes_id: { type: 'string', required: false },
 

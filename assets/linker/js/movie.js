@@ -140,7 +140,7 @@ function MovieListViewModel(data, parent){
   self.id = ko.observable(data && data.id || null);
   self.name = ko.observable(data && data.name || null);
   self.movie_ids = ko.observableArray(data && data.movie_ids || data.movie_ids);
-  self.movies = ko.observableArray();
+  self.movies = ko.observableArray([]);
   self.is_public = ko.observable(true && (data ? data.is_public : true));
   self.user_id = ko.observable(data && data.user_id);
   self.name_and_length = ko.computed(function(){
@@ -153,7 +153,6 @@ function MovieListViewModel(data, parent){
   });
 
   self.addMovie = function(vm, e){
-    console.dir(self.id());
     $.ajax({
       type: "POST",
       url: "/movielist/addMovie",
@@ -163,8 +162,8 @@ function MovieListViewModel(data, parent){
         movie: {
           tmdb_id: parent.selected_movie().tmdb_id(),
           title: parent.selected_movie().title(),
-          image_url: parent.selected_movie().image_url(),
-          big_image_url: parent.selected_movie().big_image_url(),
+          poster_path: parent.selected_movie().poster_path(),
+          backdrop_path: parent.selected_movie().backdrop_path(),
           release_date: parent.selected_movie().release_date()
         },
         '_csrf': window.filmsie.csrf
@@ -233,6 +232,7 @@ function MovieListViewModel(data, parent){
 
   self.movie_details = self.parent.movie_details;
   self.thumbnail_base_url = self.parent.thumbnail_base_url;
+  self.large_image_base_url = self.parent.large_image_base_url;
   self.user = self.parent.user;
 }
 
@@ -417,8 +417,8 @@ function MovieViewModel(data, parent) {
                 id: self.id(),
                 tmdb_id: self.tmdb_id(),
                 title: self.title(),
-                image_url: self.image_url(),
-                big_image_url: self.big_image_url(),
+                poster_path: self.poster_path(),
+                backdrop_path: self.backdrop_path(),
                 imdb_id: self.imdb_id(),
                 release_date: self.release_date() },
               rating: rating_value,
@@ -515,8 +515,8 @@ function MoviesViewModel() {
         movie: {
           tmdb_id: self.selected_movie().tmdb_id(),
           title: self.selected_movie().title(),
-          image_url: self.selected_movie().image_url(),
-          big_image_url: self.selected_movie().big_image_url(),
+          poster_path: self.selected_movie().poster_path(),
+          backdrop_path: self.selected_movie().backdrop_path(),
           release_date: self.selected_movie().release_date()
         },
         '_csrf': window.filmsie.csrf

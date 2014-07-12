@@ -28,12 +28,11 @@ module.exports = {
   },
 
   add: function(req, res, next){
-    //console.dir(req.body)
     //add the movie to the movie database if it's not there, then get the id
-    movieHelper.addOrUpdateMovie(req.body.movie, function(movie_id){
+    movieHelper.addOrUpdateMovie(req.body.movie, function(err, movie){
         MovieList.create({ user_id: req.body.user_id,
                            name: req.body.name,
-                           movie_ids: [movie_id]})
+                           movie_ids: [movie.id]})
                            .done(function(err, movie_list) {
                             if (err) {
                               return console.log(err);
@@ -44,9 +43,9 @@ module.exports = {
   },
 
   addMovie: function(req, res, next){
-    movieHelper.addOrUpdateMovie(req.body.movie, function(movie_id){
+    movieHelper.addOrUpdateMovie(req.body.movie, function(err, movie){
         MovieList.findOne(req.body.list_id, function(err, movie_list){
-          movie_list.movie_ids.push(movie_id);
+          movie_list.movie_ids.push(movie.id);
           movie_list.movie_ids = _.uniq(movie_list.movie_ids);
           movie_list.save(function(err){
             if (err) return console.log(err);

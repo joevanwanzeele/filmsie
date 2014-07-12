@@ -76,20 +76,25 @@ module.exports = {
   rate: function(req, res){
     if (!req.session.user) return;
     var user_id = req.session.user.id;
-    var movie = req.body.movie;
+    var ui_movie = req.body.movie;
     var rating = Number(req.body.rating);
 
-    movieHelper.addOrUpdateMovie(movie, function(movie_id){
-      MovieUserRating.findOne({tmdb_id: movie.tmdb_id, user_id: user_id })
+    movieHelper.addOrUpdateMovie(ui_movie, function(err, movie){
+      MovieUserRating.findOne({
+        tmdb_id: movie.tmdb_id,
+        user_id: user_id })
         .done(function(err, existing) {
           if (err) return console.log(err);
           if (existing) {
-            MovieUserRating.update(existing.id, {rating: rating, movie_id: movie_id }).done(function(err, existing){
+            MovieUserRating.update(existing.id, {
+              rating: rating,
+              movie_id: movie.id
+            }).done(function(err, existing){
               if (err) return console.log(err);
             });
           } else {
             MovieUserRating.create({ user_id: user_id,
-                                     movie_id: movie_id,
+                                     movie_id: movie.id,
                                      tmdb_id: movie.tmdb_id,
                                      rotten_tomatoes_id: movie.rotten_tomatoes_id,
                                      imdb_id: movie.imdb_id,

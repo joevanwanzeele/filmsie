@@ -7,14 +7,14 @@ module.exports = {
         Movie.create({
           tmdb_id: movie.tmdb_id,
           title: movie.title,
-          image_url: movie.image_url,
-          big_image_url: movie.big_image_url,
+          poster_path: movie.poster_path,
+          backdrop_path: movie.backdrop_path,
           release_date: movie.release_date
         }).done(cb);
       } else {
         existing_movie.title = movie.title;
-        existing_movie.image_url = movie.image_url;
-        existing_movie.big_image_url = movie.big_image_url;
+        existing_movie.poster_path = movie.poster_path;
+        existing_movie.backdrop_path = movie.backdrop_path;
         existing_movie.release_date = existing_movie.release_date;
         existing_movie.save(function(err){return cb(err, existing_movie);});
       }

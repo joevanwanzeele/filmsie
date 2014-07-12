@@ -101,15 +101,15 @@
     <div class="movie-list-content" data-bind="visible: is_showing_lists, with: selected_list" >
       <div class="movie-list-header container" data-bind="visible: id()">
         <div class="row" data-bind="visible: is_public() || is_owner()">
-          <div class="col-sm-4">
+          <div class="col-sm-5">
             <span class="movie-list-title" data-bind="text: name() + ' (' + movies().length + ')'"></span>
           </div>
-          <div class="col-sm-5">
+          <div class="col-sm-2">
             <!-- ko if: is_owner() -->
             <h4>public: <input type="checkbox" data-bind="checked: is_public" /></h4>
             <!-- /ko -->
           </div>
-          <div class="col-sm-3 sm-links">
+          <div class="col-sm-5 sm-links">
             <span class="fa fa-2x fa-facebook-square pointer" data-bind="click: $parent.shareOnFacebook"></span>
             <span class="fa fa-2x fa-twitter-square"></span>
             <span class="fa fa-2x fa-reddit-square"></span>
@@ -119,7 +119,7 @@
       <!-- ko if: is_public() || is_owner() -->
       <div class="movie-list-container" data-bind="template: {name: 'list-movie-template', foreach: movies}"></div>
       <!-- /ko -->
-      <div class="row" data-bind="visible: !is_public() && !is_owner()">
+      <div class="row" data-bind="visible: !is_public() && !is_owner() && name()">
         <div class="container col-sm-12">
           <h3>This list is private.</h3>
         </div>
