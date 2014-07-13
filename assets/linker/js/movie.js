@@ -89,9 +89,7 @@ function UserViewModel(parent, data){
 
   self.facebook_id.subscribe(function(value){
     if (value){
-      FB.api('/me?fields=picture', function(response) {
-        self.profile_pic_url(response.picture.data.url);
-      });
+      self.profile_pic_url("http://graph.facebook.com/"+ self.facebook_id() + "/picture?type=large");
     }
   });
 
@@ -110,7 +108,7 @@ function UserViewModel(parent, data){
 
           $.ajax({
             type: "POST",
-            url: "/user/facebookFriends",
+            url: "/user/friends",
             data: friends,
             cache: false,
             success: function(data){
@@ -128,7 +126,18 @@ function UserViewModel(parent, data){
   }
 
   self.getMatches = function(){
-
+    self.matches([]);
+    $.ajax({
+      type: "POST",
+      url: "/user/matches",
+      data: {'_csrf': window.filmsie.csrf },
+      cache: false,
+      success: function(data){
+        _.each(data, function(match){
+          self.matches.push(new UserViewModel(self, match));
+        });
+      }
+    });
   }
 
   self.scrolledPeople = function(){}

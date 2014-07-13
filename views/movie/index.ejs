@@ -80,12 +80,7 @@
 
     <div class="people-container" data-bind="with: user, visible: is_showing_people">
       <!-- ko if: is_showing_matches -->
-      <div data-bind="foreach: matches">
-        <div>
-          <h4 data-bind="text: name"><h4>
-          <img class="profile-image-large" data-bind="attr: {'src': profile_pic_url }" />
-        </div>
-      </div>
+      <div class="friend-list-container" data-bind="template: {name: 'list-friend-template', foreach: matches}"></div>
       <!-- /ko -->
 
       <!-- ko if: is_showing_friends -->

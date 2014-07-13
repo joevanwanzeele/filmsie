@@ -39,10 +39,10 @@ module.exports = {
     res.redirect('/');
   },
 
-  facebookFriends: function(req, res, next){
+  friends: function(req, res, next){
     if (!req.session.user){
       console.log("not logged in");
-      return res.json(-1);
+      return res.json("please log in.");
     }
 
     var facebook_user_ids = _.map(req.body.data, function(fb_user){ return Number(fb_user.id); });
@@ -50,7 +50,19 @@ module.exports = {
     var current_user_id = req.session.user.id;
 
     userHelper.getUsersByFacebookIds(current_user_id, facebook_user_ids,
-      function(users){ res.json(users); });
+      function(friends){ res.json(friends); });
+  },
+
+  matches: function(req, res, next){
+    if (!req.session.user){
+      console.log("not logged in");
+      return res.json("please log in.");
+    }
+
+    userHelper.getMatches(req.session.user.id,
+      function(matches){
+        res.json(matches.sort(function(a,b){ return a-b; }));
+      });
   },
 
   'facebook': function (req, res, next) {

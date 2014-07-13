@@ -53,6 +53,17 @@ module.exports = {
         async.each(users, includeCorrelationScore, function(){ cb(users);});
       });
   },
+
+  getMatches: function(current_user_id, cb){
+    User.find()
+      .done(function(err, users){
+        users = _.map(users, function(user){ user["current_user_id"] = current_user_id; return user; });
+        async.each(users, includeCorrelationScore, function(){
+          users = _.filter(users, function(user){ return user.c_score != -1; });
+          cb(users);
+        });
+    });
+  }
 }
 
 function calculateScore(user, combined_ratings, cb){
