@@ -4,15 +4,15 @@ function UserViewModel(parent, data){
   self.id = ko.observable(data && data.id || '');
   self.facebook_id = ko.observable();
   self.authenticated = ko.observable(false);
+  self.accessToken = ko.observable();
   self.c_score = ko.observable(data && data.c_score || null)
   self.first_name = ko.observable(data && data.first_name || '');
   self.last_name = ko.observable(data && data.last_name || '');
   self.name = ko.observable(data && data.name || '');
   self.email = ko.observable(data && data.email || '');
-  self.gender = ko.observable();
-
+  self.gender = ko.observable(data && data.gender || '');
   self.fb_profile_url = ko.observable(data && data.fb_profile_url || '');
-  self.profile_pic_url = ko.observable(data && data.profile_pic_url || '');
+  //self.profile_pic_url = ko.observable(data && data.profile_pic_url || '');
 
   self.friends = ko.observableArray([]);
   self.matches = ko.observableArray([]);
@@ -20,6 +20,8 @@ function UserViewModel(parent, data){
 
   self.processLogin = function(callback){
     FB.getLoginStatus(function(response) {
+     console.log(response);
+     self.accessToken(response.authResponse.accessToken);
      if (response.status == "connected"){
        self.authenticated(true);
        FB.api('/me', function(user) {
@@ -86,11 +88,15 @@ function UserViewModel(parent, data){
     self.fb_profile_url(null);
     self.authenticated(false);
   }
+  //
+  // self.facebook_id.subscribe(function(value){
+  //   if (value){
+  //     self.profile_pic_url("https://graph.facebook.com/"+ self.facebook_id() + "/picture?type=large&access_token="+ self.accessToken());
+  //   }
+  // });
 
-  self.facebook_id.subscribe(function(value){
-    if (value){
-      self.profile_pic_url("http://graph.facebook.com/"+ self.facebook_id() + "/picture?type=large");
-    }
+  self.profile_pic_url = ko.computed(function(){
+    return "https://graph.facebook.com/"+ self.facebook_id() + "/picture?type=large&access_token="+ self.accessToken();
   });
 
   self.facebook_id(data && data.facebook_id || null);
@@ -113,7 +119,9 @@ function UserViewModel(parent, data){
             cache: false,
             success: function(data){
               _.each(data, function(friend){
-                self.friends.push(new UserViewModel(self, friend));
+                var person = new UserViewModel(self, friend);
+                person.accessToken(self.accessToken());
+                self.friends.push(person);
               });
             }
           });
@@ -134,7 +142,9 @@ function UserViewModel(parent, data){
       cache: false,
       success: function(data){
         _.each(data, function(match){
-          self.matches.push(new UserViewModel(self, match));
+          var person = new UserViewModel(self, match);
+          person.accessToken(self.accessToken());
+          self.matches.push(person);
         });
       }
     });
