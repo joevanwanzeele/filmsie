@@ -2,7 +2,7 @@ function UserViewModel(parent, data){
   var self = this;
   self.parent = parent;
   self.id = ko.observable(data && data.id || '');
-
+  self.facebook_id = ko.observable();
   self.authenticated = ko.observable(false);
   self.c_score = ko.observable(data && data.c_score || null)
   self.first_name = ko.observable(data && data.first_name || '');
@@ -10,7 +10,7 @@ function UserViewModel(parent, data){
   self.name = ko.observable(data && data.name || '');
   self.email = ko.observable(data && data.email || '');
   self.gender = ko.observable();
-  self.facebook_id = ko.observable(data && data.facebook_id || null);
+
   self.fb_profile_url = ko.observable(data && data.fb_profile_url || '');
   self.profile_pic_url = ko.observable(data && data.profile_pic_url || '');
 
@@ -95,6 +95,7 @@ function UserViewModel(parent, data){
     }
   });
 
+  self.facebook_id(data && data.facebook_id || null);
   self.is_showing_matches = ko.observable(false);
   self.is_showing_friends = ko.observable(false);
 
@@ -113,7 +114,6 @@ function UserViewModel(parent, data){
             data: friends,
             cache: false,
             success: function(data){
-              console.dir(data);
               _.each(data, function(friend){
                 self.friends.push(new UserViewModel(self, friend));
               });
@@ -691,6 +691,8 @@ function MoviesViewModel() {
     if (self.is_showing_movies()){
       self.search();
     }
+    self.selected_genres.subscribe(self.search);
+    self.selected_year.subscribe(self.search);
   }
 
   self.loadLists = function(list_id){
@@ -703,6 +705,12 @@ function MoviesViewModel() {
   }
 
   self.loadPeople = function(who){
+    $('.active').removeClass('active');
+    $('#showPeopleNavButton').addClass('active');
+    self.is_showing_movies(false);
+    self.is_showing_people(true);
+    self.is_showing_lists(false);
+
     if (who == "friends") {
       self.user().getFriends();
       self.user().is_showing_friends(true);
@@ -713,12 +721,6 @@ function MoviesViewModel() {
       self.user().is_showing_friends(false);
       self.user().is_showing_matches(true);
     }
-
-    $('.active').removeClass('active');
-    $('#showPeopleNavButton').addClass('active');
-    self.is_showing_movies(false);
-    self.is_showing_people(true);
-    self.is_showing_lists(false);
   }
 
   self.loadMovies = function(){
@@ -771,7 +773,4 @@ function MoviesViewModel() {
           });
       }).run();
   }
-
-  self.selected_genres.subscribe(self.search);
-  self.selected_year.subscribe(self.search);
 }

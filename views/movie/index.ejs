@@ -53,10 +53,10 @@
   <div class="sectionNav" data-bind="with: user">
     <ul>
       <li>
-        <a class="btn btn-default" data-bind="css: {'active': is_showing_matches }" href="#people/matches">My Matches</a>
+        <a class="btn btn-default" data-bind="css: {'active': is_showing_matches() }" href="#people/matches">My Matches</a>
       </li>
       <li>
-        <a class="btn btn-default" data-bind="css: {'active': is_showing_friends }" href="#people/friends">My friends</a>
+        <a class="btn btn-default" data-bind="css: {'active': is_showing_friends() }" href="#people/friends">My friends</a>
       </li>
       <li>
         <a class="btn btn-default" href="#people/invite">Invite Friends</a>
@@ -89,12 +89,7 @@
       <!-- /ko -->
 
       <!-- ko if: is_showing_friends -->
-      <div data-bind="foreach: friends">
-        <div class="person-container">
-          <h4 data-bind="text: name"><h4>
-          <img class="profile-image-large" data-bind="attr: {'src': profile_pic_url }" />
-        </div>
-      </div>
+      <div class="friend-list-container" data-bind="template: {name: 'list-friend-template', foreach: friends}"></div>
       <!-- /ko -->
     </div>
 
@@ -148,10 +143,8 @@
           <li><span>Your rating: <span data-bind="text: current_user_rating"></span></span></li>
           <!-- /ko -->
           <li><span data-bind="text: genresString"></li>
-          <li><span data-bind="click: toggleCast, css: { 'fa-plus-square' : cast_is_hidden, 'fa-minus-square' : !cast_is_hidden() }" class="fa pointer"></span> Cast
-          <!-- ko if: !cast_is_hidden() -->
-            <div data-bind="template: { name: 'cast-member-template', foreach: cast_members }" class="container cast-container panel"><span class="fa fa-5x fa-spin fa-cog"></span></div>
-          <!-- /ko -->
+          <li><span data-bind="click: toggleCast, css: { 'fa-minus-square' : !cast_is_hidden() }" class="fa fa-plus-square pointer"></span> Cast
+            <div data-bind="template: { name: 'cast-member-template', foreach: cast_members }, visible: !cast_is_hidden()" class="container cast-container panel"></div>
           </li>
 
         </ul>
@@ -271,6 +264,19 @@
       <div class="delete-list-item-button pointer" data-bind="click: $parent.removeMovie">
         <span class="fa fa-lg fa-times-circle"></span>
       </div>
+    </div>
+  </div>
+</script>
+
+<script type="text/html" id="list-friend-template">
+  <div class="row list-person-row">
+    <div class="col-sm-2">
+      <img class="list-person-image" data-bind="attr: {src: profile_pic_url}" />
+    </div>
+    <div class="col-sm-5 pointer">
+      <h3 data-bind="text: name"></h3>
+    </div>
+    <div class="col-sm-5 c_score-container"><span data-bind="text: c_score() * 100"></span>% match</div>
     </div>
   </div>
 </script>

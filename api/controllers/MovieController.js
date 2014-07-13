@@ -114,7 +114,7 @@ module.exports = {
     var tmdb = require('moviedb')(sails.config.mdbApi.api_key);
 
     tmdb.movieInfo({id: req.body.tmdb_id}, function(err, response){
-      if (err) {return console.dir(err);}
+      if (err) {return console.log(err);}
       res.json(response);
     });
   },

@@ -4,10 +4,6 @@ var userHelper = require("../../api/services/UserHelper");
 
 describe('User Helper Tests:', function () {
     describe('Correlation Score Calculation Tests:', function () {
-        it ('should add two numbers', function () {
-            var result = userHelper.returnMin([1,2,3]);
-            assert.equal(result, 1);
-        });
 
         it ('should return -1 for users with no rated movies in common', function(){
           var user_a_id = "12345";
