@@ -2,8 +2,7 @@ function UserViewModel(parent, data){
   var self = this;
   self.parent = parent;
   self.id = ko.observable(data && data.id || '');
-  self.facebook_id = ko.observable();
-  self.authenticated = ko.observable(false);
+  self.facebook_id = ko.observable(data && data.facebook_id || null);
   self.accessToken = ko.observable();
   self.c_score = ko.observable(data && data.c_score || null)
   self.first_name = ko.observable(data && data.first_name || '');
@@ -12,15 +11,17 @@ function UserViewModel(parent, data){
   self.email = ko.observable(data && data.email || '');
   self.gender = ko.observable(data && data.gender || '');
   self.fb_profile_url = ko.observable(data && data.fb_profile_url || '');
-  //self.profile_pic_url = ko.observable(data && data.profile_pic_url || '');
 
+  self.authenticated = ko.observable(false);
   self.friends = ko.observableArray([]);
   self.matches = ko.observableArray([]);
+
+  self.is_showing_matches = ko.observable(false);
+  self.is_showing_friends = ko.observable(false);
 
 
   self.processLogin = function(callback){
     FB.getLoginStatus(function(response) {
-     console.log(response);
      self.accessToken(response.authResponse.accessToken);
      if (response.status == "connected"){
        self.authenticated(true);
@@ -88,20 +89,11 @@ function UserViewModel(parent, data){
     self.fb_profile_url(null);
     self.authenticated(false);
   }
-  //
-  // self.facebook_id.subscribe(function(value){
-  //   if (value){
-  //     self.profile_pic_url("https://graph.facebook.com/"+ self.facebook_id() + "/picture?type=large&access_token="+ self.accessToken());
-  //   }
-  // });
 
   self.profile_pic_url = ko.computed(function(){
-    return "https://graph.facebook.com/"+ self.facebook_id() + "/picture?type=large&access_token="+ self.accessToken();
+    //return "https://graph.facebook.com/"+ self.facebook_id() + "/picture?type=large&access_token="+ self.accessToken();
+    return "https://graph.facebook.com/"+ self.facebook_id() + "/picture?type=large";
   });
-
-  self.facebook_id(data && data.facebook_id || null);
-  self.is_showing_matches = ko.observable(false);
-  self.is_showing_friends = ko.observable(false);
 
   self.getFriends = function(){
     self.friends([]);
@@ -265,14 +257,13 @@ function CastMemberViewModel(data, parent){
 
 function MovieViewModel(data, parent) {
   var self = this;
-  self.parent = parent;
+  self.parent = ko.observable(parent);
   self.id = ko.observable(data && data.id || '')
   self.tmdb_id = ko.observable(data && data.tmdb_id || '');
   self.current_user_rating = ko.observable(data && data.current_user_rating || null);
   self.title = ko.observable(data && data.title || '');
-  self.poster_path = ko.observable(data && data.poster_path || '');
-  self.backdrop_path = ko.observable(data && data.backdrop_path || '');
-  self.image_url = ko.observable(data && data.image_url || null);
+  self.backdrop_path = ko.observable(data && data.backdrop_path || null);
+  self.poster_path = ko.observable(data && data.poster_path || null);
   self.genres = ko.observableArray([]);
   self.runtime = ko.observable();
   self.synopsis = ko.observable();
@@ -281,21 +272,24 @@ function MovieViewModel(data, parent) {
   self.cast_members = ko.observableArray([]);
   self.cast_is_hidden = ko.observable(true);
   self.temp_rating = ko.observable(self.current_user_rating());
+  self.release_date = ko.observable(data && data.release_date || data.release_date);
 
   var not_found_image_url = "../img/unavailable-image.jpeg";
 
-  self.big_image_url = ko.computed(function(){
-    if (!self.poster_path()) return '';
-    var image_path = self.backdrop_path() || self.poster_path();
-    return self.parent.large_image_base_url() + image_path;
-  });
-
   self.image_url = ko.computed(function(){
-    if (!self.poster_path()) return not_found_image_url;
-    return self.parent.thumbnail_base_url() + self.poster_path();
+    return self.parent().thumbnail_base_url() && self.poster_path() ?
+      self.parent().thumbnail_base_url() + self.poster_path() :
+      not_found_image_url;
   });
 
-  self.release_date = ko.observable(data && data.release_date || data.release_date);
+  self.big_image_url = ko.computed(function(){
+    var image_path = self.backdrop_path() || self.poster_path();
+
+    return (self.parent().thumbnail_base_url() && image_path) ?
+      self.parent().thumbnail_base_url() + image_path :
+      '';
+  });
+
 
   self.genresString = ko.computed(function(){
     return self.genres().join(", ");
@@ -332,7 +326,7 @@ function MovieViewModel(data, parent) {
   }
 
   self.showDetails = function(){
-    self.parent.movie_details(self);
+    self.parent().movie_details(self);
     self.is_loading_details(true);
     $('#movie_details_modal').modal();
 
@@ -428,7 +422,7 @@ function MovieViewModel(data, parent) {
 
     self.current_user_rating(rating_value);
 
-    if (!self.parent.user().id()) return;
+    if (!self.parent().user().id()) return;
     $.ajax({
       type: "POST",
       url: "/movie/rate",

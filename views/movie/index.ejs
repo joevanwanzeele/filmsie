@@ -266,7 +266,7 @@
 <script type="text/html" id="list-friend-template">
   <div class="row list-person-row">
     <div class="col-sm-2">
-      <img class="list-person-image" data-bind="attr: {src: profile_pic_url}" />
+      <a data-bind="attr:{ href: fb_profile_url }" target="_blank"><img class="list-person-image" data-bind="attr: {src: profile_pic_url}" /></a>
     </div>
     <div class="col-sm-5 pointer">
       <h3 data-bind="text: name"></h3>
