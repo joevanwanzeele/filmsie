@@ -22,18 +22,27 @@ module.exports = {
   },
 
   includeRatings: function(movies, user_id, callback){
-    var ids = _.map(movies, function(movie){ return Number(movie.tmdb_id); });
-    if (user_id){ //include current user ratings
+    var tmdb_ids = _.map(movies, function(movie){ return Number(movie.tmdb_id); });
     MovieUserRating.find()
-    .where({tmdb_id: ids, user_id: user_id })
-     .exec(function (err, ratings) {
-       _.each(ratings, function(rating){
-         var found = _.findWhere(movies, {tmdb_id: rating.tmdb_id});
-         if (found) found["current_user_rating"] = rating.rating;
+    .where({tmdb_id: tmdb_ids })
+     .exec(function (err, all_user_ratings) {
+       _.each(tmdb_ids, function(tmdb_id){
+         var all_movie_ratings = _.where(all_user_ratings, { tmdb_id: tmdb_id });
+         if (all_movie_ratings.length > 0){
+            var found = _.findWhere(movies, {tmdb_id: tmdb_id});
+
+            if (found) found["average_rating"] = _.reduce(all_movie_ratings, function(avg, movie_rating){
+              return avg + movie_rating.rating / all_movie_ratings.length;
+            },0).toFixed(2);
+
+            var found_rating = _.find(all_movie_ratings, function(movie_rating){
+              return movie_rating.user_id == user_id;
+            });
+
+            found["current_user_rating"] = found_rating && found_rating.rating;
+         }
        });
        return callback(movies);
      });
-   }
-   else return callback(movies); //no userId, so dont include user ratings.. but include averages
   }
 };

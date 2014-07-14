@@ -249,10 +249,13 @@ function MovieListViewModel(data, parent){
 
 function CastMemberViewModel(data, parent){
   var self = this;
+  self.parent = ko.observable(parent);
   self.cast_id = ko.observable(data.cast_id);
   self.name = ko.observable(data.name);
   self.character = ko.observable(data.character);
-  self.image_url = ko.observable(data.profile_path != null ? parent.parent.thumbnail_base_url() + data.profile_path : null); //todo: replace with empty image path if none exists for cast member
+  self.image_url = ko.observable(data.profile_path != null ?
+    self.parent().parent().thumbnail_base_url() + data.profile_path :
+    self.parent().not_found_image_url); //todo: replace with empty image path if none exists for cast member
 }
 
 function MovieViewModel(data, parent) {
@@ -261,6 +264,7 @@ function MovieViewModel(data, parent) {
   self.id = ko.observable(data && data.id || '')
   self.tmdb_id = ko.observable(data && data.tmdb_id || '');
   self.current_user_rating = ko.observable(data && data.current_user_rating || null);
+  self.average_rating = ko.observable(data && data.average_rating || null);
   self.title = ko.observable(data && data.title || '');
   self.backdrop_path = ko.observable(data && data.backdrop_path || null);
   self.poster_path = ko.observable(data && data.poster_path || null);
@@ -274,19 +278,19 @@ function MovieViewModel(data, parent) {
   self.temp_rating = ko.observable(self.current_user_rating());
   self.release_date = ko.observable(data && data.release_date || data.release_date);
 
-  var not_found_image_url = "../img/unavailable-image.jpeg";
+  self.not_found_image_url = "../img/unavailable-image.jpeg";
 
   self.image_url = ko.computed(function(){
     return self.parent().thumbnail_base_url() && self.poster_path() ?
       self.parent().thumbnail_base_url() + self.poster_path() :
-      not_found_image_url;
+      self.not_found_image_url;
   });
 
   self.big_image_url = ko.computed(function(){
     var image_path = self.backdrop_path() || self.poster_path();
 
-    return (self.parent().thumbnail_base_url() && image_path) ?
-      self.parent().thumbnail_base_url() + image_path :
+    return (self.parent().large_image_base_url() && image_path) ?
+      self.parent().large_image_base_url() + image_path :
       '';
   });
 
@@ -308,6 +312,16 @@ function MovieViewModel(data, parent) {
     return "http://www.imdb.com/title/" + self.imdb_id() + "/";
   });
 
+  self.rounded_average = ko.computed(function(){
+    return .5 * self.average_rating() / .5;
+  });
+
+  self.average_star_css = function(value){
+    var rounded_rating = Math.round(self.average_rating());
+    if (value > rounded_rating + 1 || rounded_rating == 0) return "";
+    return rounded_rating < value ? "fa-star-half" : "fa-star";
+  }
+
   self.showListPopover = function(vm, e){
     e.stopPropagation();
     parent.selected_movie(self);
@@ -323,6 +337,10 @@ function MovieViewModel(data, parent) {
     $('.close').on("click", function(e){
       $(e.target).closest('.modal').modal('hide');
     });
+  }
+
+  self.showReviewsPopover = function(vm, e){
+
   }
 
   self.showDetails = function(){

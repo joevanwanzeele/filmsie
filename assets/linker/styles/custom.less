@@ -146,48 +146,51 @@ td {
   -moz-box-shadow: -3px 3px 5px 0px rgba(0,0,0,0.75);
   box-shadow: -3px 3px 5px 0px rgba(0,0,0,0.75);
 
-  img{
-    width:100px;
-    margin-top:5px;
+  .image-container{
+    width:110px;
+    height:150px;
+    text-align:center;
+    position: absolute;
+    left: 25px;
+    bottom: 50px;
+    vertical-align:middle;
+    img{
+      position:relative;
+      max-width: 110px;
+      max-height: 150px;
+      margin-top: 5px;
+
+    }
   }
 }
 
 .movie-title-container{
   /* background-color: #DDDDDD; */
   color: #000000;
-  height: 160px;
-  padding: 5px;
-  display:block;
-  margin-bottom:10px;
-  vertical-align:middle;
-  border-top-left-radius: 4px;
-  border-top-right-radius: 4px;
+  height:3.2em;
+  padding:5px;
   cursor:pointer;
+  text-overflow: ellipsis;
+  /* Required for text-overflow to do anything */
+  /* white-space: nowrap; */
+  overflow: hidden;
   h5{
     font-weight:bold;
   }
 }
 
-.rating-container{
-  padding:0px;
+.star-rating-container, .average-rating-container {
+  width:100%;
   position:relative;
-  top:60px;
-  height:20px;
-  background: #ff6666; /* Old browsers */
-  background: -moz-linear-gradient(left,  #ff6666 0%, #8ced80 100%); /* FF3.6+ */
-  background: -webkit-gradient(linear, left top, right top, color-stop(0%,#ff6666), color-stop(100%,#8ced80)); /* Chrome,Safari4+ */
-  background: -webkit-linear-gradient(left,  #ff6666 0%,#8ced80 100%); /* Chrome10+,Safari5.1+ */
-  background: -o-linear-gradient(left,  #ff6666 0%,#8ced80 100%); /* Opera 11.10+ */
-  background: -ms-linear-gradient(left,  #ff6666 0%,#8ced80 100%); /* IE10+ */
-  background: linear-gradient(to right,  #ff6666 0%,#8ced80 100%); /* W3C */
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ff6666', endColorstr='#8ced80',GradientType=1 ); /* IE6-9 */
+  top:165px;
+  height:40px;
+  text-align:center;
+  margin-left:9px;
 }
 
-.star-rating-container{
-  padding-left:12px;
-  position:relative;
-  top:60px;
-  height:40px;
+.average-rating-container{
+  height:20px;
+  margin-left:0px;
 }
 
 .star-rating{
@@ -284,15 +287,26 @@ td {
   }
 }
 
-.add-to-list-button {
-  right:5px;
-  top:-7px;
+.add-to-list-button-container {
+  left:5px;
+  top:55px;
   height:15px;
   width:15px;
-  float:right;
   position:absolute;
   display:block;
   clear:none;
+  cursor:pointer;
+}
+
+.show-reviews-button-container{
+  right:5px;
+  top:55px;
+  height:15px;
+  width:15px;
+  position:absolute;
+  display:block;
+  clear:none;
+  cursor:pointer;
 }
 
 .profile-image-a{

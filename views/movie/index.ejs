@@ -52,15 +52,9 @@
   <!-- ko if: is_showing_people -->
   <div class="sectionNav" data-bind="with: user">
     <ul>
-      <li>
-        <a class="btn btn-default" data-bind="css: {'active': is_showing_matches() }" href="#people/matches">My Matches</a>
-      </li>
-      <li>
-        <a class="btn btn-default" data-bind="css: {'active': is_showing_friends() }" href="#people/friends">My friends</a>
-      </li>
-      <li>
-        <a class="btn btn-default" href="#people/invite">Invite Friends</a>
-      </li>
+      <li><a class="btn btn-default" data-bind="css: {'active': is_showing_matches() }" href="#people/matches">My Matches</a></li>
+      <li><a class="btn btn-default" data-bind="css: {'active': is_showing_friends() }" href="#people/friends">My friends</a></li>
+      <li><a class="btn btn-default" href="#people/invite">Invite Friends</a></li>
     </ul>
   </div>
   <!-- /ko -->
@@ -207,14 +201,23 @@
 <script type="text/html" id="movie-template">
   <div class="movie-container">
     <div class="movie-title-container" data-bind="click: showDetails">
-      <h5 data-bind="text: title"></h5><div class="btn add-to-list-button" data-bind="click: showListPopover"><span class="fa fa-list"></span></div>
-      <img data-bind="attr: {src: image_url}" />
+      <h5 data-bind="text: title"></h5>
     </div>
-    <div class="star-rating-container" data-bind="template: {name: 'ratings-template'}"></div>
+    <div class="add-to-list-button-container" data-bind="click: showListPopover">
+      <span class="fa fa-list"></span>
+    </div>
+    <div class="show-reviews-button-container" data-bind="click: showReviewsPopover">
+      <span class="fa fa-comments"></span>
+    </div>
+    <div class="image-container">
+      <img class="pointer" data-bind="attr: {src: image_url}, click: showDetails" />
+    </div>
+    <div class="average-rating-container" data-bind="template: {name: 'average-rating-template'}"></div>
+    <div class="star-rating-container" data-bind="template: {name: 'current-rating-template'}"></div>
   </div>
 </script>
 
-<script type="text/html" id="ratings-template">
+<script type="text/html" id="current-rating-template">
   <div class="pointer" data-bind="event: {'mouseout': resetRatingClasses }">
     <div class="star-rating fa-stack" data-bind="style: {opacity: temp_rating() ? '1' : '.5'}, event: {'mousemove': updateRatingClass }, click: function(vm, event){setRating(1, event)}">
       <span class="fa fa-stack-2x fa-star-o"></span>
@@ -239,6 +242,14 @@
   </div>
 </script>
 
+<script type="text/html" id="average-rating-template">
+    <span class="fa" data-bind="css: average_star_css(2)"></span>
+    <span class="fa" data-bind="css: average_star_css(4)"></span>
+    <span class="fa" data-bind="css: average_star_css(6)"></span>
+    <span class="fa" data-bind="css: average_star_css(8)"></span>
+    <span class="fa" data-bind="css: average_star_css(10)"></span>
+</script>
+
 <script type="text/html" id="friend-template">
   <div data-bind="text: name"></div>
 </script>
@@ -254,7 +265,7 @@
         <img class="amazon-button-small amazon-list-item-button" src="/img/amazon.png" alt="find on amazon" />
       </a>
     </div>
-    <div class="col-sm-3">your rating: <div data-bind="template: {name: 'ratings-template'}"></div></div>
+    <div class="col-sm-3">your rating: <div data-bind="template: {name: 'current-rating-template'}"></div></div>
     <div class="col-sm-4" style="text-align:right">
       <div class="delete-list-item-button pointer" data-bind="click: $parent.removeMovie">
         <span class="fa fa-lg fa-times-circle"></span>
