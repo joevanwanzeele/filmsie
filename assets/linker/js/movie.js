@@ -1,3 +1,60 @@
+function MovieReviewViewModel(parent, data){
+  var self = this;
+  self.parent = ko.observable(parent);
+  self.id = ko.observable(data && data.id || null);
+  self.user_id = ko.observable(data && data.user_id || null);
+  self.movie = ko.observable(parent);
+  self.createdAt = ko.observable(data && data.createdAt);
+  self.content = ko.observable(data && data.content || null);
+  self.up_votes = ko.observable(data && data.upvotes || 0);
+  self.down_votes = ko.observable(data && data.downvotes || 0);
+  self.current_user_vote = ko.observable(data && data.current_user_vote || null)
+
+  self.reviewer_name = ko.observable(data && data.reviewer_first_name || null);
+  self.reviewer_facebook_id = ko.observable(data && data.reviewer_facebook_id || null);
+  self.reviewer_rating = ko.observable(data && data.reviewer_rating || null);
+
+  self.reviewer_picture_url = ko.computed(function(){
+    return "https://graph.facebook.com/"+ self.reviewer_facebook_id() + "/picture?type=large";
+  });
+
+  self.average_star_css = function(value){
+    if (value > self.reviewer_rating() + 1 || self.reviewer_rating() == 0) return "";
+    return self.reviewer_rating() < value ? "fa-star-half" : "fa-star";
+  }
+
+  self.vote = function(direction){
+    if (self.current_user_vote() == direction) return;
+    self.current_user_vote(direction);
+    $.ajax({
+      url: '/review/vote',
+      type: 'POST',
+      data: {
+        user_id: self.user_id(),
+        movie_id: self.movie().id(),
+        direction: direction,
+        "_csrf": window.filmsie.csrf
+      },
+      success: function(data){
+        if (data == "deleted"){
+          return self.current_user_vote(null);
+        }
+        return self.current_user_vote(data.direction);
+      }
+    });
+  }
+
+  self.voteUp = function(){
+    self.vote("up");
+  }
+
+  self.voteDown = function(){
+    self.vote("down");
+  }
+
+}
+
+
 function UserViewModel(parent, data){
   var self = this;
   self.parent = parent;
@@ -22,8 +79,8 @@ function UserViewModel(parent, data){
 
   self.processLogin = function(callback){
     FB.getLoginStatus(function(response) {
-     self.accessToken(response.authResponse.accessToken);
      if (response.status == "connected"){
+       self.accessToken(response.authResponse.accessToken);
        self.authenticated(true);
        FB.api('/me', function(user) {
          if (user.error) return console.log(user.error);
@@ -278,6 +335,73 @@ function MovieViewModel(data, parent) {
   self.temp_rating = ko.observable(self.current_user_rating());
   self.release_date = ko.observable(data && data.release_date || data.release_date);
 
+  //reviews
+  self.reviews = ko.observableArray([]);
+  self.new_review_text = ko.observable();
+  self.reviewCountText = ko.computed(function(){
+    return self.reviews().length > 0 ? self.reviews().length : '';
+  });
+
+  self.showReviewsModal = function(vm, e){
+    e.stopPropagation();
+    parent.selected_movie(self);
+    self.getReviews();
+
+    $('#reviewsModal').modal();
+    $('.modal').on("click", function(e){
+      $(this).modal('hide');
+    });
+    $('.modal-dialog').on("click", function(e){
+      e.stopPropagation();
+    });
+    $('.close').on("click", function(e){
+      $(e.target).closest('.modal').modal('hide');
+    });
+  }
+
+  self.reviewsModalTitle = ko.computed(function(){
+    return "Reviews for " + self.title();
+  });
+
+  self.saveReview = function(){
+    $.ajax({
+      url: '/review/add',
+      type: 'POST',
+      data: {
+        user_id: self.parent().user().id(),
+        movie: {
+          id: self.id(),
+          tmdb_id: self.tmdb_id(),
+          title: self.title(),
+          poster_path: self.poster_path(),
+          backdrop_path: self.backdrop_path(),
+          imdb_id: self.imdb_id(),
+          release_date: self.release_date() },
+        review_content: self.new_review_text(),
+        '_csrf': window.filmsie.csrf },
+      success: function(data){
+        console.dir(data); //push new review
+      }
+    });
+  }
+
+  self.getReviews = function(){
+    self.reviews([]);
+    $.ajax({
+      url: '/review/get',
+      type: 'POST',
+      data: {
+        movie_id: self.id(),
+        '_csrf': window.filmsie.csrf
+      },
+      success: function(reviews){
+        _.each(reviews, function(review){
+          self.reviews.push(new MovieReviewViewModel(self, review));
+        });
+      }
+    });
+  }
+
   self.not_found_image_url = "../img/unavailable-image.jpeg";
 
   self.image_url = ko.computed(function(){
@@ -293,7 +417,6 @@ function MovieViewModel(data, parent) {
       self.parent().large_image_base_url() + image_path :
       '';
   });
-
 
   self.genresString = ko.computed(function(){
     return self.genres().join(", ");
@@ -322,7 +445,7 @@ function MovieViewModel(data, parent) {
     return rounded_rating < value ? "fa-star-half" : "fa-star";
   }
 
-  self.showListPopover = function(vm, e){
+  self.showAddToListModal = function(vm, e){
     e.stopPropagation();
     parent.selected_movie(self);
     parent.get_movie_lists();
@@ -337,10 +460,6 @@ function MovieViewModel(data, parent) {
     $('.close').on("click", function(e){
       $(e.target).closest('.modal').modal('hide');
     });
-  }
-
-  self.showReviewsPopover = function(vm, e){
-
   }
 
   self.showDetails = function(){
@@ -424,6 +543,11 @@ function MovieViewModel(data, parent) {
   }
 
   self.setRating = function(rating, event) {
+    if (!self.parent().user().id()){
+      alert("Please log in to save your rating");
+      return;
+    };
+
     var el = $(event.target);
 
     var rating_value = rating * 2;
@@ -440,7 +564,7 @@ function MovieViewModel(data, parent) {
 
     self.current_user_rating(rating_value);
 
-    if (!self.parent().user().id()) return;
+
     $.ajax({
       type: "POST",
       url: "/movie/rate",

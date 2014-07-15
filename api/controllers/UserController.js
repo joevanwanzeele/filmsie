@@ -61,7 +61,7 @@ module.exports = {
 
     userHelper.getMatches(req.session.user.id,
       function(matches){
-        res.json(matches.sort(function(a,b){ return a-b; }));
+        res.json(matches.sort(function(a,b){ return b.c_score - a.c_score; }));
       });
   },
 

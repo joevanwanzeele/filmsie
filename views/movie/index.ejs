@@ -112,7 +112,7 @@
   </div> <!-- right panel -->
 </div> <!-- main content -->
 
-<div id="movie_details_modal" data-bind="with: movie_details" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="movie_details_label" aria-hidden="true">
+<div id="movie_details_modal" data-bind="with: movie_details" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="movie_details_label" aria-hidden="true">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
@@ -148,7 +148,7 @@
   </div>
 </div>
 
-<div id="addToListModal" class="modal bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="addToListLabel" aria-hidden="true">
+<div id="addToListModal" class="modal" tabindex="-1" role="dialog" aria-labelledby="addToListLabel" aria-hidden="true">
   <div class="modal-dialog modal-sm">
     <div class="modal-content">
       <div class="modal-header">
@@ -170,7 +170,43 @@
   </div>
 </div>
 
-<div id="userProfileModal" class="modal bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="userProfileLabel" aria-hidden="true">
+<div id="reviewsModal" class="modal fade in" tabindex="-1" role="dialog" aria-labelledby="reviewsModalLabel" aria-hidden="true" data-bind="with: selected_movie">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 id="reviewsModalLabel" class="modal-title" data-bind="text: reviewsModalTitle">Movie Reviews</h4>
+      </div>
+      <div class="modal-body">
+        <textarea data-bind="value: new_review_text" placeholder="write a review..."></textarea>
+        <button class="btn btn-default" data-bind="click: saveReview">submit</button>
+        <hr/>
+        <ul data-bind="foreach: reviews">
+          <div class="row list-review-row">
+            <div class="col-sm-2">
+              <div class="reviewer-image-container"><img data-bind="attr: {src: reviewer_picture_url }" /></div>
+              <div class="reviewer-name-container"><h5 data-bind="text: reviewer_name"></h5></div>
+            </div>
+            <div class="col-sm-9">
+              <div class="reviewer-rating-container"><div style="float:left"><span data-bind="text: reviewer_name"></span>'s rating: </div>
+                <div class="rating-star-container" data-bind="template: {name: 'average-rating-template'}"></div>
+              </div>
+              <div class="movie-review-container">
+                <span data-bind="html: content"></span>
+              </div>
+            </div>
+            <div class="col-sm-1">
+              <div class="review-vote"><span class="fa fa-lg fa-thumbs-o-up" data-bind="click: voteUp"></span></div>
+              <div class="review-vote"><span class="fa fa-lg fa-thumbs-o-down fa-flip-horizontal" data-bind="click: voteDown"></span></div>
+            </div>
+          </div>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="userProfileModal" class="modal" tabindex="-1" role="dialog" aria-labelledby="userProfileLabel" aria-hidden="true">
   <div class="modal-dialog modal-sm">
     <div class="modal-content" data-bind="with: user">
       <div class="modal-header">
@@ -184,7 +220,7 @@
   </div>
 </div>
 
-<div id="inviteFriendsModal" class="modal bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="inviteFriends" aria-hidden="true">
+<div id="inviteFriendsModal" class="modal" tabindex="-1" role="dialog" aria-labelledby="inviteFriends" aria-hidden="true">
   <div class="modal-dialog modal-sm">
     <div class="modal-content" data-bind="with: user">
       <div class="modal-header">
@@ -203,11 +239,14 @@
     <div class="movie-title-container" data-bind="click: showDetails">
       <h5 data-bind="text: title"></h5>
     </div>
-    <div class="add-to-list-button-container" data-bind="click: showListPopover">
-      <span class="fa fa-list"></span>
+    <div class="add-to-list-button-container" data-bind="click: showAddToListModal">
+      <span class="fa fa-lg fa-list"></span>
     </div>
-    <div class="show-reviews-button-container" data-bind="click: showReviewsPopover">
-      <span class="fa fa-comments"></span>
+    <div class="show-reviews-button-container" data-bind="click: showReviewsModal">
+      <span class="fa fa-stack">
+        <span class="fa fa-stack-1x fa-lg fa-comments-o"></span>
+        <strong class="fa fa-stack-1x review-count" data-bind="text: reviewCountText"></strong>
+      </span>
     </div>
     <div class="image-container">
       <img class="pointer" data-bind="attr: {src: image_url}, click: showDetails" />
@@ -298,14 +337,6 @@
   $(function(){
     var vm = new MoviesViewModel();
     processLogin = vm.user().processLogin;
-    // vm.user().id("<%= req.session.user ? session.user.id : '' %>");
-    // vm.user().first_name("<%= req.session.user ? session.user.first_name : '' %>");
-    // vm.user().last_name("<%= req.session.user ? session.user.last_name : '' %>");
-    // vm.user().email("<%= req.session.user ? session.user.email : '' %>");
-    // vm.user().profile_pic_url("<%= profile_pic_url %>");
-
-    //vm.init();
-
     ko.applyBindings(vm);
   });
 

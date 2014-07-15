@@ -33,13 +33,16 @@ module.exports = {
 
             if (found) found["average_rating"] = _.reduce(all_movie_ratings, function(avg, movie_rating){
               return avg + movie_rating.rating / all_movie_ratings.length;
-            },0).toFixed(2);
+            },0).toFixed(2); //include average review
 
-            var found_rating = _.find(all_movie_ratings, function(movie_rating){
-              return movie_rating.user_id == user_id;
-            });
+            if (user_id){ //include current user reviews
 
-            found["current_user_rating"] = found_rating && found_rating.rating;
+              var user_rating = _.find(all_movie_ratings, function(movie_rating){
+                return movie_rating.user_id == user_id;
+              });
+
+              found["current_user_rating"] = user_rating && user_rating.rating;
+            }
          }
        });
        return callback(movies);
