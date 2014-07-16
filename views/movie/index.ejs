@@ -40,7 +40,7 @@
   <!-- /ko -->
 
   <!-- ko if: is_showing_lists -->
-  <div class="sectionNav">
+  <div class="section-nav">
     <ul data-bind="foreach: movie_lists">
       <li>
         <a class="btn btn-default" data-bind="css: {'active': $parent.selected_list() && $parent.selected_list().id() == id() }, html: name_and_length(), attr: {'href': '#lists/' + id() }"></a>
@@ -50,7 +50,7 @@
   <!-- /ko -->
 
   <!-- ko if: is_showing_people -->
-  <div class="sectionNav" data-bind="with: user">
+  <div class="section-nav" data-bind="with: user">
     <ul>
       <li><a class="btn btn-default" data-bind="css: {'active': is_showing_matches() }" href="#people/matches">My Matches</a></li>
       <li><a class="btn btn-default" data-bind="css: {'active': is_showing_friends() }" href="#people/friends">My friends</a></li>
