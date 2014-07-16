@@ -76,7 +76,7 @@ function MovieReviewViewModel(parent, data){
 
 function UserViewModel(parent, data){
   var self = this;
-  self.parent = parent;
+  self.parent = ko.observable(parent);
   self.id = ko.observable(data && data.id || '');
   self.facebook_id = ko.observable(data && data.facebook_id || null);
   self.accessToken = ko.observable();
@@ -118,12 +118,12 @@ function UserViewModel(parent, data){
            cache: false,
            success: function(data){
              self.id(data.id);
-             self.parent.init();
+             self.parent().init();
            }
          });
        });
      } else {
-       self.parent.init();
+       self.parent().init();
      }
     });
   }
@@ -137,7 +137,7 @@ function UserViewModel(parent, data){
       success: function(data){
         self.reset();
         parent.init();
-        self.parent.loadMovies();
+        self.parent().loadMovies();
       }
     });
   }
@@ -156,6 +156,7 @@ function UserViewModel(parent, data){
   }
 
   self.reset = function(){
+    self.id(null);
     self.facebook_id(null);
     self.first_name(null);
     self.last_name(null);
@@ -223,7 +224,7 @@ function UserViewModel(parent, data){
 
 function MovieListViewModel(data, parent){
   var self = this;
-  self.parent = parent;
+  self.parent = ko.observable(parent);
   self.id = ko.observable(data && data.id || null);
   self.name = ko.observable(data && data.name || null);
   self.movie_ids = ko.observableArray(data && data.movie_ids || data.movie_ids);
@@ -236,7 +237,7 @@ function MovieListViewModel(data, parent){
   });
 
   self.is_owner = ko.computed(function(){
-    return self.user_id() == self.parent.user().id();
+    return self.user_id() == self.parent().user().id();
   });
 
   self.addMovie = function(vm, e){
@@ -244,7 +245,7 @@ function MovieListViewModel(data, parent){
       type: "POST",
       url: "/movielist/addMovie",
       data: {
-        user_id: self.parent.user().id(),
+        user_id: self.parent().user().id(),
         list_id: self.id(),
         movie: {
           tmdb_id: parent.selected_movie().tmdb_id(),
@@ -317,10 +318,10 @@ function MovieListViewModel(data, parent){
     });
   }
 
-  self.movie_details = self.parent.movie_details;
-  self.thumbnail_base_url = self.parent.thumbnail_base_url;
-  self.large_image_base_url = self.parent.large_image_base_url;
-  self.user = self.parent.user;
+  self.movie_details = self.parent().movie_details;
+  self.thumbnail_base_url = self.parent().thumbnail_base_url;
+  self.large_image_base_url = self.parent().large_image_base_url;
+  self.user = self.parent().user;
 }
 
 function CastMemberViewModel(data, parent){
@@ -401,6 +402,7 @@ function MovieViewModel(data, parent) {
         review_content: self.new_review_text(),
         '_csrf': window.filmsie.csrf },
       success: function(data){
+        if (!data.review) return alert(data);
         self.review_count(data.review_count);
         self.reviews.push(new MovieReviewViewModel(self, data.review));
       }
@@ -420,6 +422,7 @@ function MovieViewModel(data, parent) {
         _.each(reviews, function(review){
           self.reviews.push(new MovieReviewViewModel(self, review));
         });
+        self.reviews.sort(function(a,b){ return b.review_score() - a.review_score() }); //sort by review vote
       }
     });
   }
@@ -474,8 +477,11 @@ function MovieViewModel(data, parent) {
 
   self.showAddToListModal = function(vm, e){
     e.stopPropagation();
-    parent.selected_movie(self);
-    parent.get_movie_lists();
+
+    if (!self.parent().user().authenticated()) return alert("sign in to create movie lists");
+
+    self.parent().selected_movie(self);
+    self.parent().get_movie_lists();
 
     $('#addToListModal').modal();
     $('.modal').on("click", function(e){
@@ -575,9 +581,8 @@ function MovieViewModel(data, parent) {
   }
 
   self.setRating = function(rating, event) {
-    if (!self.parent().user().id()){
-      alert("Please log in to save your rating");
-      return;
+    if (!self.parent().user().authenticated()){
+      return alert("Sign in to save your rating");
     };
 
     var el = $(event.target);
@@ -668,9 +673,11 @@ function MoviesViewModel() {
     self.movie_lists([]);
 
     if (!self.user().authenticated()){
+      if (list_id){
         self.selected_list().id(list_id);
         self.selected_list().getList();
-        return; //returning before user authentication has a chance to happen.
+      }
+      return;
     }
 
     $.ajax({

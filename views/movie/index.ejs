@@ -105,7 +105,12 @@
       <!-- /ko -->
       <div class="row" data-bind="visible: !is_public() && !is_owner() && name()">
         <div class="container col-sm-12">
-          <h3>This list is private.</h3>
+          <div style="width:100%;text-align:center"><h3>This list is private.</h3></div>
+        </div>
+      </div>
+      <div class="row" data-bind="visible: parent().movie_lists().length == 0">
+        <div class="container col-sm-12">
+          <div style="width:100%;text-align:center"><h3>You haven't created any lists yet.</h3></div>
         </div>
       </div>
     </div> <!-- movie-list-content -->

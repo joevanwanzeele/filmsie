@@ -28,7 +28,7 @@ module.exports = {
       Review.findOne({user_id: user_id, movie_id: movie.id})
       .done(function(err, review){
         if (review){
-          return res.json(''); //user has an existing review already.. they should delete it first
+          return res.json('you\'ve already reviewed this movie.'); //user has an existing review already.. they should delete it first
         }
         else {
           Review.create({
@@ -75,7 +75,7 @@ module.exports = {
     var user_id = req.session.user && req.session.user.id || null;
     var review_id = req.body.review_id;
     if (!user_id) return res.json("need to be logged in to vote");
-    
+
     if (direction == "none"){
       ReviewVote.destroy({review_id: review_id, user_id: user_id}).done(function(err){
         if (err) return console.log(err);
