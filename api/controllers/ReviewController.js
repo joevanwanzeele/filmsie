@@ -15,6 +15,7 @@
  * @docs        :: http://sailsjs.org/#!documentation/controllers
  */
 var movieHelper = require("../services/MovieHelper");
+var reviewHelper = require("../services/ReviewHelper");
 
 module.exports = {
 
@@ -24,77 +25,121 @@ module.exports = {
     var review_content = req.body.review_content;
 
     movieHelper.addOrUpdateMovie(ui_movie, function(err, movie){
-      Review.create({
-        user_id: user_id,
-        movie_id: movie.id,
-        content: review_content
-      }).done(function(err, review){
-        if (err) return console.log(err);
-          return res.json(review);
+      Review.findOne({user_id: user_id, movie_id: movie.id})
+      .done(function(err, review){
+        if (review){
+          return res.json(''); //user has an existing review already.. they should delete it first
+        }
+        else {
+          Review.create({
+            user_id: user_id,
+            movie_id: movie.id,
+            content: review_content
+          }).done(function(err, review){
+            if (err) return console.log(err);
+              ReviewVote.create({user_id: review.user_id, review_id: review.id, vote: "up"})
+              .done(function(err, reviewVote){
+                review["up_votes"] = 1;
+                review["down_votes"] = 0;
+                review["current_user_vote"] = "up";
+                reviewHelper.includeReviewerRatings([review], function(err){
+                  if (err) return console.log(err);
+                  reviewHelper.includeReviewerProfileInfo([review], function(err){
+                    if (err) return console.log(err);
+                    Review.find({movie_id: movie.id}).done(function(err, reviews){
+                      return res.json({review_count: reviews.length, review: review})
+                    });
+                  });
+                });
+              });
+          });
+        }
       });
     });
   },
 
-  delete: function(req, res){},
+  delete: function(req, res){
+    var review_id = req.body.review_id;
+    Review.destroy(review_id)
+      .done(function(err){
+        if (err) return console.log(err);
+        ReviewVotes.destroy({review_id: review_id}).done(function(err){ //remove all votes
+          if (err) return console.log(err);
+          return res.json("deleted");
+        });
+    });
+  },
 
   vote: function(req, res){
     var direction = req.body.direction;
-    var user_id = req.body.user_id;
-    var movie_id = req.body.movie_id;
-
-    if (!direction){
-      ReviewVote.destroy({movie_id: movie_id, user_id: user_id}).done(function(err){
+    var user_id = req.session.user && req.session.user.id || null;
+    var review_id = req.body.review_id;
+    if (!user_id) return res.json("need to be logged in to vote");
+    
+    if (direction == "none"){
+      ReviewVote.destroy({review_id: review_id, user_id: user_id}).done(function(err){
         if (err) return console.log(err);
-        return res.json("deleted");
-      })
+        ReviewVote.find({review_id: review_id}).done(function(err, votes){
+          var counts = _.countBy(votes, function(vote){ return vote.vote == "up" ? "up" : "down"});
+
+          return res.json({
+            vote: "deleted",
+            up_votes: counts.up || 0,
+            down_votes: counts.down || 0
+          });
+        });
+      });
     }
 
-    ReviewVote.find({movie_id: movie_id, user_id: user_id})
-      .done(function(vote){
-        if (!vote){
-          ReviewVote.create({movie_id: movie_id, user_id: user_id, direction: direction})
-            .done(function(err, new_vote){
-              res.json(new_vote);
-          });
-        } else {
-          vote.direction = direction;
-          vote.save(function(err){
-            if (err) return console.log(err);
-            return res.json(vote);
-          });
-        }
-      });
+    else {
+      if (direction != "up" && direction != "down" ) return res.json("invalid vote direction");
+
+      ReviewVote.findOne({review_id: review_id, user_id: user_id})
+        .done(function(err, vote){
+          if (err) return console.log(err);
+          if (!vote){
+            ReviewVote.create({review_id: review_id, user_id: user_id, vote: direction})
+              .done(function(err, new_vote){
+                if (err) console.log(err);
+                ReviewVote.find({review_id: review_id}).done(function(err, votes){
+                  var counts = _.countBy(votes, function(vote){ return vote.vote == "up" ? "up" : "down"});
+                  new_vote["up_votes"] = counts.up || 0;
+                  new_vote["down_votes"] = counts.down || 0;
+                  res.json(new_vote);
+                });
+            });
+          } else {
+            vote.vote = direction;
+            vote.save(function(err){
+              if (err) return console.log(err);
+              ReviewVote.find({review_id: review_id}).done(function(err, votes){
+                var counts = _.countBy(votes, function(vote){ return vote.vote == "up" ? "up" : "down"});
+                vote["up_votes"] = counts.up || 0;
+                vote["down_votes"] = counts.down || 0;
+                return res.json(vote);
+              });
+            });
+          }
+        });
+      }
   },
 
   get: function(req, res){
     var movie_id = req.body.movie_id;
+    var user_id = req.session.user && req.session.user.id || null;
     if (!movie_id){ //there are no reviews
       return res.json([]);
     }
 
     Review.find({movie_id: movie_id}).done(function(err, reviews){
-      if (err) return console.log(err);
-      async.each(reviews, function(review, cb){
-        //get the reviewers rating
-        MovieUserRating.findOne({user_id: review.user_id, movie_id: review.movie_id })
-          .done(function(err, user_rating){
-            review["reviewer_rating"] = user_rating.rating;
-            cb()
-          });
-      }, function(err){
-          if (err) return console.log(err);
-
-          async.each(reviews, function(review, cb){
-            User.findOne(review.user_id, function(err, user){
-              if (err) return console.log(err);
-              review["reviewer_facebook_id"] = user.facebook_id;
-              review["reviewer_name"] = user.name;
-              review["reviewer_first_name"] = user.first_name;
-              cb();
-            });
-          }, function(err){
+      reviewHelper.includeVoteTally(reviews, user_id, function(err){
+        if (err) return console.log(err);
+        reviewHelper.includeReviewerRatings(reviews, function(err){
             if (err) return console.log(err);
-            res.json(reviews);
+            reviewHelper.includeReviewerProfileInfo(reviews, function(err){
+              if (err) return console.log(err);
+              res.json(reviews);
+            });
           });
         });
     });

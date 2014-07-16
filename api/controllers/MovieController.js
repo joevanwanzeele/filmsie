@@ -71,8 +71,13 @@ module.exports = {
       var user_id = req.session.user ? req.session.user.id : null;
       //if (!user_id) return response.json(res);
       //link up user reviews (if user is logged in)
-      movieHelper.includeRatings(res.results, user_id, function(){ return response.json(res); });
-    }
+      movieHelper.includeRatings(res.results, user_id, function(movies){
+        movieHelper.includeReviewCount(res.results, function(err){
+          if (err) return console.log(err);
+          return response.json(res);
+        });
+      });
+    } // /processMovieResults
 
   },
 

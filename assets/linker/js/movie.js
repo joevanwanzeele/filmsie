@@ -6,13 +6,17 @@ function MovieReviewViewModel(parent, data){
   self.movie = ko.observable(parent);
   self.createdAt = ko.observable(data && data.createdAt);
   self.content = ko.observable(data && data.content || null);
-  self.up_votes = ko.observable(data && data.upvotes || 0);
-  self.down_votes = ko.observable(data && data.downvotes || 0);
+  self.up_votes = ko.observable(data && data.up_votes || 0);
+  self.down_votes = ko.observable(data && data.down_votes || 0);
   self.current_user_vote = ko.observable(data && data.current_user_vote || null)
 
   self.reviewer_name = ko.observable(data && data.reviewer_first_name || null);
   self.reviewer_facebook_id = ko.observable(data && data.reviewer_facebook_id || null);
   self.reviewer_rating = ko.observable(data && data.reviewer_rating || null);
+
+  self.review_score = ko.computed(function(){
+    return self.up_votes() - self.down_votes();
+  });
 
   self.reviewer_picture_url = ko.computed(function(){
     return "https://graph.facebook.com/"+ self.reviewer_facebook_id() + "/picture?type=large";
@@ -23,23 +27,38 @@ function MovieReviewViewModel(parent, data){
     return self.reviewer_rating() < value ? "fa-star-half" : "fa-star";
   }
 
+  self.thumb_up_style = ko.computed(function(){
+    if (self.current_user_vote() == "up") return "fa-thumbs-up";
+    return "fa-thumbs-o-up";
+  });
+
+  self.thumb_down_style = ko.computed(function(){
+    if (self.current_user_vote() == "down") return "fa-thumbs-down";
+    return "fa-thumbs-o-down";
+  });
+
   self.vote = function(direction){
-    if (self.current_user_vote() == direction) return;
+    if (!self.parent().parent().user().authenticated()) return alert("sign in to vote!");
+
+    if (self.current_user_vote() == direction) direction = "none"; //toggle removing vote
     self.current_user_vote(direction);
+
     $.ajax({
       url: '/review/vote',
       type: 'POST',
       data: {
-        user_id: self.user_id(),
-        movie_id: self.movie().id(),
+        review_id: self.id(),
         direction: direction,
         "_csrf": window.filmsie.csrf
       },
       success: function(data){
+        self.up_votes(data.up_votes);
+        self.down_votes(data.down_votes);
+
         if (data == "deleted"){
           return self.current_user_vote(null);
         }
-        return self.current_user_vote(data.direction);
+        self.current_user_vote(data.vote);
       }
     });
   }
@@ -330,16 +349,18 @@ function MovieViewModel(data, parent) {
   self.synopsis = ko.observable();
   self.imdb_id = ko.observable();
   self.is_loading_details = ko.observable(true);
+  self.is_loading_cast = ko.observable(false);
   self.cast_members = ko.observableArray([]);
   self.cast_is_hidden = ko.observable(true);
   self.temp_rating = ko.observable(self.current_user_rating());
-  self.release_date = ko.observable(data && data.release_date || data.release_date);
-
+  self.release_date = ko.observable(data && data.release_date || null);
+  self.review_count = ko.observable(data && data.review_count || 0)
   //reviews
   self.reviews = ko.observableArray([]);
   self.new_review_text = ko.observable();
+
   self.reviewCountText = ko.computed(function(){
-    return self.reviews().length > 0 ? self.reviews().length : '';
+    return self.review_count() > 0 ? self.review_count() : '';
   });
 
   self.showReviewsModal = function(vm, e){
@@ -380,7 +401,8 @@ function MovieViewModel(data, parent) {
         review_content: self.new_review_text(),
         '_csrf': window.filmsie.csrf },
       success: function(data){
-        console.dir(data); //push new review
+        self.review_count(data.review_count);
+        self.reviews.push(new MovieReviewViewModel(self, data.review));
       }
     });
   }
@@ -401,6 +423,11 @@ function MovieViewModel(data, parent) {
       }
     });
   }
+
+  self.current_user_has_reviewed = ko.computed(function(){
+    var review = _.find(self.reviews(), function(review){ return review.user_id() == self.parent().user().id() });
+    return typeof review != "undefined";
+  });
 
   self.not_found_image_url = "../img/unavailable-image.jpeg";
 
@@ -489,6 +516,7 @@ function MovieViewModel(data, parent) {
   }
 
   self.getCast = function(){
+    self.is_loading_cast(true);
     $.ajax({
       type: "POST",
       url: "/movie/cast",
@@ -501,13 +529,17 @@ function MovieViewModel(data, parent) {
           else{
           _.each(data, function(castMember){
             self.cast_members.push(new CastMemberViewModel(castMember, self));
-          })
+          });
+
         }
+        self.is_loading_cast(false);
       }
     });
   }
 
-  self.toggleCast = function(){
+  self.toggleCast = function(vm, e){
+    e.stopPropagation();
+
     if (!self.cast_members().length) self.getCast();
     self.cast_is_hidden(!self.cast_is_hidden());
   }
@@ -788,15 +820,15 @@ function MoviesViewModel() {
       },
       cache: false,
       success: function(data){
-            self.total_results(data.total_results);
-            _.each(data.results, function(movie, i){
-              if (i == data.results.length) return;
-              var new_movie = new MovieViewModel(movie, self);
-              self.movies.push(new_movie);
-            });
-            $('.movie-table-container').scroll(); //this is to load more if the initial load doesn't fill the view area
-            self.getting(false);
-          }
+        self.total_results(data.total_results);
+        _.each(data.results, function(movie, i){
+          if (i == data.results.length) return;
+          var new_movie = new MovieViewModel(movie, self);
+          self.movies.push(new_movie);
+        });
+        $('.movie-table-container').scroll(); //this is to load more if the initial load doesn't fill the view area
+        self.getting(false);
+      }
     });
   }
 

@@ -15,10 +15,6 @@ module.exports = {
     movie_id: { type: 'string', required: true },
 
     content: { type: 'string', required: true },
-
-    upvotes: {type: 'integer', defaultsTo: 1 },
-
-    downvotes: {type: 'integer', defaultsTo: 0 }
   }
 
 };

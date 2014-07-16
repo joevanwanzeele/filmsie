@@ -47,5 +47,15 @@ module.exports = {
        });
        return callback(movies);
      });
+  },
+
+  includeReviewCount: function(movies, callback){
+    async.each(movies, function(movie, cb){
+      Review.find({movie_id: movie.id}).done(function(err, movie_reviews){
+        if (err) return console.log(err);
+        movie["review_count"] = movie_reviews && movie_reviews.length || 0;
+        cb();
+      });
+    }, callback)
   }
 };

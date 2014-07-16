@@ -12,9 +12,9 @@ module.exports = {
 
   	user_id: {type: 'string', required: true},
 
-    movie_id: {type: 'string', required: true},
+    review_id: {type: 'string', required: true},
 
-    vote: {type: 'string', required: true}, 
+    vote: {type: 'string', required: true} //add validation for vote to be either "up" or "down"
   }
 
 };

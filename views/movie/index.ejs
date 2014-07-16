@@ -133,7 +133,12 @@
           <!-- /ko -->
           <li><span data-bind="text: genresString"></li>
           <li><span data-bind="click: toggleCast, css: { 'fa-minus-square' : !cast_is_hidden() }" class="fa fa-plus-square pointer"></span> Cast
-            <div data-bind="template: { name: 'cast-member-template', foreach: cast_members }, visible: !cast_is_hidden()" class="container cast-container panel"></div>
+            <div class="container" style="width:100%;text-align:center">
+              <div data-bind="template: { name: 'cast-member-template', foreach: cast_members }, visible: !cast_is_hidden()" class="container cast-container panel"></div>
+            </div>
+            <!-- ko if: is_loading_cast() -->
+            <div class="container" style="width:100%;text-align:center"><span class="fa fa-3x fa-spin fa-cog"></span></div>
+            <!-- /ko -->
           </li>
 
         </ul>
@@ -178,9 +183,16 @@
         <h4 id="reviewsModalLabel" class="modal-title" data-bind="text: reviewsModalTitle">Movie Reviews</h4>
       </div>
       <div class="modal-body">
+        <!-- ko if: !current_user_has_reviewed() && parent().user().authenticated() -->
         <textarea data-bind="value: new_review_text" placeholder="write a review..."></textarea>
         <button class="btn btn-default" data-bind="click: saveReview">submit</button>
         <hr/>
+        <!-- /ko  -->
+
+        <!-- ko if: !parent().user().authenticated() -->
+        <div class="sign-in-message-container"><h4><a href="#" data-bind="click: parent().user().login">Sign in</a> to post a review</h4></div>
+        <!-- /ko -->
+
         <ul data-bind="foreach: reviews">
           <div class="row list-review-row">
             <div class="col-sm-2">
@@ -192,12 +204,20 @@
                 <div class="rating-star-container" data-bind="template: {name: 'average-rating-template'}"></div>
               </div>
               <div class="movie-review-container">
-                <span data-bind="html: content"></span>
+                "<span data-bind="html: content"></span>"
               </div>
             </div>
             <div class="col-sm-1">
-              <div class="review-vote"><span class="fa fa-lg fa-thumbs-o-up" data-bind="click: voteUp"></span></div>
-              <div class="review-vote"><span class="fa fa-lg fa-thumbs-o-down fa-flip-horizontal" data-bind="click: voteDown"></span></div>
+              <div class="review-vote">
+                <span class="fa fa-lg" data-bind="css: thumb_up_style, click: voteUp"></span>
+              </div>
+              <div class="fa fa-stack">
+                <span class="fa fa-stack-2x fa-circle-thin"></span>
+                <span class="fa fa-stack-1x review-score " data-bind="text: review_score"></span>
+              </div>
+              <div class="review-vote">
+                <span class="fa fa-lg fa-flip-horizontal" data-bind="css: thumb_down_style, click: voteDown"></span>
+              </div>
             </div>
           </div>
         </ul>
