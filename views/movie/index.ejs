@@ -43,7 +43,7 @@
   <div class="sectionNav">
     <ul data-bind="foreach: movie_lists">
       <li>
-        <a class="btn btn-default" data-bind="css: {'active': $parent.selected_list().id() == id() }, html: name_and_length(), attr: {'href': '#lists/' + id() }"></a>
+        <a class="btn btn-default" data-bind="css: {'active': $parent.selected_list() && $parent.selected_list().id() == id() }, html: name_and_length(), attr: {'href': '#lists/' + id() }"></a>
       </li>
     </ul>
   </div>
