@@ -8,8 +8,7 @@ function MovieListViewModel(data, parent){
   self.is_public = ko.observable(true && (data ? data.is_public : true));
   self.user_id = ko.observable(data && data.user_id);
   self.name_and_length = ko.computed(function(){
-    self.movie_ids();
-    return self.name() + "<div class='list-length'>(" + self.movie_ids().length + ")</div>"
+    return self.name() + "<span class='badge'>" + self.movie_ids().length + "</span>";
   });
 
   self.is_owner = ko.computed(function(){

@@ -1,51 +1,76 @@
 <div class="fluid-container main-content">
   <div class="left-panel">
     <!-- ko if: is_showing_movies -->
-    <div class="row">
-      <div class="col-sm-12 navbar-btn navbar-left">
-        <div class="input-group">
-          <input type="text" data-bind="value: search_query, valueUpdate: 'afterkeydown', event: {keypress: searchOnEnter }" placeholder="search by title" class="form-control">
-          <span class="input-group-btn">
-            <button class="btn btn-default" data-bind="click: search" type="button"><span class="glyphicon glyphicon-search"></span></button>
-          </span>
+    <div class="section-nav">
+      <ul class="row">
+        <li><a class="btn btn-default recommend-btn" href="#movies/recommended" data-bind="css: {'active': window.location.hash == '#movies/recommended'}">Recommended For You</a></li>
+      </ul>
+
+      <div class="panel-group" id="accordion">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h4 class="panel-title">
+              <a data-toggle="collapse" data-bind="click: showSearchOptions" data-parent="#accordion" href="#searchOptions">
+                Search
+              </a>
+            </h4>
+          </div>
+          <div id="searchOptions" class="panel-collapse collapse">
+            <div class="clear-button-container">
+              <button class="btn btn-default" data-bind="click: clearSearch">clear</button>
+            </div>
+            <div class="panel-body">
+              <div class="input-group">
+                <input type="text" data-bind="value: search_query, valueUpdate: 'afterkeydown', event: {keypress: searchOnEnter }" placeholder="search by title" class="form-control">
+                <span class="input-group-btn">
+                  <button class="btn btn-default" data-bind="click: search" type="button"><span class="glyphicon glyphicon-search"></span></button>
+                </span>
+              </div><br/>
+              <div class="panel panel-default">
+                <div class="panel-heading">
+                  <h4 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#searchOptions" href="#yearList">
+                      year
+                    </a>
+                  </h4>
+                </div>
+                <div id="yearList" class="panel-collapse collapse">
+                  <div class="panel-body">
+                    <select multiple="false" data-bind="options: years, value: selected_year, optionsCaption: 'any year'"></select>
+                  </div>
+                </div>
+              </div>
+              <div class="panel panel-default">
+                <div class="panel-heading">
+                  <h4 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#searchOptions" href="#genreList">
+                      genre
+                    </a>
+                  </h4>
+                </div>
+                <div id="genreList" class="panel-collapse collapse">
+                  <div class="panel-body">
+                    <select data-bind="options: genres, optionsText: 'name', selectedOptions: selected_genres, optionsCaption: 'any genre'" multiple="true"></select>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
-  <div class="panel-group">
-    <div class="panel panel-default">
-      <div class="panel-heading">
-        <h4 class="panel-title">
-            year
-        </h4>
-      </div>
-      <div id="years" class="panel">
-        <div class="panel-body">
-          <select multiple="false" data-bind="options: years, value: selected_year, optionsCaption: 'any year'"></select>
-        </div>
-      </div>
-    </div>
-    <div class="panel panel-default">
-      <div class="panel-heading">
-        <h4 class="panel-title">
-            genre
-        </h4>
-      </div>
-      <div id="genreContainer" class="panel">
-        <div class="panel-body">
-          <select data-bind="options: genres, optionsText: 'name', selectedOptions: selected_genres, optionsCaption: 'any genre'" multiple="true"></select>
-        </div>
-      </div>
-    </div>
-  </div>
+      </div> <!-- search options panel -->
+    </div> <!-- section nav -->
   <!-- /ko -->
 
   <!-- ko if: is_showing_lists -->
   <div class="section-nav">
-    <ul data-bind="foreach: movie_lists">
-      <li>
-        <a class="btn btn-default" data-bind="css: {'active': $parent.selected_list() && $parent.selected_list().id() == id() }, html: name_and_length(), attr: {'href': '#lists/' + id() }"></a>
-      </li>
-    </ul>
+    <div class="panel panel-default">
+      <div class="panel-heading">Your lists</div>
+      <div class="panel-body">
+        <div class="list-group" data-bind="foreach: movie_lists">
+          <a class="list-group-item" data-bind="css: {'active': $parent.selected_list() && $parent.selected_list().id() == id() }, html: name_and_length(), attr: {'href': '#lists/' + id() }"></a>
+        </div>
+      </div>
+    </div>
   </div>
   <!-- /ko -->
 
@@ -70,13 +95,29 @@
 </div> <!-- left panel -->
 
   <div class="right-panel">
-    <div class="movie-table-container" data-bind="visible: is_showing_movies, template: {name: 'movie-template', foreach: movies}, event: {scroll: scrolled}"></div>
+
+    <!-- ko if: is_showing_movies -->
+    <div class="movie-table-header">
+      <div class="search-title-container">
+        <h3 data-bind="text: search_title">Recommended for you.</h3>
+      </div>
+      <!-- <div class="movie-sort-container">Sort by:
+        <select data-bind="">
+          <option value="rating-high-low">Rating - high to low</option>
+          <option value="rating-high-low">Rating - low to high</option>
+          <option value="rating-high-low">Recommendation - high to low</option>
+          <option value="rating-high-low">Recommendation - low to high</option>
+        </select>
+      </div> -->
+    </div>
+    <div class="movie-table-container" data-bind="template: {name: 'movie-template', foreach: movies}, event: {scroll: scrolled}"></div>
+    <!-- /ko -->
+
 
     <div class="people-container" data-bind="with: user, visible: is_showing_people">
       <!-- ko if: is_showing_matches -->
       <div class="friend-list-container" data-bind="template: {name: 'list-friend-template', foreach: matches}"></div>
       <!-- /ko -->
-
       <!-- ko if: is_showing_friends -->
       <div class="friend-list-container" data-bind="template: {name: 'list-friend-template', foreach: friends}"></div>
       <!-- /ko -->
@@ -139,7 +180,7 @@
           <li><span data-bind="text: genresString"></li>
           <li><span data-bind="click: toggleCast, css: { 'fa-minus-square' : !cast_is_hidden() }" class="fa fa-plus-square pointer"></span> Cast
             <div class="container" style="width:100%;text-align:center">
-              <div data-bind="template: { name: 'cast-member-template', foreach: cast_members }, visible: !cast_is_hidden()" class="container cast-container panel"></div>
+              <div data-bind="template: { name: 'cast-member-template', foreach: cast_members }" class="container cast-container panel collapse"></div>
             </div>
             <!-- ko if: is_loading_cast() -->
             <div class="container" style="width:100%;text-align:center"><span class="fa fa-3x fa-spin fa-cog"></span></div>
@@ -150,6 +191,7 @@
         <a data-bind="attr: {href: amazon_link }" target="_blank"><img class="amazon-button-small" src="/img/amazon.png" alt="find on amazon" /></a><br/><br/>
         <a data-bind="attr: {href: imdb_url }" target="_blank">IMDB info</a>
         <!-- /ko -->
+
         <!-- ko if: is_loading_details() -->
         <div class="container" style="width:100%;text-align:center"><span class="fa fa-5x fa-spin fa-cog"></span></div>
         <!-- /ko -->
@@ -166,9 +208,9 @@
         <h4 id="addToListLabel" class="modal-title" data-bind="html: addToListModalTitle">Add to list</h4>
       </div>
       <div class="modal-body">
-        <ul data-bind="foreach: movie_lists">
-          <li><button class="btn btn-default" data-bind="attr: {'list-id': id}, html: name() + '<div class=\'list-length\'> (' + movie_ids().length + ')</div>', click: addMovie"></li>
-        </ul>
+        <div class="list-group" data-bind="foreach: movie_lists">
+          <a class="list-group-item" data-bind="html: name_and_length, click: addMovie"></a>
+        </div>
         <div class="input-group">
           <input type="text" data-bind="value: new_list_name" placeholder="new list" class="form-control" />
           <span class="input-group-btn">
@@ -346,7 +388,11 @@
     <div class="col-sm-5 pointer">
       <h3 data-bind="text: name"></h3>
     </div>
-    <div class="col-sm-5 c_score-container"><span data-bind="text: c_score() * 100"></span>% match</div>
+    <div class="progress match-progress">
+      <div class="progress-bar progress-bar-success" role="progressbar" data-bind="attr:{ 'area-valuenow': c_score() * 100 }, style: {width: (c_score() * 100) + '%'}" aria-valuemin="0" aria-valuemax="100">
+        <span data-bind="text: (c_score() * 100) + '% match'"></span>
+      </div>
+    </div>
     </div>
   </div>
 </script>

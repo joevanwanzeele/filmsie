@@ -38,7 +38,7 @@ function MovieReviewViewModel(parent, data){
   });
 
   self.vote = function(direction){
-    if (!self.parent().parent().user().authenticated()) return alert("sign in to vote!");
+    if (!self.parent().parent().user().authenticated()) return bootbox.alert("sign in to vote!");
 
     if (self.current_user_vote() == direction) direction = "none"; //toggle removing vote
     self.current_user_vote(direction);

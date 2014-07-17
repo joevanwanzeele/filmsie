@@ -17,6 +17,7 @@
 
 var graph = require('fbgraph');
 var movieHelper = require("../services/MovieHelper");
+var userHelper = require("../services/UserHelper");
 
 module.exports = {
 
@@ -38,7 +39,7 @@ module.exports = {
     });
   },
 
-  search: function(req, response){ //use internet movie db api
+  search: function(req, res){ //use internet movie db api
     var tmdb = require('moviedb')(sails.config.mdbApi.api_key);
 
     if (req.body.q){
@@ -60,8 +61,8 @@ module.exports = {
       tmdb.genreMovies({id: genre}, processMovieResults);
     } else tmdb.miscNowPlayingMovies({page: Number(req.body.page)}, processMovieResults);
 
-    function processMovieResults(err,res) {
-      _.each(res.results, function(movie){
+    function processMovieResults(err, results) {
+      _.each(results.results, function(movie){
         movie["tmdb_id"] = movie.id;
         Movie.findOne({tmdb_id: movie.id}).done(function(err, existing){
           movie.id = null;
@@ -69,16 +70,28 @@ module.exports = {
         });
       });
       var user_id = req.session.user ? req.session.user.id : null;
-      //if (!user_id) return response.json(res);
+
       //link up user reviews (if user is logged in)
-      movieHelper.includeRatings(res.results, user_id, function(movies){
-        movieHelper.includeReviewCount(res.results, function(err){
+      movieHelper.includeRatings(results.results, user_id, function(movies){
+        movieHelper.includeReviewCount(results.results, function(err){
           if (err) return console.log(err);
-          return response.json(res);
+          return res.json(results);
         });
       });
     } // /processMovieResults
 
+  },
+
+  recommended: function(req, res){
+    if (!req.session.user) return res.redirect("/");
+
+    var user_id = req.session.user.id;
+    userHelper.getMatches(user_id, function(matches){
+      //get movies, filter out ones user has reviewed
+      // for each movie, determine r_score
+      // r_score = (u.c_score * u.rating) / total u
+    });
+    return res.json();
   },
 
   rate: function(req, res){

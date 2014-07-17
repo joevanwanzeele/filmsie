@@ -59,6 +59,11 @@ function MovieViewModel(data, parent) {
     return "Reviews for " + self.title();
   });
 
+  self.cast_is_hidden.subscribe(function(value){
+    if (!value) return $('.cast-container').collapse('show');
+    return $('.cast-container').collapse('hide');
+  });
+
   self.saveReview = function(){
     $.ajax({
       url: '/review/add',
@@ -76,7 +81,7 @@ function MovieViewModel(data, parent) {
         review_content: self.new_review_text(),
         '_csrf': window.filmsie.csrf },
       success: function(data){
-        if (!data.review) return alert(data);
+        if (!data.review) return bootbox.alert(data);
         self.review_count(data.review_count);
         self.reviews.push(new MovieReviewViewModel(self, data.review));
       }
@@ -152,7 +157,7 @@ function MovieViewModel(data, parent) {
   self.showAddToListModal = function(vm, e){
     e.stopPropagation();
 
-    if (!self.parent().user().authenticated()) return alert("sign in to create movie lists");
+    if (!self.parent().user().authenticated()) return bootbox.alert("sign in to create movie lists");
 
     self.parent().selected_movie(self);
     self.parent().get_movie_lists();
@@ -205,7 +210,6 @@ function MovieViewModel(data, parent) {
         '_csrf': window.filmsie.csrf
       },
       success: function(data){
-        console.dir(data);
         if (data.length == 0) { $('.cast-container').html("(unavailable)"); }
           else{
           _.each(data, function(castMember){
@@ -257,7 +261,7 @@ function MovieViewModel(data, parent) {
 
   self.setRating = function(rating, event) {
     if (!self.parent().user().authenticated()){
-      return alert("Sign in to save your rating");
+      return bootbox.alert("Sign in to save your rating");
     };
 
     var el = $(event.target);
