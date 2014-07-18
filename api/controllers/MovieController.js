@@ -87,11 +87,29 @@ module.exports = {
 
     var user_id = req.session.user.id;
     userHelper.getMatches(user_id, function(matches){
+      MovieUserRating.find({user_id: user_id}).done(function(err, user_ratings){
+        var rated_movie_ids = _.pluck(user_ratings, 'movie_id');
+        //console.dir(rated_movie_ids);
+        //have to do this hack until they fix the ability to filter by string id's
+          Movie.find().exec(function(err, movies){
+            movies = _.filter(movies, function(movie){ return _.indexOf(rated_movie_ids, movie.id) == -1; });
+            movieHelper.includeRecommendationScore(movies, user_id, function(movies_with_recs){
+              var reco_movies = _.filter(movies_with_recs, function(movie){ return movie.r_score > 0; });
+              //console.dir(reco_movies);
+              movieHelper.includeRatings(reco_movies, user_id, function(movies){
+                movieHelper.includeReviewCount(reco_movies, function(err){
+                  if (err) return console.log(err);
+                  return res.json({total_results: reco_movies.length, results: reco_movies});
+                });
+              });
+            });
+          });
+      });
       //get movies, filter out ones user has reviewed
       // for each movie, determine r_score
       // r_score = (u.c_score * u.rating) / total u
     });
-    return res.json();
+    //return res.json();
   },
 
   rate: function(req, res){

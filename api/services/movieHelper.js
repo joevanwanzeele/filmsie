@@ -94,9 +94,8 @@ module.exports = {
           movie["r_score"] = total_weight == 0 ? 0 : total_ratings / total_weight; //include average later..
           cb()
         });
-      });
+      }, function(){ callback(movies); });
     });
-    callback(movies);
   }
 
 }

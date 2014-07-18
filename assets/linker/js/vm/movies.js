@@ -138,6 +138,10 @@ function MoviesViewModel() {
     location.hash = "movies/search"
   }
 
+  self.showRecommendations = function(vm, e){
+    location.hash = "movies/recommended"
+  }
+
   self.friends = ko.computed(function(){
     return self.user().friends;
   });
@@ -205,7 +209,6 @@ function MoviesViewModel() {
   });
 
   self.getMovies = function(){
-    if (self.total_results() == self.movies().length && self.movies().length != 0) return;
 
     if (self.getting() === true) return;
     self.getting(true);
@@ -238,35 +241,42 @@ function MoviesViewModel() {
   }
 
   self.getRecommendedMovies = function(){
+    //include paging functionality
+    if (self.getting() === true) return;
+    self.getting(true);
+
     $.ajax({
       url: "movie/recommended",
       type: "POST",
       data: { '_csrf': window.filmsie.csrf },
-      success: function(movies){
-        _.each(movies, function(movie){
+      success: function(data){
+        self.total_results(data.total_results);
+        _.each(data.results, function(movie){
           self.movies.push(new MovieViewModel(movie, self));
         });
+        $('.movie-table-container').scroll(); //this is to load more if the initial load doesn't fill the view area
+        self.getting(false);
       }
     });
   }
 
   self.scrolled = function(data, event){
-    var last_movie = self.movies(self.movies())
+    if (self.movies().length == self.total_results()) return;
 
     var viewport_element = $(event.target);
+    var last_movie_in_list = viewport_element.children('.movie-container').last();
+
+    if (!last_movie_in_list) return; //there are none, so scrolling shouldn't do anything
+
+
     var last_movie_position = viewport_element
                               .children('.movie-container')
                               .last()
                               .offset().top;
-    var last_movie_in_list = viewport_element.children('.movie-container').last();
-
-    if (!last_movie_in_list){
-      self.getMovies();
-      return;
-    }
 
     if (last_movie_position < viewport_element.height()){
-      self.getMovies();
+      if (self.showing_recommendations()) self.getRecommendedMovies();
+      if (self.showing_search_options) self.getMovies();
     }
   }
 
@@ -293,11 +303,8 @@ function MoviesViewModel() {
     self.getConfigSettings();
     self.getGenres();
     self.setUpRouting();
-    if (self.is_showing_movies()){
-      self.search();
-    }
-    self.selected_genres.subscribe(self.search);
-    self.selected_year.subscribe(self.search);
+    self.selected_genres.subscribe(function(){self.showSearchOptions(); self.search();});
+    self.selected_year.subscribe(function(){ self.showSearchOptions(); self.search();});
   }
 
   self.loadLists = function(list_id){
@@ -337,13 +344,15 @@ function MoviesViewModel() {
     if (which == "recommended") {
       self.showing_search_options(false);
       self.showing_recommendations(true);
-      $('#searchOptions').collapse('hide')
+      $('#searchOptions').collapse('hide');
+      self.movies([]);
       self.getRecommendedMovies();
     }
     if (which == "search"){
+      $('#searchOptions').collapse('show');
       self.showing_search_options(true);
       self.showing_recommendations(false);
-      $('#searchOptions').collapse('show')
+      self.search();
     }
   }
 
@@ -359,6 +368,8 @@ function MoviesViewModel() {
           });
 
           this.get('/#movies', function() {
+            if (self.showing_search_options()) return this.redirect('/#movies/search');
+            if (self.showing_recommendations()) return this.redirect('/#movies/recommended');
             self.loadMovies();
           });
 
