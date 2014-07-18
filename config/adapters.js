@@ -29,5 +29,9 @@ module.exports.adapters = {
     database : 'nodejitsudb8249523199',
     port     : '10048',
     schema   : true
-  }
+  },
+
+  testMemoryDb: {
+    module   : 'sails-memory'
+  },
 };

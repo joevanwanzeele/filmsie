@@ -4,7 +4,8 @@ function UserViewModel(parent, data){
   self.id = ko.observable(data && data.id || '');
   self.facebook_id = ko.observable(data && data.facebook_id || null);
   self.accessToken = ko.observable();
-  self.c_score = ko.observable(data && data.c_score || null)
+  self.c_score = ko.observable(data && data.c_score || null);
+  self.match_score = ko.observable(data && data.match_score || null);
   self.first_name = ko.observable(data && data.first_name || '');
   self.last_name = ko.observable(data && data.last_name || '');
   self.name = ko.observable(data && data.name || '');

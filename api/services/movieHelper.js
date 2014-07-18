@@ -1,3 +1,5 @@
+var userHelper = require("./UserHelper");
+
 module.exports = {
 
   addOrUpdateMovie: function(movie, cb){
@@ -57,5 +59,44 @@ module.exports = {
         cb();
       });
     }, callback)
+  },
+
+  includeRecommendationScore: function(movies, user_id, callback){
+    userHelper.getMatches(user_id, function(matches){
+      async.each(movies, function(movie, cb){
+        MovieUserRating.find({movie_id: movie.id}).done(function(err,ratings){
+          if (err) return console.log(err);
+          //get sum of rating * weight, and total weight.
+          var weighted_ratings = _.map(ratings, function(rating){
+            //console.dir(rating);
+            if (rating.user_id == user_id) return;
+
+            var matched_user = _.find(matches, function(match){return match.id == rating.user_id;});
+            //console.dir(matched_user);
+
+            var weight =  matched_user ? (matched_user.c_score * matched_user.c_score) : 0; //weight is regardless of correlation direction
+            var possible_rating = matched_user && matched_user.c_score < 0 ? 11 - rating.rating : rating.rating; //if negative correlation, score is likely opposite
+            return {rating: possible_rating, weight: weight};
+          });
+          weighted_ratings = _.compact(weighted_ratings);
+
+          var total_weight = _.reduce(weighted_ratings, function(total, wr){
+            return total + wr.weight;
+          }, 0);
+
+          var total_ratings = _.reduce(weighted_ratings, function(total, wr){
+            return wr.rating * wr.weight;
+          }, 0);
+
+          //console.dir({total_ratings: total_ratings});
+          //console.dir({total_weight: total_weight});
+
+          movie["r_score"] = total_weight == 0 ? 0 : total_ratings / total_weight; //include average later..
+          cb()
+        });
+      });
+    });
+    callback(movies);
   }
-};
+
+}

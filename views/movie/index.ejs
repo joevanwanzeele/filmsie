@@ -389,8 +389,8 @@
       <h3 data-bind="text: name"></h3>
     </div>
     <div class="progress match-progress">
-      <div class="progress-bar progress-bar-success" role="progressbar" data-bind="attr:{ 'area-valuenow': c_score() * 100 }, style: {width: (c_score() * 100) + '%'}" aria-valuemin="0" aria-valuemax="100">
-        <span data-bind="text: (c_score() * 100) + '% match'"></span>
+      <div class="progress-bar progress-bar-success" role="progressbar" data-bind="attr:{ 'area-valuenow': match_score() * 100 }, style: {width: (match_score() * 100) + '%'}" aria-valuemin="0" aria-valuemax="100">
+        <span data-bind="text: (match_score() * 100) + '% match'"></span>
       </div>
     </div>
     </div>

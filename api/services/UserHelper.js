@@ -1,4 +1,5 @@
 var async = require('async');
+var mathUtils = require("./MathUtils");
 var _ = require('underscore');
 
 module.exports = {
@@ -67,6 +68,7 @@ module.exports = {
 }
 
 function calculateScore(user, combined_ratings, cb){
+  //console.dir(combined_ratings);
   var grouped = _.values(_.groupBy(combined_ratings, 'movie_id'));
 
   var two_ratings = _.compact(_.map(grouped, function(group){
@@ -77,12 +79,22 @@ function calculateScore(user, combined_ratings, cb){
     return cb();
   }
 
-  var getDifference = _.memoize(function(both_ratings){ return Math.abs(both_ratings[0] - both_ratings[1]) + 1; });
-  var differences = _.map(two_ratings, getDifference);
+  var first_array = _.map(two_ratings, function(ratings){return ratings[0];});
+  var second_array = _.map(two_ratings, function(ratings){ return ratings[1];});
+  // console.dir(first_array);
+  // console.dir(second_array);
 
-  var score = two_ratings.length / _.reduce(differences, function(mem, val){ return mem + val});
+  var c_score = mathUtils.getPearsonsCorrelation(first_array, second_array);
+  if (isNaN(c_score)) c_score = 0;
+  var c_score_square = c_score * c_score;
 
-  user["c_score"] = score.toFixed(2);
+  // var getDifference = _.memoize(function(both_ratings){ return Math.abs(both_ratings[0] - both_ratings[1]) || 1; });
+  // var differences = _.map(two_ratings, getDifference);
+  //
+  // var score = two_ratings.length / _.reduce(differences, function(mem, val){ return mem + val});
+  //console.dir(c_score);
+  user["c_score"] = c_score.toFixed(2); //between -1 and 1, for calculations
+  user["match_score"] = (.5 + c_score / 2).toFixed(2); //to keep it between 0 and 1
   return cb();
 }
 

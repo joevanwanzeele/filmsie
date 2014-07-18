@@ -1,7 +1,7 @@
 var supertest = require("supertest");
 
 
-describe('The Movie Controller:', function () {
+describe('Movie Controller tests:', function () {
     /*
        Global before() and after() launcher for Sails application
        to run tests like Controller and Models test
@@ -15,7 +15,7 @@ describe('The Movie Controller:', function () {
           level: 'error'
         },
         adapters: {
-          default: 'test'
+          default: 'testMemoryDb'
         }
 
       }, function(err, sails) {
