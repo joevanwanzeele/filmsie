@@ -66,6 +66,22 @@ module.exports = {
     });
   },
 
+  delete: function(req, res, next){
+    var list_id = req.body.list_id;
+    var user_id = req.session.user && req.session.user.id || null;
+    if (!user_id) return res.json("must be logged in to remove a list");
+
+    //console.dir({list_id: list_id, user_id: user_id});
+
+    MovieList.findOne({id: list_id, user_id: user_id}).done(function(err, movie_list){
+      if (err) return console.log(err);
+      if (!movie_list) return res.json("list not found or not owner");
+      movie_list.destroy(function(){
+        return res.json("deleted");
+      });
+    });
+  },
+
   getList: function(req, res, next){
     var user_id = req.session.user && req.session.user.id || null;
     if (req.body.list_id){

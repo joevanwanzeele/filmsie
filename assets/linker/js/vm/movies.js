@@ -87,7 +87,7 @@ function MoviesViewModel() {
         _.each(data, function(list){
           var newList = new MovieListViewModel(list, self);
           self.movie_lists.push(newList);
-          if (newList.id() == list_id){
+          if (!self.selected_list() || newList.id() == list_id){
             self.selected_list(newList);
             self.selected_list().getList();
           }
@@ -119,6 +119,30 @@ function MoviesViewModel() {
         $('#addToListModal').modal('hide');
         self.new_list_name('');
       }
+    });
+  }
+
+  self.deleteList = function(list){
+    bootbox.confirm('Are you sure you want to permanently delete this list?', function(answer){
+      if (!answer) return;
+
+      $.ajax({
+        type: "POST",
+        url: '/movielist/delete',
+        data:{
+          list_id: list.id,
+          '_csrf': window.filmsie.csrf
+        },
+        success: function(data){
+          if (data == "deleted"){
+            bootbox.alert("\"" + list.name() + "\"" + " has been deleted.");
+            self.movie_lists.remove(list);
+            self.selected_list(null);
+            self.showLists();
+          }
+        }
+      });
+
     });
   }
 
@@ -159,7 +183,6 @@ function MoviesViewModel() {
         success: function(data){
             self.thumbnail_base_url(data.images.base_url + data.images.poster_sizes[2]);
             self.large_image_base_url(data.images.base_url + data.images.poster_sizes[5]);
-            self.getMovies();
             if (callback) callback();
         }
       });
@@ -197,7 +220,7 @@ function MoviesViewModel() {
   self.getting.subscribe(function(value){
     if (value){
       var el = "<div id='loadingMoviesPlaceholder' class='movie-container movies-loading-placeholder' data-bind='visible: getting'><span class='fa fa-5x fa-spin fa-cog'></span></div>";
-      if ($('.movie-container').length == 0) {
+      if ($('.movie-table-container > .movie-container').length == 0) {
         $('.movie-table-container').html(el);
       }
       else {
@@ -214,6 +237,7 @@ function MoviesViewModel() {
     self.getting(true);
 
     self.page(self.page() + 1);
+
     var genres = self.selected_genres()[0] && self.selected_genres()[0] != undefined
         ? _.map(self.selected_genres(), function(genre){ return genre.id; })
         : null;
@@ -242,12 +266,13 @@ function MoviesViewModel() {
 
   self.getRecommendedMovies = function(){
     //include paging functionality
+    $('#searchOptions').collapse('hide');
     if (self.getting() === true) return;
     self.getting(true);
 
     $.ajax({
-      url: "movie/recommended",
       type: "POST",
+      url: "movie/recommended",
       data: { '_csrf': window.filmsie.csrf },
       success: function(data){
         self.total_results(data.total_results);
@@ -275,8 +300,8 @@ function MoviesViewModel() {
                               .offset().top;
 
     if (last_movie_position < viewport_element.height()){
-      if (self.showing_recommendations()) self.getRecommendedMovies();
-      if (self.showing_search_options) self.getMovies();
+      if (self.showing_recommendations()) return self.getRecommendedMovies();
+      if (self.showing_search_options()) return self.getMovies();
     }
   }
 
@@ -299,7 +324,9 @@ function MoviesViewModel() {
     self.selected_movie(null);
     self.selected_list(null);
     self.movie_details(null);
-
+    self.showing_search_options(false);
+    self.showing_recommendations(false);
+    $('#searchOptions').collapse('hide');
     self.getConfigSettings();
     self.getGenres();
     self.setUpRouting();
@@ -370,7 +397,7 @@ function MoviesViewModel() {
           this.get('/#movies', function() {
             if (self.showing_search_options()) return this.redirect('/#movies/search');
             if (self.showing_recommendations()) return this.redirect('/#movies/recommended');
-            self.loadMovies();
+            return this.redirect('/#movies/search');
           });
 
           this.get('/#movies/recommended', function(){
@@ -398,7 +425,7 @@ function MoviesViewModel() {
           });
 
           this.get('/', function(){
-            return this.redirect('/#movies');
+            return this.redirect('/#movies/search');
           });
 
           this.get('/#user/logout', function(){

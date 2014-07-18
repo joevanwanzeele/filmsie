@@ -99,6 +99,7 @@ module.exports = {
               movieHelper.includeRatings(reco_movies, user_id, function(movies){
                 movieHelper.includeReviewCount(reco_movies, function(err){
                   if (err) return console.log(err);
+                  reco_movies = _.sortBy(reco_movies, "r_score").reverse();
                   return res.json({total_results: reco_movies.length, results: reco_movies});
                 });
               });

@@ -3,14 +3,14 @@
     <!-- ko if: is_showing_movies -->
     <div class="section-nav">
       <ul class="row">
-        <li><a class="btn btn-default recommend-btn" href="#movies/recommended" data-bind="css: {'active': window.location.hash == '#movies/recommended'}">Recommended For You</a></li>
+        <li><a class="btn btn-default recommend-btn" href="#movies/recommended" data-bind="css: {'active': showing_recommendations }">Recommended For You</a></li>
       </ul>
 
       <div class="panel-group" id="accordion">
         <div class="panel panel-default">
           <div class="panel-heading">
             <h5 class="panel-title">
-              <a data-toggle="collapse" data-bind="click: showSearchOptions" data-parent="#accordion" href="#searchOptions">
+              <a data-toggle="collapse" data-parent="#accordion" href="#searchOptions">
                 Search
               </a>
             </h5>
@@ -126,7 +126,7 @@
     <div class="movie-list-content" data-bind="visible: is_showing_lists, with: selected_list" >
       <div class="movie-list-header container" data-bind="visible: id()">
         <div class="row" data-bind="visible: is_public() || is_owner()">
-          <div class="col-sm-5">
+          <div class="col-sm-6">
             <span class="movie-list-title" data-bind="text: name() + ' (' + movies().length + ')'"></span>
           </div>
           <div class="col-sm-2">
@@ -134,10 +134,15 @@
             <h4>public: <input type="checkbox" data-bind="checked: is_public" /></h4>
             <!-- /ko -->
           </div>
-          <div class="col-sm-5 sm-links">
-            <span class="fa fa-2x fa-facebook-square pointer" data-bind="click: $parent.shareOnFacebook"></span>
-            <span class="fa fa-2x fa-twitter-square"></span>
-            <span class="fa fa-2x fa-reddit-square"></span>
+          <div class="col-sm-2 sm-links">
+            <div class="social-button"><span class="fa fa-2x fa-facebook-square" data-bind="click: $parent.shareOnFacebook"></span></div>
+            <div class="social-button"><span class="fa fa-2x fa-twitter-square"></span></div>
+            <div class="social-button"><span class="fa fa-2x fa-reddit-square"></span></div>
+          </div>
+          <div class="col-sm-2" style="text-align:left">
+            <div class="delete-list-button pointer" data-bind="click: $parent.deleteList">
+              <span class="fa fa-2x fa-times-circle"></span>
+            </div>
           </div>
         </div>
       </div>
@@ -287,7 +292,7 @@
   </div>
 </div>
 
-<div id="inviteFriendsModal" class="modal" tabindex="-1" role="dialog" aria-labelledby="inviteFriends" aria-hidden="true">
+<!-- <div id="inviteFriendsModal" class="modal" tabindex="-1" role="dialog" aria-labelledby="inviteFriends" aria-hidden="true">
   <div class="modal-dialog modal-sm">
     <div class="modal-content" data-bind="with: user">
       <div class="modal-header">
@@ -299,7 +304,7 @@
       </div>
     </div>
   </div>
-</div>
+</div> -->
 
 <script type="text/html" id="movie-template">
   <div class="movie-container">
