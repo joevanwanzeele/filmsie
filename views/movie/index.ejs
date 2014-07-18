@@ -254,12 +254,17 @@
             <div class="col-sm-9">
               <div class="reviewer-rating-container"><div style="float:left"><span data-bind="text: reviewer_name"></span>'s rating: </div>
                 <div class="rating-star-container" data-bind="template: {name: 'average-rating-template'}"></div>
+                <!-- ko if: is_owner -->
+                <div class="delete-review-button">
+                  ( <a href="#" data-bind="click: $parent.deleteReview">delete review</span></a> )
+                </div>
+                <!-- /ko -->
               </div>
               <div class="movie-review-container">
                 "<span data-bind="html: content"></span>"
               </div>
             </div>
-            <div class="col-sm-1">
+            <div class="col-sm-1" style="margin-top:10px;">
               <div class="review-vote">
                 <span class="fa fa-lg" data-bind="css: thumb_up_style, click: voteUp"></span>
               </div>

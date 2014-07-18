@@ -58,17 +58,23 @@ module.exports = {
     });
   },
 
-  delete: function(req, res){
-    var review_id = req.body.review_id;
-    Review.destroy(review_id)
-      .done(function(err){
-        if (err) return console.log(err);
-        ReviewVotes.destroy({review_id: review_id}).done(function(err){ //remove all votes
-          if (err) return console.log(err);
-          return res.json("deleted");
-        });
+delete: function(req, res, next){
+  var review_id = req.body.review_id;
+  var user_id = req.session.user && req.session.user.id || null;
+  if (!user_id) return res.json("must be logged in to delete a review");
+
+  Review.findOne({id: review_id, user_id: user_id}).done(function(err, review){
+    if (err) return console.log(err);
+    if (!review) return res.json("review not found or not owner");
+
+    ReviewVote.destroy({review_id: review_id}).done(function(err){
+      if (err) return console.log(err);
+      review.destroy(function(){
+        return res.json("deleted");
+      });
     });
-  },
+  });
+},
 
   vote: function(req, res){
     var direction = req.body.direction;

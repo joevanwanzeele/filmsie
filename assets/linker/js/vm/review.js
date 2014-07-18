@@ -22,6 +22,10 @@ function MovieReviewViewModel(parent, data){
     return "https://graph.facebook.com/"+ self.reviewer_facebook_id() + "/picture?type=large";
   });
 
+  self.is_owner = ko.computed(function(){
+    return self.user_id() == self.parent().parent().user().id();
+  });
+
   self.average_star_css = function(value){
     if (value > self.reviewer_rating() + 1 || self.reviewer_rating() == 0) return "";
     return self.reviewer_rating() < value ? "fa-star-half" : "fa-star";

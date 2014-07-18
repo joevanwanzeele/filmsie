@@ -140,6 +140,7 @@ function MoviesViewModel() {
             self.selected_list(null);
             self.showLists();
           }
+          else { console.log(data); }
         }
       });
 

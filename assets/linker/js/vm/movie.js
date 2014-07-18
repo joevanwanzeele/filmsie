@@ -88,6 +88,28 @@ function MovieViewModel(data, parent) {
     });
   }
 
+  self.deleteReview = function(vm){
+    bootbox.confirm("Are you sure you would like to permanently delete this review?", function(answer){
+      if (!answer) return;
+
+      $.ajax({
+        type: "POST",
+        url: "/review/delete",
+        data: { review_id: vm.id(),
+                '_csrf': window.filmsie.csrf
+             },
+        success: function(data){
+          if (data == "deleted"){
+            bootbox.alert("your review has been deleted.");
+            self.reviews.remove(vm);
+            self.getReviews();
+          }
+          else { console.log(data); }
+        }
+      });
+    });
+  }
+
   self.getReviews = function(){
     self.reviews([]);
     $.ajax({
