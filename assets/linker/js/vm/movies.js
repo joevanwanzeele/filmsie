@@ -31,11 +31,12 @@ function MoviesViewModel() {
     if (self.showing_recommendations()){
       return "Recommended for you";
     }
-    var genre = self.selected_genres().length && self.selected_genres()[0].name() + ' ' || 'all ';
+    console.dir(self.selected_genres()[0]);
+    var genre = self.selected_genres()[0] != undefined && self.selected_genres()[0].name() + ' ' || 'All ';
     if (self.selected_genres.length > 0 && self.selected_genres.length > 1) genre = _.pluck(self.selected_genres(), 'name').join(', ') + " ";
     var title = genre + "movies ";
     if (self.selected_year()) title += "from " + self.selected_year();
-    title += self.search_query() ? " containing " + self.search_query() : '';
+    title += self.search_query() ? " containing \"" + self.search_query() + "\"" : '';
     return title;
   });
 
@@ -201,6 +202,7 @@ function MoviesViewModel() {
 
   self.getGenres = function(){
     self.genres([]);
+    self.selected_genres([]);
     $.ajax({
       type: "POST",
       url: "/movie/genres",
@@ -209,6 +211,7 @@ function MoviesViewModel() {
         _.each(data.genres, function(genre){
           self.genres.push(new GenreViewModel(genre));
         });
+        self.selected_genres.subscribe(function(){ self.showSearchOptions(); self.search();});
       }
     });
   }
@@ -331,7 +334,7 @@ function MoviesViewModel() {
     self.getConfigSettings();
     self.getGenres();
     self.setUpRouting();
-    self.selected_genres.subscribe(function(){self.showSearchOptions(); self.search();});
+
     self.selected_year.subscribe(function(){ self.showSearchOptions(); self.search();});
   }
 
