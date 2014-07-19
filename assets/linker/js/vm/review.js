@@ -41,6 +41,10 @@ function MovieReviewViewModel(parent, data){
     return "fa-thumbs-o-down";
   });
 
+  self.created_date = ko.computed(function(){
+    return moment(self.createdAt()).format('LL')
+  });
+
   self.vote = function(direction){
     if (!self.parent().parent().user().authenticated()) return bootbox.alert("sign in to vote!");
 

@@ -249,7 +249,7 @@
           <div class="row list-review-row">
             <div class="col-sm-2">
               <div class="reviewer-image-container"><img data-bind="attr: {src: reviewer_picture_url }" /></div>
-              <div class="reviewer-name-container"><h5 data-bind="text: reviewer_name"></h5></div>
+              <div class="reviewer-name-container"><span data-bind="text: reviewer_name"></span></div>
             </div>
             <div class="col-sm-9">
               <div class="reviewer-rating-container"><div style="float:left"><span data-bind="text: reviewer_name"></span>'s rating: </div>
@@ -261,6 +261,7 @@
                 <!-- /ko -->
               </div>
               <div class="movie-review-container">
+                <div class="created-date" data-bind="text: created_date"></div>
                 "<span data-bind="html: content"></span>"
               </div>
             </div>
