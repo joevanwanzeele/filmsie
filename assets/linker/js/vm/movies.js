@@ -31,7 +31,6 @@ function MoviesViewModel() {
     if (self.showing_recommendations()){
       return "Recommended for you";
     }
-    console.dir(self.selected_genres()[0]);
     var genre = self.selected_genres()[0] != undefined && self.selected_genres()[0].name() + ' ' || 'All ';
     if (self.selected_genres.length > 0 && self.selected_genres.length > 1) genre = _.pluck(self.selected_genres(), 'name').join(', ') + " ";
     var title = genre + "movies ";
@@ -436,6 +435,7 @@ function MoviesViewModel() {
             var route = this;
             self.user().logout();
             location.hash = "movies";
+            self.clearSearch();
           });
       }).run();
   }

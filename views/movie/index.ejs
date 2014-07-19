@@ -16,9 +16,6 @@
             </h5>
           </div>
           <div id="searchOptions" class="panel-collapse collapse">
-            <div class="clear-button-container">
-              <button class="btn btn-default" data-bind="click: clearSearch">clear</button>
-            </div>
             <div class="panel-body">
               <div class="input-group">
                 <input type="text" data-bind="value: search_query, valueUpdate: 'afterkeydown', event: {keypress: searchOnEnter }" placeholder="search by title" class="form-control">
@@ -54,6 +51,9 @@
                   </div>
                 </div>
               </div>
+            </div>
+            <div class="clear-button-container">
+              <button class="btn btn-warn" data-bind="click: clearSearch">clear</button>
             </div>
           </div>
         </div>
