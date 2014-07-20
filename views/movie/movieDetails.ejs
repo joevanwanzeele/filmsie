@@ -1,0 +1,41 @@
+<div id="movie_details_modal" data-bind="with: movie_details" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="movie_details_label" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title" id="movie_details_label" data-bind="text: title"></h4>
+      </div>
+      <div class="modal-body movie-details">
+        <!-- ko if: !is_loading_details() -->
+        <div class="detail-image-container">
+          <img data-bind="attr: {src: big_image_url}" />
+        </div>
+        <br/>
+        <p data-bind="text: synopsis"></p>
+        <ul>
+          <li><span>Released <span data-bind="text: formatted_release_date"></span></span></li>
+          <!-- ko if: current_user_rating -->
+          <li><span>Your rating: <span data-bind="text: current_user_rating"></span></span></li>
+          <!-- /ko -->
+          <li><span data-bind="text: genresString"></li>
+          <li><span data-bind="click: toggleCast, css: { 'fa-minus-square' : !cast_is_hidden() }" class="fa fa-plus-square pointer"></span> Cast
+            <div class="container" style="width:100%;text-align:center">
+              <div data-bind="template: { name: 'cast-member-template', foreach: cast_members }" class="container cast-container panel collapse"></div>
+            </div>
+            <!-- ko if: is_loading_cast() -->
+            <div class="container" style="width:100%;text-align:center"><span class="fa fa-3x fa-spin fa-cog"></span></div>
+            <!-- /ko -->
+          </li>
+
+        </ul>
+        <a data-bind="attr: {href: amazon_link }" target="_blank"><img class="amazon-button-small" src="/img/amazon.png" alt="find on amazon" /></a><br/><br/>
+        <a data-bind="attr: {href: imdb_url }" target="_blank">IMDB info</a>
+        <!-- /ko -->
+
+        <!-- ko if: is_loading_details() -->
+        <div class="container" style="width:100%;text-align:center"><span class="fa fa-5x fa-spin fa-cog"></span></div>
+        <!-- /ko -->
+      </div>
+    </div>
+  </div>
+</div>

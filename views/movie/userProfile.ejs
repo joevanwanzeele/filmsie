@@ -1,0 +1,13 @@
+<div id="userProfileModal" class="modal" tabindex="-1" role="dialog" aria-labelledby="userProfileLabel" aria-hidden="true">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content" data-bind="with: user">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 id="userProfileLabel" class="modal-title" data-bind="html: name"></h4>
+      </div>
+      <div class="modal-body">
+        <img class="profile-image-large" data-bind="attr: {'src': profile_pic_url }" />
+      </div>
+    </div>
+  </div>
+</div>

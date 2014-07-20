@@ -1,0 +1,21 @@
+<div id="addToListModal" class="modal" tabindex="-1" role="dialog" aria-labelledby="addToListLabel" aria-hidden="true">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 id="addToListLabel" class="modal-title" data-bind="html: addToListModalTitle">Add to list</h4>
+      </div>
+      <div class="modal-body">
+        <div class="list-group" data-bind="foreach: movie_lists">
+          <a class="list-group-item" data-bind="html: name_and_length, click: addMovie"></a>
+        </div>
+        <div class="input-group">
+          <input type="text" data-bind="value: new_list_name" placeholder="new list" class="form-control" />
+          <span class="input-group-btn">
+            <button type="button" class="btn btn-default" data-bind="click: add_new_movie_list">add</button>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

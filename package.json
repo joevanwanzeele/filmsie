@@ -1,7 +1,7 @@
 {
     "name": "filmsie",
     "private": true,
-    "version": "0.0.0-90",
+    "version": "0.0.0-91",
     "description": "The social movie review site",
     "dependencies": {
         "sails": "0.9.16",
@@ -15,7 +15,7 @@
         "bcrypt": "0.7.7",
         "crypto": "0.0.3",
         "node-uuid": "1.4.1",
-        "moviedb": "https://github.com/joevanwanzeele/moviedb/tarball/master",
+        "moviedb": "0.1.7",
         "request": "2.36.0",
         "aws-lib": "0.3.0",
         "fbgraph": "0.2.10",

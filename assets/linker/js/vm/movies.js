@@ -61,6 +61,15 @@ function MoviesViewModel() {
     }, function(response){});
   }
 
+  self.shareOnTwitter = function(){
+    console.dir("modal");
+    $('#shareOnTwitterModal').modal();
+  }
+
+  self.twitterLink = ko.computed(function(){
+    return 'https://twitter.com/share?url=' + encodeURI(window.location.href);
+  });
+
   self.is_showing_people = ko.observable(false);
   self.is_showing_movies = ko.observable(false);
   self.is_showing_lists = ko.observable(false);
@@ -89,8 +98,8 @@ function MoviesViewModel() {
           self.movie_lists.push(newList);
           if (!self.selected_list() || newList.id() == list_id){
             self.selected_list(newList);
-            self.selected_list().getList();
           }
+          self.selected_list().getList();
         });
       }
     });
