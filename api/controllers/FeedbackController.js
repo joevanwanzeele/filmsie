@@ -32,14 +32,6 @@ module.exports = {
       "\nuser_email: " + user_email +
       "\n\n" + req.body.message;
 
-    var transporter = nodemailer.createTransport({
-     service: "Gmail",
-     auth: {
-         user: "joe@filmsie.com",
-         pass: sails.config.email.passwd
-      }
-    });
-
     var smtpTransport = nodemailer.createTransport({
       service: "Gmail",
       auth: {
@@ -47,9 +39,9 @@ module.exports = {
         pass: sails.config.smtpConfig.passwd,
         XOAuth2: {
           user: "joe@filmsie.com",
-          sails.config.smtpConfig.clientId: "571832847291-88pasincd2qo2kuv0dknqgmg8amie7ti.apps.googleusercontent.com",
-          sails.config.smtpConfig.clientSecret: "BKOdUc68GItiCJd1MGeITEXF",
-          sails.config.smtpConfig.refreshToken: "1/fKa1z-Yd2m3bvdlbV5l9G1WLMBPaV9VcBYeGObhor7c"
+          clientId: sails.config.smtpConfig.clientId,
+          clientSecret: sails.config.smtpConfig.clientSecret,
+          refreshToken: sails.config.smtpConfig.refreshToken
         }
       }
     });
@@ -65,7 +57,7 @@ module.exports = {
      if(error){
          console.log(error);
      }else{
-         console.log("Message sent: " + response.message);
+         console.log("Message sent: " + response);
      }
     });
 
