@@ -108,9 +108,10 @@
               <li id="showListsNavButton"><a href="#lists" ><span class="fa fa-lg fa-list"></span></a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right" data-bind="if: user().authenticated()">
-              <li><a class="profile-image-a" href="#Account" data-bind="click: openProfileModal"><img class="profile-image" data-bind="attr: {src: user().profile_pic_url()}" /></a></li>
-              <li><a href="#Account" data-bind="click: openProfileModal"><span class="fa fa-lg fa-cog"></span></a></li>
+              <li><a href="/#user/account" class="profile-image-a"><img class="profile-image" data-bind="attr: {src: user().profile_pic_url()}" /></a></li>
+              <li><a href="/#user/account"><span class="fa fa-lg fa-cog"></span></a></li>
               <li><a href="/#user/logout"><span class="fa fa-lg fa-sign-out"></span></a></li>
+              <li><a href="#" data-bind="click: showFeedbackModal">feedback <span class="fa fa-comment"></span></a></li>
             </ul>
               <div class="nav navbar-nav navbar-right navbar-form" data-bind="if: !user().authenticated()">
                 <a class="btn btn-primary login-button" data-bind="click: user().login"><span class="fa fa-lg fa-facebook-square"> &nbsp; sign in</span></a>

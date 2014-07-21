@@ -1,3 +1,49 @@
+function FeedbackViewModel(parent){
+  var self = this;
+  self.parent = ko.observable(parent);
+  self.feedback_type = ko.observable("comment");
+  self.message = ko.observable();
+  self.sending = ko.observable(false);
+  self.sent = ko.observable(false);
+
+  self.sent.subscribe(function(value){
+    setTimeout(function(){
+      $('#feedbackModal').modal("hide");
+      self.sent(false);
+      self.feedback_type("comment");
+      self.message(null);
+    },
+    3000);
+  });
+
+  self.confirmMessage = ko.computed(function(){
+    if (self.feedback_type() == "question"){
+      return "We will respond to your question as soon as possible.";
+    }
+    return "Your comments are appreciated."
+  });
+
+  self.submitFeedback = function(){
+    self.sending(true);
+    $.ajax({
+      type: "POST",
+      url: "/feedback/create",
+      data: {
+        feedback_type: self.feedback_type(),
+        message: self.message(),
+        '_csrf': window.filmsie.csrf
+      },
+      success: function(data){
+        if (data == "feedback submitted"){
+          self.sent(true);
+        }
+        self.sending(false);
+      }
+    });
+  }
+}
+
+
 function GenreViewModel(data){
   var self = this;
   self.id = ko.observable(data.id);
@@ -23,6 +69,8 @@ function MoviesViewModel() {
   self.selected_movie = ko.observable();
   self.selected_list = ko.observable(new MovieListViewModel({}, self));
   self.movie_details = ko.observable(new MovieViewModel({}, self));
+
+  self.feedback = ko.observable(new FeedbackViewModel(self));
 
   self.showing_search_options = ko.observable(false);
   self.showing_recommendations = ko.observable(false);
@@ -61,14 +109,10 @@ function MoviesViewModel() {
     }, function(response){});
   }
 
-  self.shareOnTwitter = function(){
-    console.dir("modal");
-    $('#shareOnTwitterModal').modal();
+  self.showFeedbackModal = function(vm, e){
+    e.stopPropagation();
+    $('#feedbackModal').modal();
   }
-
-  self.twitterLink = ko.computed(function(){
-    return 'https://twitter.com/share?url=' + encodeURI(window.location.href);
-  });
 
   self.is_showing_people = ko.observable(false);
   self.is_showing_movies = ko.observable(false);
@@ -406,6 +450,10 @@ function MoviesViewModel() {
             self.loadLists(this.params.list_id);
           });
 
+          this.get('/#feedback', function(){
+            self.showFeedbackModal();
+          });
+
           this.get('/#movies', function() {
             if (self.showing_search_options()) return this.redirect('/#movies/search');
             if (self.showing_recommendations()) return this.redirect('/#movies/recommended');
@@ -445,6 +493,10 @@ function MoviesViewModel() {
             self.user().logout();
             location.hash = "movies";
             self.clearSearch();
+          });
+
+          this.get('/#user/account', function(){
+            self.openProfileModal();
           });
       }).run();
   }

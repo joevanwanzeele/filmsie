@@ -94,7 +94,9 @@ function MovieListViewModel(data, parent){
   }
 
   self.twitterLink = ko.computed(function(){
-    return "https://twitter.com/intent/tweet?url=" + encodeURIComponent("http://www.filmsie.com/#lists/" + self.id()) + "&related=filmsie.com";
+    return "https://twitter.com/intent/tweet?url=" +
+      encodeURIComponent("http://www.filmsie.com/#lists/" + self.id()) +
+      "&hashtags=filmsie&text=" + self.name();
   });
 
   self.movie_details = self.parent().movie_details;

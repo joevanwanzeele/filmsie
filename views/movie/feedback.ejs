@@ -1,0 +1,29 @@
+<div id="feedbackModal" class="modal" tabindex="-1" role="dialog" aria-labelledby="feedbackModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content" data-bind="with: feedback">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 id="feedbackModalLabel" class="modal-title">Submit feedback</h4>
+      </div>
+      <div class="modal-body">
+        <span data-bind="visible: sent"><strong>Thank you! </strong><span data-bind="text: confirmMessage"></span></span>
+        <!-- ko if: !sent() -->
+        <span><strong>We love hearing from you!</strong><br/><br/>
+          Enter your comments or questions in the area below.<br/>
+          If you are reporting a bug, please be as specific as possible about how to re-create it.</span>
+
+        <hr/>
+        <div class="feedback-type-container">
+          <div>Is this a</div>
+          <div class="feedback-type-value"><input type="radio" name="feedbackTypeGroup" value="comment" data-bind="checked: feedback_type" /> comment</div>
+          <div>or a</div>
+          <div class="feedback-type-value"><input type="radio" name="feedbackTypeGroup" value="question" data-bind="checked: feedback_type" /> question</div>
+          <div>?</div>
+        </div>
+        <textarea data-bind="value: message"></textarea>
+        <button class="btn btn-default" data-bind="click: submitFeedback">submit</button>
+        <!-- /ko -->
+      </div>
+    </div>
+  </div>
+</div>
