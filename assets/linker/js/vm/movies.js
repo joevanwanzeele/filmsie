@@ -57,6 +57,7 @@ function MoviesViewModel() {
   self.movies = ko.observableArray([]);
   self.page = ko.observable(0);
   self.getting = ko.observable(false);
+  self.getting_lists = ko.observable(false);
   self.search_query = ko.observable();
   self.thumbnail_base_url = ko.observable();
   self.large_image_base_url = ko.observable();
@@ -78,11 +79,12 @@ function MoviesViewModel() {
 
   self.search_title = ko.computed(function(){
     if (self.which_movies() == "recommended"){
+      if (self.movies().length == 0) return "We recommend that you rate some more movies!";
       return "Recommended for you";
     }
 
     if (self.which_movies() == "browse"){
-      return "Browsing the most popular movies";
+      return "Browsing the latest movies";
     }
     var prefix = "";
     if (self.which_movies() == "search"){
@@ -105,6 +107,7 @@ function MoviesViewModel() {
   });
 
   self.movie_count_text = ko.computed(function(){
+    if (self.total_results() == 0) return "";
     return "showing (" + self.movies().length + " of " + self.total_results() + ")";
   });
 
@@ -118,6 +121,7 @@ function MoviesViewModel() {
     self.search_query('');
     self.selected_genres([]);
     self.selected_year(null);
+    self.total_results(0);
     self.getting(false);
   }
 
@@ -152,6 +156,7 @@ function MoviesViewModel() {
   self.is_showing_lists = ko.observable(false);
 
   self.get_movie_lists = function(list_id){
+    self.getting_lists(true);
     self.movie_lists([]);
 
     if (!self.user().authenticated()){
@@ -177,6 +182,7 @@ function MoviesViewModel() {
             self.selected_list(newList);
           }
           self.selected_list().getList();
+          self.getting_lists(false);
         });
       }
     });

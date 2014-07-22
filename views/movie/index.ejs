@@ -73,7 +73,7 @@
 
   <footer class="pull-left">
     <hr>
-    powered by the <a href="http://www.themoviedb.org">TMDb</a> API
+    powered by the <a href="http://www.themoviedb.org" target="_blank">TMDb</a> API
     <br/>
     <div>&copy; Zeele Inc., 2014</div>
     <br/>
@@ -142,7 +142,7 @@
           <div style="width:100%;text-align:center"><h3>This list is private.</h3></div>
         </div>
       </div>
-      <div class="row" data-bind="visible: parent().movie_lists().length == 0">
+      <div class="row" data-bind="visible: parent().movie_lists().length == 0 && !parent().getting_lists()">
         <div class="container col-sm-12">
           <div style="width:100%;text-align:center"><h3>You haven't created any lists yet.</h3></div>
         </div>
@@ -169,7 +169,7 @@
         <div class="sign-in-message-container"><h4><a href="#" data-bind="click: parent().user().login">Sign in</a> to post a review</h4></div>
         <!-- /ko -->
 
-        <ul data-bind="foreach: reviews">
+        <ul data-bind="foreach: reviews" class="row">
           <div class="row list-review-row">
             <div class="col-sm-2">
               <div class="reviewer-image-container"><img data-bind="attr: {src: reviewer_picture_url }" /></div>
@@ -271,13 +271,18 @@
       <a data-bind="attr:{ href: fb_profile_url }" target="_blank"><img class="list-person-image" data-bind="attr: {src: profile_pic_url}" /></a>
     </div>
     <div class="col-sm-5 pointer">
-      <h3 data-bind="text: name"></h3>
+      <h4 data-bind="text: name"></h4>
     </div>
-    <div class="progress match-progress">
-      <div class="progress-bar progress-bar-success" role="progressbar" data-bind="attr:{ 'area-valuenow': match_score() * 100 }, style: {width: (match_score() * 100) + '%'}" aria-valuemin="0" aria-valuemax="100">
-        <span data-bind="text: (match_score() * 100) + '% match'"></span>
+      <!-- ko if: match_score() > 0 -->
+      <div class="progress match-progress">
+        <div class="progress-bar progress-bar-success" role="progressbar" data-bind="attr:{ 'area-valuenow': match_score() * 100 }, style: {width: (match_score() * 100) + '%'}" aria-valuemin="0" aria-valuemax="100">
+          <span data-bind="text: (match_score() * 100) + '% match'"></span>
+        </div>
       </div>
-    </div>
+      <!-- /ko -->
+      <!-- ko if: match_score() <= 0 -->
+        <div class="too-few"><span data-toggle="tooltip" data-placement="bottom" title="Too few rated movies in common">(Match Score Unknown)</span></div>
+      <!-- /ko -->
     </div>
   </div>
 </script>

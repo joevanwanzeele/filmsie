@@ -117,6 +117,12 @@ function UserViewModel(parent, data){
                 person.accessToken(self.accessToken());
                 self.friends.push(person);
               });
+              self.friends.sort(function(left, right){
+                if (left.c_score == right.c_score){
+                  return left.name < right.name;
+                }
+                return left.c_score < right.score;
+              });
             }
           });
         }
@@ -139,6 +145,12 @@ function UserViewModel(parent, data){
           var person = new UserViewModel(self, match);
           person.accessToken(self.accessToken());
           self.matches.push(person);
+        });
+        self.matches.sort(function(left, right){
+          if (left.c_score == right.c_score){
+            return left.name < right.name;
+          }
+          return left.c_score < right.score;
         });
       }
     });
