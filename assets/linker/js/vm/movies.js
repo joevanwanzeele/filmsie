@@ -72,22 +72,36 @@ function MoviesViewModel() {
 
   self.feedback = ko.observable(new FeedbackViewModel(self));
 
-  self.showing_search_options = ko.observable(false);
-  self.showing_recommendations = ko.observable(false);
-  self.browsing_movies = ko.observable(false);
+  self.which_movies = ko.observable("browse");
 
   self.list_name_is_valid = ko.observable(true);
 
   self.search_title = ko.computed(function(){
-    if (self.showing_recommendations()){
+    if (self.which_movies() == "recommended"){
       return "Recommended for you";
     }
-    var genre = self.selected_genres()[0] != undefined && self.selected_genres()[0].name() + ' ' || 'All ';
+
+    if (self.which_movies() == "browse"){
+      return "Browsing the most popular movies";
+    }
+    var prefix = "";
+    if (self.which_movies() == "search"){
+      if ((!self.selected_genres[0] ||
+        !self.selected_genres[0].name()) &&
+        !self.selected_year() &&
+        !self.search_query()){
+          return "Search for movies by title, year or genre";
+        } else {
+          prefix = "Searching for ";
+      }
+    }
+
+    var genre = self.selected_genres()[0] != undefined && self.selected_genres()[0].name() + ' ' || 'all ';
     if (self.selected_genres.length > 0 && self.selected_genres.length > 1) genre = _.pluck(self.selected_genres(), 'name').join(', ') + " ";
     var title = genre + "movies ";
     if (self.selected_year()) title += "from " + self.selected_year();
     title += self.search_query() ? " containing \"" + self.search_query() + "\"" : '';
-    return title;
+    return prefix + title;
   });
 
   self.movie_count_text = ko.computed(function(){
@@ -100,10 +114,22 @@ function MoviesViewModel() {
   });
 
   self.clearSearch = function(){
+    self.getting(true);
     self.search_query('');
     self.selected_genres([]);
     self.selected_year(null);
-    self.search();
+    self.getting(false);
+  }
+
+  self.search = function(){
+    self.movies([]);
+    self.page(0);
+    self.getMovies();
+  }
+
+  self.searchOnEnter = function(data, event){
+    if (event.keyCode == 13) self.search();
+    return true;
   }
 
   self.shareOnFacebook = function(){
@@ -280,7 +306,7 @@ function MoviesViewModel() {
         _.each(data.genres, function(genre){
           self.genres.push(new GenreViewModel(genre));
         });
-        self.selected_genres.subscribe(function(){ self.showSearchOptions(); self.search();});
+        self.selected_genres.subscribe(function(){ self.search();});
       }
     });
   }
@@ -339,7 +365,6 @@ function MoviesViewModel() {
 
   self.getRecommendedMovies = function(){
     //include paging functionality
-    $('#searchOptions').collapse('hide');
     if (self.getting() === true) return;
     self.getting(true);
 
@@ -373,21 +398,19 @@ function MoviesViewModel() {
                               .offset().top;
 
     if (last_movie_position < viewport_element.height()){
-      if (self.showing_recommendations()) return self.getRecommendedMovies();
-      if (self.showing_search_options()) return self.getMovies();
+
+      switch (self.which_movies()){
+        case "recommended":
+          self.getRecommendedMovies();
+          break;
+        case "search":
+        case "browse":
+          self.getMovies();
+      }
     }
   }
 
-  self.search = function(){
-    self.movies([]);
-    self.page(0);
-    self.getMovies();
-  }
 
-  self.searchOnEnter = function(data, event){
-    if (event.keyCode == 13) self.search();
-    return true;
-  }
 
   self.init = function(callback, p){
     self.selected_genres([]);
@@ -397,14 +420,14 @@ function MoviesViewModel() {
     self.selected_movie(null);
     self.selected_list(null);
     self.movie_details(null);
-    self.showing_search_options(false);
-    self.showing_recommendations(false);
-    $('#searchOptions').collapse('hide');
+    self.which_movies(null);
+
     self.getConfigSettings();
     self.getGenres();
     self.setUpRouting();
 
-    self.selected_year.subscribe(function(){ self.showSearchOptions(); self.search();});
+    self.selected_year.subscribe(function(value){ self.search();});
+    self.search_query.subscribe(function(value){ if (value) self.search();});
   }
 
   self.loadLists = function(list_id){
@@ -438,21 +461,33 @@ function MoviesViewModel() {
   self.loadMovies = function(which){
     $('.active').removeClass('active');
     $('#showMoviesNavButton').addClass('active');
+
     self.is_showing_lists(false);
     self.is_showing_people(false);
     self.is_showing_movies(true);
-    if (which == "recommended") {
-      self.showing_search_options(false);
-      self.showing_recommendations(true);
-      $('#searchOptions').collapse('hide');
-      self.movies([]);
-      self.getRecommendedMovies();
-    }
-    if (which == "search"){
-      $('#searchOptions').collapse('show');
-      self.showing_search_options(true);
-      self.showing_recommendations(false);
-      self.search();
+    switch(which){
+      case "recommended":
+        self.which_movies("recommended");
+        $('#searchOptions').collapse('hide');
+        $('.search-row').addClass("hide-behind");
+        self.movies([]);
+        self.clearSearch();
+        self.getRecommendedMovies();
+        break;
+      case "search":
+        self.which_movies("search");
+        $('#searchOptions').collapse({toggle: false});
+        $('#searchOptions').collapse('show');
+        $('.search-row').removeClass("hide-behind");
+        self.clearSearch();
+        break;
+      default:
+        self.which_movies("browse");
+        $('#searchOptions').collapse('hide');
+        $('.search-row').addClass("hide-behind");
+        self.clearSearch();
+        self.search();
+        break;
     }
   }
 
@@ -472,9 +507,17 @@ function MoviesViewModel() {
           });
 
           this.get('/#movies', function() {
-            if (self.showing_search_options()) return this.redirect('/#movies/search');
-            if (self.showing_recommendations()) return this.redirect('/#movies/recommended');
-            return this.redirect('/#movies/search');
+            switch(self.which_movies()){
+            case "search":
+              return this.redirect('/#movies/search');
+              break;
+            case "recommended":
+              return this.redirect('/#movies/recommended');
+              break;
+            default:
+              return this.redirect('/#movies/browse');
+              break;
+            }
           });
 
           this.get('/#movies/recommended', function(){
@@ -483,6 +526,10 @@ function MoviesViewModel() {
 
           this.get('/#movies/search', function(){
             self.loadMovies('search');
+          });
+
+          this.get('/#movies/browse', function(){
+            self.loadMovies('browse');
           });
 
           this.get('/#people', function(){
@@ -502,7 +549,7 @@ function MoviesViewModel() {
           });
 
           this.get('/', function(){
-            return this.redirect('/#movies/search');
+            return this.redirect('/#movies/browse');
           });
 
           this.get('/#user/logout', function(){

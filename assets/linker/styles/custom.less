@@ -53,10 +53,9 @@ a {
 }
 
 .left-panel{
-  /* width:15%;
-  height:100%;
-  padding-left:20px;
-  float:left; */
+  .section-nav{
+    margin-top:60px;
+  }
   .footer{
     position:absolute;
     bottom:10px;
@@ -105,6 +104,7 @@ td {
 }
 
 .movie-table-container{
+  margin-top:20px;
   overflow:auto;
   /* position:absolute;
   overflow-x:hidden;
@@ -364,7 +364,6 @@ td {
 }
 
 .movie-list-content {
-  margin-left:40px;
   .movie-list-header {
     margin-bottom:20px;
     .movie-list-title{
@@ -421,16 +420,17 @@ td {
   position:absolute;
   top:-5px;
   right:10px;
-
+  color:rgb(190, 99, 99);
   :hover{
-    color:rgb(190, 99, 99);
+    color:rgb(255, 99, 99);
   }
 }
 
 .delete-list-button{
   margin-top:9px;
+  color:rgb(190, 99, 99);
   :hover{
-    color:rgb(190, 99, 99);
+    color:rgb(255, 99, 99);
   }
 }
 
@@ -540,7 +540,7 @@ td {
 }
 
 .movie-table-header{
-  padding-left:10px;
+  padding-left:0;
   .movie-sort-container{
     position:relative;
     left:535px;
@@ -550,6 +550,7 @@ td {
   }
 
   .search-title-container{
+    padding-left:0;
     .movie-list-label{
       font-size:20px;
       font-weight:bold;
@@ -594,4 +595,38 @@ td {
       font-weight:bold;
     }
   }
+}
+
+.search-btn{
+  z-index:2;
+}
+
+.search-row{
+  position: relative;
+  left:-33px;
+  top: -18px;
+}
+
+.hide-behind{
+  z-index:-1;
+}
+
+.btn{
+  .badge{
+    float:right;
+  }
+}
+
+.movie-list-title{
+  .badge{
+    vertical-align:middle;
+    font-size:larg;
+    margin-left:10px;
+    color: #fff;
+    background-color: #333;
+  }
+}
+
+.friend-list-container{
+  margin-top:60px;
 }

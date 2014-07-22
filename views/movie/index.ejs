@@ -3,13 +3,13 @@
     <!-- ko if: is_showing_movies -->
     <div class="section-nav">
       <ul class="row">
-        <li><a class="btn btn-default recommend-btn" href="#movies/recommended" data-bind="css: {'active': showing_recommendations }">Recommended For You</a></li>
-        <li><a class="btn btn-default browse-btn" href="#movies/browse" data-bind="css: {'active': browsing_movies }">Browse</a></li>
-        <li><a class="btn btn-default search-btn" href="#movies/search" data-bind="css: {'active': showing_search_options }">Search</a></li>
+        <li><a class="btn btn-default browse-btn" href="#movies/browse" data-bind="css: {'active': which_movies() == 'browse' }">Browse</a></li>
+        <li><a class="btn btn-default recommend-btn" href="#movies/recommended" data-bind="css: {'active': which_movies() == 'recommended' }">Recommended For You</a></li>
+        <li><a class="btn btn-default search-btn" href="#movies/search" data-bind="css: {'active': which_movies() == 'search' }">Search</a></li>
       </ul>
-      <div class="row">
-        <div class="panel panel-default" style="width:200px;">
-          <div id="searchOptions" class="panel-collapse collapse">
+      <div class="row search-row hide-behind">
+        <div class="panel panel-default" style="width:200px">
+          <div id="searchOptions" class="panel-collapse collapse in">
             <div class="panel-body">
               <div class="input-group">
                 <input type="text" data-bind="value: search_query, valueUpdate: 'afterkeydown', event: {keypress: searchOnEnter }" placeholder="search by title" class="form-control">
@@ -20,12 +20,10 @@
               <div class="panel panel-default">
                 <div class="panel-heading">
                   <h4 class="panel-title">
-                    <a data-toggle="collapse" data-parent="#searchOptions" href="#yearList">
                       year
-                    </a>
                   </h4>
                 </div>
-                <div id="yearList" class="panel-collapse collapse">
+                <div id="yearList" class="panel-collapse collapse in">
                   <div class="panel-body">
                     <select multiple="false" data-bind="options: years, value: selected_year, optionsCaption: 'any year'"></select>
                   </div>
@@ -34,12 +32,10 @@
               <div class="panel panel-default">
                 <div class="panel-heading">
                   <h4 class="panel-title">
-                    <a data-toggle="collapse" data-parent="#searchOptions" href="#genreList">
                       genre
-                    </a>
                   </h4>
                 </div>
-                <div id="genreList" class="panel-collapse collapse">
+                <div id="genreList" class="panel-collapse collapse in">
                   <div class="panel-body">
                     <select data-bind="options: genres, optionsText: 'name', selectedOptions: selected_genres, optionsCaption: 'any genre'" multiple="true"></select>
                   </div>
@@ -57,20 +53,17 @@
 
   <!-- ko if: is_showing_lists -->
   <div class="section-nav">
-    <div class="panel panel-default">
-      <div class="panel-heading">Your lists</div>
-      <div class="panel-body">
-        <div class="list-group" data-bind="foreach: movie_lists">
-          <a class="list-group-item" data-bind="css: {'active': $parent.selected_list() && $parent.selected_list().id() == id() }, html: name_and_length(), attr: {'href': '#lists/' + id() }"></a>
-        </div>
-      </div>
-    </div>
+    <ul class="row" data-bind="foreach: movie_lists">
+      <li>
+        <a class="btn btn-default" data-bind="css: {'active': $parent.selected_list() && $parent.selected_list().id() == id() }, html: name_and_length(), attr: {'href': '#lists/' + id() }"></a>
+      </li>
+    </ul>
   </div>
   <!-- /ko -->
 
   <!-- ko if: is_showing_people -->
   <div class="section-nav" data-bind="with: user">
-    <ul>
+    <ul class="row">
       <li><a class="btn btn-default" data-bind="css: {'active': is_showing_matches() }" href="#people/matches">My Matches</a></li>
       <li><a class="btn btn-default" data-bind="css: {'active': is_showing_friends() }" href="#people/friends">My friends</a></li>
       <li><a class="btn btn-default" href="#people/invite">Invite Friends</a></li>
@@ -122,7 +115,7 @@
       <div class="movie-list-header container" data-bind="visible: id()">
         <div class="row" data-bind="visible: is_public() || is_owner()">
           <div class="col-sm-6">
-            <span class="movie-list-title" data-bind="text: name() + ' (' + movies().length + ')'"></span>
+            <span class="movie-list-title" data-bind="html: name"></span>
           </div>
           <div class="col-sm-2">
             <!-- ko if: is_owner() -->
