@@ -74,6 +74,9 @@ function MoviesViewModel() {
 
   self.showing_search_options = ko.observable(false);
   self.showing_recommendations = ko.observable(false);
+  self.browsing_movies = ko.observable(false);
+
+  self.list_name_is_valid = ko.observable(true);
 
   self.search_title = ko.computed(function(){
     if (self.showing_recommendations()){
@@ -85,6 +88,10 @@ function MoviesViewModel() {
     if (self.selected_year()) title += "from " + self.selected_year();
     title += self.search_query() ? " containing \"" + self.search_query() + "\"" : '';
     return title;
+  });
+
+  self.movie_count_text = ko.computed(function(){
+    return "showing (" + self.movies().length + " of " + self.total_results() + ")";
   });
 
   self.addToListModalTitle = ko.computed(function(){
@@ -150,6 +157,15 @@ function MoviesViewModel() {
   }
 
   self.add_new_movie_list = function(vm, e){
+    if (!self.new_list_name()){
+      self.list_name_is_valid(false);
+      $('#newListName').popover({
+        title: "error",
+        content: "You have to name the list.",
+        placement: "left"});
+      return;
+    }
+
     $.ajax({
       type: "POST",
       url: "/movielist/add",
@@ -171,6 +187,7 @@ function MoviesViewModel() {
         });
         $('#addToListModal').modal('hide');
         self.new_list_name('');
+        self.list_name_is_valid(true);
       }
     });
   }

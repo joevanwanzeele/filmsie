@@ -51,7 +51,6 @@
     <script src='//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.2.0/js/bootstrap.min.js'></script>
     <script src='//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.2.0/js/transition.min.js'></script>
     <script src='//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.2.0/js/collapse.min.js'></script>
-
   </head>
 
   <body>
@@ -86,7 +85,7 @@
        }(document, 'script', 'facebook-jssdk'));
 
     </script>
-    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+    <nav class="navbar navbar-inverse" style="border-radius: 0" role="navigation">
       <div class="container-fluid">
         <!-- Brand and toggle get grouped for better mobile display -->
         <div class="navbar-header">
@@ -103,15 +102,15 @@
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
           <div class="container">
             <ul class="nav navbar-nav" data-bind="if: user().authenticated()">
-              <li class="active" id="showMoviesNavButton"><a href="#movies"><span class="fa fa-lg fa-film"></span></a></li>
-              <li id="showPeopleNavButton"><a href="#people" ><span class="fa fa-lg fa-users"></span></a></li>
-              <li id="showListsNavButton"><a href="#lists" ><span class="fa fa-lg fa-list"></span></a></li>
+              <li class="active" id="showMoviesNavButton"><a href="#movies" data-toggle="tooltip" data-placement="bottom" title="Movies"><span class="fa fa-lg fa-film"></span></a></li>
+              <li id="showPeopleNavButton"><a href="#people" data-toggle="tooltip" data-placement="bottom" title="People"><span class="fa fa-lg fa-users"></span></a></li>
+              <li id="showListsNavButton"><a href="#lists" data-toggle="tooltip" data-placement="bottom" title="Your Lists"><span class="fa fa-lg fa-list"></span></a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right" data-bind="if: user().authenticated()">
               <li><a href="/#user/account" class="profile-image-a"><img class="profile-image" data-bind="attr: {src: user().profile_pic_url()}" /></a></li>
-              <li><a href="/#user/account"><span class="fa fa-lg fa-cog"></span></a></li>
-              <li><a href="/#user/logout"><span class="fa fa-lg fa-sign-out"></span></a></li>
-              <li><a href="#" data-bind="click: showFeedbackModal">feedback <span class="fa fa-comment"></span></a></li>
+              <li><a href="/#user/account" data-toggle="tooltip" data-placement="bottom" title="Account Settings"><span class="fa fa-lg fa-cog"></span></a></li>
+              <li><a href="/#user/logout" data-toggle="tooltip" data-placement="bottom" title="Sign Out"><span class="fa fa-lg fa-sign-out"></span></a></li>
+              <li><a href="#" data-bind="click: showFeedbackModal" data-toggle="tooltip" data-placement="bottom" title="Feedback"><span class="fa fa-comment"></span></a></li>
             </ul>
               <div class="nav navbar-nav navbar-right navbar-form" data-bind="if: !user().authenticated()">
                 <a class="btn btn-primary login-button" data-bind="click: user().login"><span class="fa fa-lg fa-facebook-square"> &nbsp; sign in</span></a>
@@ -147,7 +146,7 @@
     -->
 
     <!--TEMPLATES-->
-    
+
     <!--TEMPLATES END-->
 
 
@@ -181,6 +180,14 @@
 
       ga('create', 'UA-52631020-1', 'auto');
       ga('send', 'pageview');
+
+      $("body").tooltip({ selector: '[data-toggle=tooltip]' });
+
+      $(".movie-table-container").css({height: (window.innerHeight - 135) + "px"});
+
+      $(window).resize(function(){
+        $(".movie-table-container").css({height: (window.innerHeight - 135) + "px"});
+      });
     </script>
 
     <!--SCRIPTS-->

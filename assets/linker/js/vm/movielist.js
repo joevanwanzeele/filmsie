@@ -15,6 +15,7 @@ function MovieListViewModel(data, parent){
     return self.user_id() == self.parent().user().id();
   });
 
+
   self.addMovie = function(vm, e){
     $.ajax({
       type: "POST",

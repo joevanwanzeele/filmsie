@@ -1,20 +1,14 @@
-<div class="fluid-container main-content">
-  <div class="left-panel">
+<div class="container-fluid main-content">
+  <div class="left-panel col-md-2">
     <!-- ko if: is_showing_movies -->
     <div class="section-nav">
       <ul class="row">
         <li><a class="btn btn-default recommend-btn" href="#movies/recommended" data-bind="css: {'active': showing_recommendations }">Recommended For You</a></li>
+        <li><a class="btn btn-default browse-btn" href="#movies/browse" data-bind="css: {'active': browsing_movies }">Browse</a></li>
+        <li><a class="btn btn-default search-btn" href="#movies/search" data-bind="css: {'active': showing_search_options }">Search</a></li>
       </ul>
-
-      <div class="panel-group" id="accordion">
-        <div class="panel panel-default">
-          <div class="panel-heading">
-            <h5 class="panel-title">
-              <a data-toggle="collapse" data-parent="#accordion" href="#searchOptions">
-                Search
-              </a>
-            </h5>
-          </div>
+      <div class="row">
+        <div class="panel panel-default" style="width:200px;">
           <div id="searchOptions" class="panel-collapse collapse">
             <div class="panel-body">
               <div class="input-group">
@@ -56,8 +50,8 @@
               <button class="btn btn-warn" data-bind="click: clearSearch">clear</button>
             </div>
           </div>
-        </div>
       </div> <!-- search options panel -->
+    </div>
     </div> <!-- section nav -->
   <!-- /ko -->
 
@@ -94,12 +88,13 @@
   </footer>
 </div> <!-- left panel -->
 
-  <div class="right-panel">
+  <div class="right-panel col-md-10">
 
     <!-- ko if: is_showing_movies -->
     <div class="movie-table-header">
-      <div class="search-title-container">
-        <h3 data-bind="text: search_title">Recommended for you.</h3>
+      <div class="search-title-container container-fluid">
+        <div class="movie-list-label col-sm-6" data-bind="text: search_title"></div>
+        <div class="movie-count col-sm-5" data-bind="text: movie_count_text"></div>
       </div>
       <!-- <div class="movie-sort-container">Sort by:
         <select data-bind="">

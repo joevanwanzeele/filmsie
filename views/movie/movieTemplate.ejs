@@ -3,10 +3,10 @@
     <div class="movie-title-container" data-bind="click: showDetails">
       <h5 data-bind="text: title"></h5>
     </div>
-    <div class="add-to-list-button-container" data-bind="click: showAddToListModal">
+    <div class="add-to-list-button-container" data-bind="click: showAddToListModal" data-toggle="tooltip" data-placement="right" title="Add to List">
       <span class="fa fa-lg fa-list"></span>
     </div>
-    <div class="show-reviews-button-container" data-bind="click: showReviewsModal">
+    <div class="show-reviews-button-container" data-bind="click: showReviewsModal" data-toggle="tooltip" data-placement="right" title="Reviews">
       <span class="fa fa-stack">
         <span class="fa fa-stack-1x fa-lg fa-comments-o"></span>
         <strong class="fa fa-stack-1x review-count" data-bind="text: reviewCountText"></strong>
