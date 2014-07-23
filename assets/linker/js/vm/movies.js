@@ -79,7 +79,7 @@ function MoviesViewModel() {
 
   self.search_title = ko.computed(function(){
     if (self.which_movies() == "recommended"){
-      if (self.movies().length == 0) return "We recommend that you rate some more movies!";
+      if (self.movies().length == 0 && !self.getting()) return "We recommend that you rate some more movies!";
       return "Recommended for you";
     }
 
