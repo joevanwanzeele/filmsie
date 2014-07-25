@@ -125,7 +125,7 @@
 
     <!-- people section -->
     <div class="people-container" data-bind="visible: is_showing_people, with: user">
-      <!-- ko if: showing_user_profile && !loading_profile() -->
+      <!-- ko if: showing_user_profile() && !loading_profile() -->
         <div data-bind="template: { name: 'person-profile-template', data: parent().selected_user }"></div>
       <!-- /ko -->
       <!-- ko if: loading_profile -->
