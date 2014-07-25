@@ -13,7 +13,6 @@ function UserViewModel(parent, data){
   self.gender = ko.observable(data && data.gender || '');
   self.fb_profile_url = ko.observable(data && data.fb_profile_url || '');
   self.showing_user_profile = ko.observable(false);
-
   self.authenticated = ko.observable(false);
   self.friends = ko.observableArray([]);
   self.matches = ko.observableArray([]);
@@ -24,7 +23,6 @@ function UserViewModel(parent, data){
 
   self.viewUserProfile = function(vm){
     self.parent().parent().selected_user(vm);
-    //console.dir(self.parent().parent().selected_user().name());
     self.parent().showing_user_profile(true);
   }
 
@@ -54,6 +52,7 @@ function UserViewModel(parent, data){
        self.accessToken(response.authResponse.accessToken);
        self.authenticated(true);
        FB.api('/me', function(user) {
+         console.log(user);
          if (user.error) return console.log(user.error);
          self.facebook_id(user.id);
          self.first_name(user.first_name);
@@ -120,13 +119,11 @@ function UserViewModel(parent, data){
   }
 
   self.profile_pic_url = ko.computed(function(){
-    //return "https://graph.facebook.com/"+ self.facebook_id() + "/picture?type=large&access_token="+ self.accessToken();
-    return "https://graph.facebook.com/"+ self.facebook_id() + "/picture?type=large";
+    return "https://graph.facebook.com/"+ self.facebook_id() + "/picture?type=large&access_token=" + self.accessToken();
   });
 
   self.profile_pic_url_small = ko.computed(function(){
-    //return "https://graph.facebook.com/"+ self.facebook_id() + "/picture?type=large&access_token="+ self.accessToken();
-    return "https://graph.facebook.com/"+ self.facebook_id() + "/picture";
+    return "https://graph.facebook.com/"+ self.facebook_id() + "/picture?type=square&access_token=" + self.accessToken();
   });
 
   self.peopleSort = function(left, right){
