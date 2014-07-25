@@ -9,7 +9,7 @@ function CastMemberViewModel(data, parent){
     self.parent().not_found_image_url); //todo: replace with empty image path if none exists for cast member
 }
 
-function MovieViewModel(data, parent) {
+function MovieViewModel(parent, data) {
   var self = this;
   self.parent = ko.observable(parent);
   self.id = ko.observable(data && data.id || '')

@@ -12,14 +12,41 @@ function UserViewModel(parent, data){
   self.email = ko.observable(data && data.email || '');
   self.gender = ko.observable(data && data.gender || '');
   self.fb_profile_url = ko.observable(data && data.fb_profile_url || '');
+  self.showing_user_profile = ko.observable(false);
 
   self.authenticated = ko.observable(false);
   self.friends = ko.observableArray([]);
   self.matches = ko.observableArray([]);
 
-  self.is_showing_matches = ko.observable(false);
-  self.is_showing_friends = ko.observable(false);
+  self.match_percent = ko.computed(function(){
+    return self.match_score() * 100;
+  });
 
+  self.viewUserProfile = function(vm){
+    self.parent().parent().selected_user(vm);
+    //console.dir(self.parent().parent().selected_user().name());
+    self.parent().showing_user_profile(true);
+  }
+
+  self.which_people = ko.observable('matches');
+
+  self.which_people.subscribe(function(value){
+
+    switch(value){
+    case 'matches':
+      $('.matches-row').removeClass('hide-behind');
+      $('.friends-row').addClass('hide-behind');
+      $('#peopleMatches').collapse('show');
+      $('#peopleFriends').collapse('hide');
+      break;
+    case 'friends':
+      $('.matches-row').addClass('hide-behind');
+      $('.friends-row').removeClass('hide-behind');
+      $('#peopleMatches').collapse('hide');
+      $('#peopleFriends').collapse('show');
+      break;
+    }
+  });
 
   self.processLogin = function(callback){
     FB.getLoginStatus(function(response) {
@@ -97,6 +124,18 @@ function UserViewModel(parent, data){
     return "https://graph.facebook.com/"+ self.facebook_id() + "/picture?type=large";
   });
 
+  self.profile_pic_url_small = ko.computed(function(){
+    //return "https://graph.facebook.com/"+ self.facebook_id() + "/picture?type=large&access_token="+ self.accessToken();
+    return "https://graph.facebook.com/"+ self.facebook_id() + "/picture";
+  });
+
+  self.peopleSort = function(left, right){
+      if (left.c_score() == right.c_score()){
+        return left.name() < right.name();
+      }
+      return left.c_score() < right.c_score();
+  }
+
   self.getFriends = function(){
     self.friends([]);
 
@@ -117,21 +156,13 @@ function UserViewModel(parent, data){
                 person.accessToken(self.accessToken());
                 self.friends.push(person);
               });
-              self.friends.sort(function(left, right){
-                if (left.c_score == right.c_score){
-                  return left.name < right.name;
-                }
-                return left.c_score < right.score;
-              });
+              self.friends.sort(self.peopleSort);
+              self.which_people('friends');
             }
           });
         }
     });
   },
-
-  self.save = function(){
-
-  }
 
   self.getMatches = function(){
     self.matches([]);
@@ -146,12 +177,8 @@ function UserViewModel(parent, data){
           person.accessToken(self.accessToken());
           self.matches.push(person);
         });
-        self.matches.sort(function(left, right){
-          if (left.c_score == right.c_score){
-            return left.name < right.name;
-          }
-          return left.c_score < right.score;
-        });
+        self.matches.sort(self.peopleSort);
+        self.which_people('matches');
       }
     });
   }

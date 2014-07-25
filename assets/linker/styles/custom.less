@@ -109,12 +109,18 @@ td {
 }
 
 .movies-loading-placeholder{
-  background-color: rgb(0,0,0,0) !important;
+  background-color: transparent !important;
+  /* background-color: rgb(0,0,0,0) !important; */
+  color:#fff;
   float:none;
   width:100%;
   text-align:center;
+  -webkit-box-shadow: none !important;
+  -moz-box-shadow: none !important;
+  box-shadow: none !important;
   span{
-    margin-top:50px !important;
+    color:#fff;
+    margin-top:85px !important;
   }
 }
 
@@ -227,9 +233,11 @@ td {
 
 .cast-container{
   width:100%;
+  background-color:transparent;
 
   .cast-member-container {
     background-color: @cardBackground;
+    color:#000;
     height:200px;
     width:150px;
     margin:10px;
@@ -406,7 +414,6 @@ td {
 
 .match-progress{
   width:350px;
-  margin-top:23px;
   height:35px;
   font-size:12px;
   font-weight:bold;
@@ -414,6 +421,51 @@ td {
     line-height:35px;
   }
 }
+
+
+
+.person-menu-item{
+  background-color:#222;
+  font-weight:bold;
+  cursor:pointer;
+  padding:0;
+  text-align:center;
+  :hover{
+    background-color:#444;
+  }
+
+  img{
+    float:left;
+    max-height:30px;
+    max-width:30px;
+    margin:2px;
+    z-index:2;
+  }
+  .pic-name-row{
+    overflow:hidden;
+    white-space:nowrap;
+    font-size:smaller;
+    height:34px;
+    padding:0;
+    margin:0;
+  }
+  .list-person-name{
+    padding-left:4px;
+  }
+  .col-xs-2, .col-xs-10{
+    padding:0;
+  }
+}
+
+.match-menu-progress{
+  margin-left:4px;
+  margin-top:10px;
+  width:160px;
+  height:4px;
+  margin-bottom:5px;
+}
+
+
 
 .delete-list-item-button{
   position:absolute;
@@ -523,17 +575,20 @@ td {
   }
 }
 
-.search-options-panel{
+.expand-panel{
   padding-top:0;
   padding-bottom:0;
+  margin-left:15px;
+  margin-top:14px;
+  width:200px;
 }
 
 .navbar-btn{
   width:100%;
 }
 
-#searchOptions {
-  color:#000;
+#searchOptions, #peopleMatches, #peopleFriends {
+  color:#fff;
   background-color:#333;
   width:100%;
   border-bottom-right-radius: 4px;
@@ -567,6 +622,7 @@ td {
       text-align:left;
     }
     .movie-count{
+      margin-top:3px;
       text-align:right;
       font-size:18px;
     }
@@ -612,9 +668,15 @@ td {
   z-index:2;
 }
 
-.search-row{
+.search-row, .friends-row, .matches-row{
   position: relative;
-  top: -18px;
+  top: -16px;
+}
+
+#peopleMatches, #peopleFriends{
+  .panel-body{
+    padding:0;
+  }
 }
 
 .hide-behind{
@@ -647,4 +709,24 @@ td {
 
 #userProfileModal{
   color: #000;
+}
+
+.modal-header{
+  background-image: linear-gradient(to bottom,#3c3c3c 0,#222 100%);
+  background-repeat: repeat-x;
+  color:#fff;
+  h4{
+    font-weight:bold;
+  }
+}
+
+.modal-body{
+  background-color:#555;
+  background-image: url("/img/wild_oliva.png");
+  color:#fff;
+}
+
+.person-profile-container{
+  margin-top:60px;
+
 }

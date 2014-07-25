@@ -1,9 +1,9 @@
-function MovieListViewModel(data, parent){
+function MovieListViewModel(parent, data){
   var self = this;
   self.parent = ko.observable(parent);
   self.id = ko.observable(data && data.id || null);
   self.name = ko.observable(data && data.name || null);
-  self.movie_ids = ko.observableArray(data && data.movie_ids || data.movie_ids);
+  self.movie_ids = ko.observableArray(data && data.movie_ids || []);
   self.movies = ko.observableArray([]);
   self.is_public = ko.observable(true && (data ? data.is_public : true));
   self.user_id = ko.observable(data && data.user_id);
@@ -86,7 +86,7 @@ function MovieListViewModel(data, parent){
         self.is_public(data.list.is_public);
         self.user_id(data.list.user_id);
         _.each(data.movies, function(movie){
-          self.movies.push(new MovieViewModel(movie, self));
+          self.movies.push(new MovieViewModel(self, movie));
         })
         self.name.subscribe(self.saveChanges);
         self.is_public.subscribe(self.saveChanges);

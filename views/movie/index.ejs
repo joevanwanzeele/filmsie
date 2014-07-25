@@ -5,49 +5,52 @@
       <ul class="row">
         <li><a class="btn btn-default browse-btn" href="#movies/browse" data-bind="css: {'active': which_movies() == 'browse' }">Browse</a></li>
         <li><a class="btn btn-default recommend-btn" href="#movies/recommended" data-bind="css: {'active': which_movies() == 'recommended' }">Recommended For You</a></li>
-        <li><a class="btn btn-default search-btn" href="#movies/search" data-bind="css: {'active': which_movies() == 'search' }">Search</a></li>
+        <li>
+          <a class="btn btn-default search-btn" href="#movies/search" data-bind="css: {'active': which_movies() == 'search' }">Search</a>
+          <div class="row search-row hide-behind">
+            <div class="panel panel-default expand-panel">
+              <div id="searchOptions" class="panel-collapse collapse">
+                <div class="panel-body">
+                  <div class="input-group">
+                    <input type="text" data-bind="value: search_query, valueUpdate: 'afterkeydown', event: {keypress: searchOnEnter }" placeholder="search by title" class="form-control">
+                    <span class="input-group-btn">
+                      <button class="btn btn-default" data-bind="click: search" type="button"><span class="glyphicon glyphicon-search"></span></button>
+                    </span>
+                  </div><br/>
+                  <div class="panel panel-default">
+                    <div class="panel-heading">
+                      <h4 class="panel-title">
+                          year
+                      </h4>
+                    </div>
+                    <div id="yearList" class="panel-collapse collapse in">
+                      <div class="panel-body">
+                        <select multiple="false" data-bind="options: years, value: selected_year, optionsCaption: 'any year'"></select>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="panel panel-default">
+                    <div class="panel-heading">
+                      <h4 class="panel-title">
+                          genre
+                      </h4>
+                    </div>
+                    <div id="genreList" class="panel-collapse collapse in">
+                      <div class="panel-body">
+                        <select data-bind="options: genres, optionsText: 'name', selectedOptions: selected_genres, optionsCaption: 'any genre'" multiple="true"></select>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="clear-button-container">
+                  <button class="btn btn-warn" data-bind="click: clearSearch">clear</button>
+                </div>
+              </div>
+          </div> <!-- search options panel -->
+        </div>
+        </li>
       </ul>
-      <div class="row search-row hide-behind">
-        <div class="panel panel-default" style="width:200px">
-          <div id="searchOptions" class="panel-collapse collapse in">
-            <div class="panel-body">
-              <div class="input-group">
-                <input type="text" data-bind="value: search_query, valueUpdate: 'afterkeydown', event: {keypress: searchOnEnter }" placeholder="search by title" class="form-control">
-                <span class="input-group-btn">
-                  <button class="btn btn-default" data-bind="click: search" type="button"><span class="glyphicon glyphicon-search"></span></button>
-                </span>
-              </div><br/>
-              <div class="panel panel-default">
-                <div class="panel-heading">
-                  <h4 class="panel-title">
-                      year
-                  </h4>
-                </div>
-                <div id="yearList" class="panel-collapse collapse in">
-                  <div class="panel-body">
-                    <select multiple="false" data-bind="options: years, value: selected_year, optionsCaption: 'any year'"></select>
-                  </div>
-                </div>
-              </div>
-              <div class="panel panel-default">
-                <div class="panel-heading">
-                  <h4 class="panel-title">
-                      genre
-                  </h4>
-                </div>
-                <div id="genreList" class="panel-collapse collapse in">
-                  <div class="panel-body">
-                    <select data-bind="options: genres, optionsText: 'name', selectedOptions: selected_genres, optionsCaption: 'any genre'" multiple="true"></select>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="clear-button-container">
-              <button class="btn btn-warn" data-bind="click: clearSearch">clear</button>
-            </div>
-          </div>
-      </div> <!-- search options panel -->
-    </div>
+
     </div> <!-- section nav -->
   <!-- /ko -->
 
@@ -64,8 +67,34 @@
   <!-- ko if: is_showing_people -->
   <div class="section-nav" data-bind="with: user">
     <ul class="row">
-      <li><a class="btn btn-default" data-bind="css: {'active': is_showing_matches() }" href="#people/matches">My Matches</a></li>
-      <li><a class="btn btn-default" data-bind="css: {'active': is_showing_friends() }" href="#people/friends">My friends</a></li>
+      <li>
+        <a class="btn btn-default" data-bind="css: {'active': which_people() == 'matches' }" href="#people/matches">My Matches</a>
+        <div class="row matches-row hide-behind">
+          <div class="expand-panel">
+            <div id="peopleMatches" class="panel-collapse collapse">
+              <div class="panel-body">
+                <ul data-bind="foreach: matches">
+                  <li data-bind="template: {name: 'people-menu-item' }"></li>
+                </ul>
+              </div>
+            </div> <!-- /match list panel -->
+          </div>
+        </div>
+      </li>
+      <li>
+        <a class="btn btn-default" data-bind="css: {'active': which_people() == 'friends' }" href="#people/friends">My friends</a>
+        <div class="row friends-row hide-behind">
+          <div class="expand-panel">
+            <div id="peopleFriends" class="panel-collapse collapse">
+              <div class="panel-body">
+                <ul data-bind="foreach: friends">
+                  <li data-bind="template: {name: 'people-menu-item' }"></li>
+                </ul>
+              </div>
+            </div> <!-- /friend list panel -->
+          </div>
+        </div>
+      </li>
       <li><a class="btn btn-default" href="#people/invite">Invite Friends</a></li>
     </ul>
   </div>
@@ -81,36 +110,28 @@
   </footer>
 </div> <!-- left panel -->
 
-  <div class="right-panel col-md-10">
+<!-- right panel section -->
 
+  <div class="right-panel col-md-10">
     <!-- ko if: is_showing_movies -->
     <div class="movie-table-header">
       <div class="search-title-container container-fluid">
         <div class="movie-list-label col-sm-6" data-bind="text: search_title"></div>
         <div class="movie-count col-sm-5" data-bind="text: movie_count_text"></div>
       </div>
-      <!-- <div class="movie-sort-container">Sort by:
-        <select data-bind="">
-          <option value="rating-high-low">Rating - high to low</option>
-          <option value="rating-high-low">Rating - low to high</option>
-          <option value="rating-high-low">Recommendation - high to low</option>
-          <option value="rating-high-low">Recommendation - low to high</option>
-        </select>
-      </div> -->
     </div>
     <div class="movie-table-container" data-bind="template: {name: 'movie-template', foreach: movies}, event: {scroll: scrolled}"></div>
-    <!-- /ko -->
+    <!-- /ko --> <!-- /movies section -->
 
-
-    <div class="people-container" data-bind="with: user, visible: is_showing_people">
-      <!-- ko if: is_showing_matches -->
-      <div class="friend-list-container" data-bind="template: {name: 'list-friend-template', foreach: matches}"></div>
-      <!-- /ko -->
-      <!-- ko if: is_showing_friends -->
-      <div class="friend-list-container" data-bind="template: {name: 'list-friend-template', foreach: friends}"></div>
+    <!-- people section -->
+    <div class="people-container" data-bind="visible: is_showing_people, with: user">
+      <!-- ko if: showing_user_profile -->
+        <div data-bind="template: { name: 'person-profile-template', data: parent().selected_user }"></div>
       <!-- /ko -->
     </div>
+    <!-- /people section -->
 
+    <!-- movie list section -->
     <div class="movie-list-content" data-bind="visible: is_showing_lists, with: selected_list" >
       <div class="movie-list-header container" data-bind="visible: id()">
         <div class="row" data-bind="visible: is_public() || is_owner()">
@@ -147,7 +168,9 @@
           <div style="width:100%;text-align:center"><h3>You haven't created any lists yet.</h3></div>
         </div>
       </div>
-    </div> <!-- movie-list-content -->
+    </div>
+    <!-- /movie list section -->
+
   </div> <!-- right panel -->
 </div> <!-- main content -->
 
@@ -241,10 +264,6 @@
     <span class="fa" data-bind="css: average_star_css(10)"></span>
 </script>
 
-<script type="text/html" id="friend-template">
-  <div data-bind="text: name"></div>
-</script>
-
 <script type="text/html" id="list-movie-template">
   <div class="row list-movie-row">
     <div class="col-sm-1 pointer" data-bind="click: showDetails">
@@ -294,6 +313,23 @@
   <div class="character-container" data-bind="text: character"></div>
 </script>
 
+<script type="text/html" id="people-menu-item">
+  <div class="person-menu-item container-fluid" data-bind="click: viewUserProfile">
+    <div class="pic-name-row row">
+      <div class="col-xs-2">
+        <img data-bind="attr: {src: profile_pic_url_small}" />
+      </div>
+      <div class="col-xs-10">
+        <span class="list-person-name" data-bind="text: name"></span>
+        <div class="progress match-menu-progress">
+          <div class="progress-bar progress-bar-success" role="progressbar" data-bind="attr:{ 'area-valuenow': match_percent }, style: {width: match_percent() + '%'}" aria-valuemin="0" aria-valuemax="100">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</script>
+
 <script type="text/javascript">
   $(function(){
     var vm = new MoviesViewModel();
@@ -311,6 +347,8 @@ function logIn(){}
 <% include userProfile.ejs %>
 
 <% include movieTemplate.ejs %>
+
+<% include personDetails.ejs %>
 
 <% include addToList.ejs %>
 

@@ -68,12 +68,27 @@ function MoviesViewModel() {
   self.movie_lists = ko.observableArray([]);
   self.new_list_name = ko.observable();
   self.selected_movie = ko.observable();
-  self.selected_list = ko.observable(new MovieListViewModel({}, self));
-  self.movie_details = ko.observable(new MovieViewModel({}, self));
+  self.selected_list = ko.observable(new MovieListViewModel(self));
+  self.movie_details = ko.observable(new MovieViewModel(self));
+  self.selected_user = ko.observable(new UserViewModel(self));
 
   self.feedback = ko.observable(new FeedbackViewModel(self));
 
   self.which_movies = ko.observable("browse");
+
+  self.which_movies.subscribe(function(value){
+    $('#searchOptions').collapse({toggle: false});
+
+    switch (value) {
+      case 'search':
+        $('#searchOptions').collapse('show');
+        $('.search-row').removeClass("hide-behind");
+        break;
+      default:
+        $('#searchOptions').collapse('hide');
+        $('.search-row').addClass("hide-behind");
+      }
+  });
 
   self.list_name_is_valid = ko.observable(true);
 
@@ -108,7 +123,7 @@ function MoviesViewModel() {
 
   self.movie_count_text = ko.computed(function(){
     if (self.total_results() == 0) return "";
-    return "showing (" + self.movies().length + " of " + self.total_results() + ")";
+    return "showing " + self.movies().length + " of " + self.total_results();
   });
 
   self.addToListModalTitle = ko.computed(function(){
@@ -176,7 +191,7 @@ function MoviesViewModel() {
       },
       success: function(data){
         _.each(data, function(list){
-          var newList = new MovieListViewModel(list, self);
+          var newList = new MovieListViewModel(self, list);
           self.movie_lists.push(newList);
           if (!self.selected_list() || newList.id() == list_id){
             self.selected_list(newList);
@@ -215,7 +230,7 @@ function MoviesViewModel() {
       },
       success: function(data){
         _.each(data, function(list){
-          self.movie_lists.push(new MovieListViewModel(list, self));
+          self.movie_lists.push(new MovieListViewModel(self, list));
         });
         $('#addToListModal').modal('hide');
         self.new_list_name('');
@@ -361,7 +376,7 @@ function MoviesViewModel() {
       success: function(data){
         self.total_results(data.total_results);
         _.each(data.results, function(movie){
-          self.movies.push(new MovieViewModel(movie, self));
+          self.movies.push(new MovieViewModel(self, movie));
         });
         $('.movie-table-container').scroll(); //this is to load more if the initial load doesn't fill the view area
         self.getting(false);
@@ -379,9 +394,10 @@ function MoviesViewModel() {
       url: "movie/recommended",
       data: { '_csrf': window.filmsie.csrf },
       success: function(data){
+        console.dir(data);
         self.total_results(data.total_results);
         _.each(data.results, function(movie){
-          self.movies.push(new MovieViewModel(movie, self));
+          self.movies.push(new MovieViewModel(self, movie));
         });
         $('.movie-table-container').scroll(); //this is to load more if the initial load doesn't fill the view area
         self.getting(false);
@@ -451,46 +467,40 @@ function MoviesViewModel() {
     self.is_showing_movies(false);
     self.is_showing_people(true);
     self.is_showing_lists(false);
+    $('#peopleFriends').collapse({toggle: false});
+    $('#peopleMatches').collapse({toggle: false});
+    self.user().which_people('');
 
     if (who == "friends") {
       self.user().getFriends();
-      self.user().is_showing_friends(true);
-      self.user().is_showing_matches(false);
+      //self.user().which_people('friends');
     }
     else {
       self.user().getMatches();
-      self.user().is_showing_friends(false);
-      self.user().is_showing_matches(true);
+      //self.user().which_people('matches');
     }
   }
 
   self.loadMovies = function(which){
     $('.active').removeClass('active');
     $('#showMoviesNavButton').addClass('active');
-
+    self.which_movies('');
     self.is_showing_lists(false);
     self.is_showing_people(false);
     self.is_showing_movies(true);
     switch(which){
       case "recommended":
         self.which_movies("recommended");
-        $('#searchOptions').collapse('hide');
-        $('.search-row').addClass("hide-behind");
         self.movies([]);
         self.clearSearch();
         self.getRecommendedMovies();
         break;
       case "search":
         self.which_movies("search");
-        $('#searchOptions').collapse({toggle: false});
-        $('#searchOptions').collapse('show');
-        $('.search-row').removeClass("hide-behind");
         self.clearSearch();
         break;
       default:
         self.which_movies("browse");
-        $('#searchOptions').collapse('hide');
-        $('.search-row').addClass("hide-behind");
         self.clearSearch();
         self.search();
         break;
