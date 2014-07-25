@@ -19,7 +19,7 @@ function MovieReviewViewModel(parent, data){
   });
 
   self.reviewer_picture_url = ko.computed(function(){
-    return "https://graph.facebook.com/"+ self.reviewer_facebook_id() + "/picture?type=large";
+    return "https://graph.facebook.com/"+ self.reviewer_facebook_id() + "/picture?type=large&access_token=" + self.parent().parent().user().accessToken();
   });
 
   self.is_owner = ko.computed(function(){

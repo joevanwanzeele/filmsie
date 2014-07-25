@@ -29,10 +29,6 @@ module.exports = {
     });
   },
 
-  dashboard: function (req, res) {
-    res.view();
-  },
-
   logout: function (req, res){
     req.session.user = null;
     req.session.authenticated = false;
@@ -65,27 +61,37 @@ module.exports = {
       });
   },
 
-  'facebook': function (req, res, next) {
-     passport.authenticate('facebook', { scope: ['email', 'user_about_me', 'user_friends']},
-          function (err, user) {
-            req.logIn(user, function (err) {
-            if(err) {
-                req.session.flash = 'There was an error';
-                res.redirect('/');
-            } else {
-                req.session.user = user;
-                req.session.authenticated = true;
-                res.redirect('/');
-            }
+  get: function(req, res, next){
+    if (!req.session.user){
+      console.log("not logged in");
+      return res.json("please log in.");
+    }
+    var current_user_id = req.session.user.id;
+    var user_id = req.body.id;
+    User.findOne(user_id).done(function(err, user){
+      if (err) return console.log(err);
+      if (!user) return res.json("user not found");
+      user['current_user_id'] = current_user_id;
+      userHelper.includeCorrelationScore(user, function(){
+        MovieUserRating.find({user_id: user.id}).done(function(err, ratings){
+          if (err) return console.log(err);
+          user['rating_count'] = ratings.length;
+          Review.find({user_id: user.id}).done(function(err, reviews){
+            if (err) return console.log(err);
+            user['review_count'] = reviews.length;
+            return res.json(user);
+          });
         });
-    })(req, res, next);
+      });
+    });
   },
 
-  'facebook/callback': function (req, res, next) {
-     passport.authenticate('facebook',
-        function (req, res) {
-            res.redirect('/');
-        })(req, res, next);
+  favorites: function(req, res, next){
+
+  },
+
+  leastFavorites: function(req, res, next){
+
   },
 
   privacy: function(req, res, next){

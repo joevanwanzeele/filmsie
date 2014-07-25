@@ -125,8 +125,11 @@
 
     <!-- people section -->
     <div class="people-container" data-bind="visible: is_showing_people, with: user">
-      <!-- ko if: showing_user_profile -->
+      <!-- ko if: showing_user_profile && !loading_profile() -->
         <div data-bind="template: { name: 'person-profile-template', data: parent().selected_user }"></div>
+      <!-- /ko -->
+      <!-- ko if: loading_profile -->
+        <div class="container" style="width:100%;text-align:center;margin-top:150px"><span class="fa fa-5x fa-spin fa-cog"></span></div>
       <!-- /ko -->
     </div>
     <!-- /people section -->
@@ -348,7 +351,7 @@ function logIn(){}
 
 <% include movieTemplate.ejs %>
 
-<% include personDetails.ejs %>
+<% include personProfile.ejs %>
 
 <% include addToList.ejs %>
 

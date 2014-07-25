@@ -394,7 +394,6 @@ function MoviesViewModel() {
       url: "movie/recommended",
       data: { '_csrf': window.filmsie.csrf },
       success: function(data){
-        console.dir(data);
         self.total_results(data.total_results);
         _.each(data.results, function(movie){
           self.movies.push(new MovieViewModel(self, movie));
@@ -461,7 +460,7 @@ function MoviesViewModel() {
     self.is_showing_lists(true);
   }
 
-  self.loadPeople = function(who){
+  self.loadPeople = function(who, id){
     $('.active').removeClass('active');
     $('#showPeopleNavButton').addClass('active');
     self.is_showing_movies(false);
@@ -471,13 +470,16 @@ function MoviesViewModel() {
     $('#peopleMatches').collapse({toggle: false});
     self.user().which_people('');
 
-    if (who == "friends") {
+    switch(who){
+    case "friends":
       self.user().getFriends();
-      //self.user().which_people('friends');
-    }
-    else {
+      break;
+    case "matches":
       self.user().getMatches();
-      //self.user().which_people('matches');
+      break;
+    case "profile":
+      self.user().loadUserProfile(id);
+      break;
     }
   }
 
@@ -558,6 +560,10 @@ function MoviesViewModel() {
 
           this.get('/#people/friends', function(){
             self.loadPeople("friends")
+          });
+
+          this.get('/#people/profile/:id', function(){
+            self.loadPeople("profile", this.params.id);
           });
 
           this.get('/#_=_', function(){

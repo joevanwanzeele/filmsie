@@ -6,6 +6,8 @@ function UserViewModel(parent, data){
   self.accessToken = ko.observable();
   self.c_score = ko.observable(data && data.c_score || null);
   self.match_score = ko.observable(data && data.match_score || null);
+  self.rating_count = ko.observable(data && data.rating_count || 0);
+  self.review_count = ko.observable(data && data.review_count || 0);
   self.first_name = ko.observable(data && data.first_name || '');
   self.last_name = ko.observable(data && data.last_name || '');
   self.name = ko.observable(data && data.name || '');
@@ -16,14 +18,46 @@ function UserViewModel(parent, data){
   self.authenticated = ko.observable(false);
   self.friends = ko.observableArray([]);
   self.matches = ko.observableArray([]);
+  self.loading_profile = ko.observable(false);
+  self.created_date = ko.observable(data && data.createdAt || null)
 
   self.match_percent = ko.computed(function(){
     return self.match_score() * 100;
   });
 
+  self.member_time = ko.computed(function(){
+    var begin_date = moment(self.created_date());
+    return begin_date.fromNow(true);
+  });
+
   self.viewUserProfile = function(vm){
-    self.parent().parent().selected_user(vm);
-    self.parent().showing_user_profile(true);
+    self.parent().parent().selected_user(vm); //for quick initial loading
+    location.hash = "people/profile/" + vm.id();
+  }
+
+  self.loadUserProfile = function(user_id){
+    self.loading_profile(true);
+    $.ajax({
+      type: "POST",
+      url: "/user/get",
+      data: {
+        id: user_id,
+        '_csrf': window.filmsie.csrf },
+      success: function(data){
+        if (data == "user not found"){
+          bootbox.alert("There is no user with that ID.");
+        }
+        var user = new UserViewModel(self, data);
+        user.accessToken(self.accessToken());
+        self.parent().selected_user(user);
+        self.showing_user_profile(true);
+        self.loading_profile(false);
+      },
+      error: function(err){
+        console.log(err);
+        self.loading_profile(false);
+      }
+    });
   }
 
   self.which_people = ko.observable('matches');
@@ -52,7 +86,6 @@ function UserViewModel(parent, data){
        self.accessToken(response.authResponse.accessToken);
        self.authenticated(true);
        FB.api('/me', function(user) {
-         console.log(user);
          if (user.error) return console.log(user.error);
          self.facebook_id(user.id);
          self.first_name(user.first_name);
