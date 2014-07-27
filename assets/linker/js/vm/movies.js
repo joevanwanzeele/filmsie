@@ -199,7 +199,6 @@ function MoviesViewModel(current_user) {
 
     if (!last_movie_in_list) return; //there are none, so scrolling shouldn't do anything
 
-
     var last_movie_position = viewport_element
                               .children('.movie-container')
                               .last()

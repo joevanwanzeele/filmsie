@@ -38,5 +38,17 @@ module.exports = {
           cb();
       });
     }, callback);
+  },
+
+  includeMovieInfo: function(reviews, callback){
+    async.each(reviews, function(review, cb){
+      Movie.findOne(review.movie_id)
+      .done(function(err, movie){
+        review["movie_title"] = movie.title;
+        review["movie_poster_path"] = movie.poster_path;
+        cb();
+      });
+    }, callback);
   }
+
 }

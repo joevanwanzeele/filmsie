@@ -488,12 +488,26 @@ td {
   font-size:1.5em;
 }
 
+.review-text{
+  font-style:italic;
+}
+
+.review-vote {
+  cursor: pointer;
+  margin-left:5px;
+  :hover{
+    color: #ffffff;
+  }
+}
+
 #reviewsModal{
   color: #000;
 
   textarea {
     width: 100%;
     height: 5em;
+    color: #000;
+    font-style:italic;
   }
   ul{
     margin-left:-50px;
@@ -503,16 +517,11 @@ td {
     list-style:none;
   }
 
-  .review-vote {
-    cursor: pointer;
-    margin-left:5px;
-    :hover{
-      color: #ffffff;
-    }
-  }
-
   .list-review-row{
-    margin-right:25px;
+    textarea{
+      color:#000;
+      font-style:italic;
+    }
   }
 
   .reviewer-image-container{
@@ -750,4 +759,15 @@ td {
   .close{
     color:#fff;
   }
+}
+
+.person-review-movie-title{
+  position:relative;
+  bottom:0px;
+  font-weight:bold;
+}
+
+.created-date{
+  font-size:small;
+  font-weight:bold;
 }

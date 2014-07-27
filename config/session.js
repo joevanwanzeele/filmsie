@@ -26,6 +26,7 @@ module.exports.session = {
   // on localhost is expected.
   // Read more about options at: https://github.com/visionmedia/connect-redis
   //
+  //
   host: process.env.REDIS_HOST || 'localhost',
   port: 6379,
   ttl: 60000,
@@ -33,6 +34,13 @@ module.exports.session = {
   pass: process.env.REDIS_PSSWD || '',
   prefix: 'sess:'
 
+  // host: 'redis-logicbomber-4088963654.redis.irstack.com',
+  // port: 6379,
+  // ttl: 60000,
+  // db: 0,
+  // pass: 'redis-logicbomber-4088963654.redis.irstack.com:f327cfe980c971946e80b8e975fbebb4',
+
+  //url: 'redis://nodejitsu:redis-logicbomber-4088963654.redis.irstack.com:f327cfe980c971946e80b8e975fbebb4@redis-logicbomber-4088963654.redis.irstack.com:6379'
 
   // Uncomment the following lines to use your Mongo adapter as a session store
   // adapter: 'mongo',

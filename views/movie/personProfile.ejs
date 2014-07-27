@@ -38,9 +38,46 @@
             <div data-bind="template: {name: 'favorite-movie-template', foreach: $parent.least_favorite_movies}"></div>
           </div>
           <div class="tab-pane" id="reviews">
-            <div data-bind="template: {name: 'review-row-template', foreach: $parent.reviews}"></div>
+            <div data-bind="template: {name: 'person-review-template', foreach: $parent.reviews}"></div>
           </div>
         </div><!-- tab content -->
+      </div>
+    </div>
+  </div>
+</script>
+
+<script type="text/html" id="person-review-template">
+  <div class="list-review-row row">
+    <div class="col-sm-1">
+      <div class="movie-details-container">
+        <img class="list-movie-image" data-bind="attr:{ src: movie_image_url($root) }" />
+        <div class="person-review-movie-title">
+          <span data-bind="text: movie_title"></span>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-10">
+      <div class="reviewer-rating-container">
+        <div style="float:left"><span data-bind="text: reviewer_name"></span>s rating: </div>
+        <div class="rating-star-container" data-bind="template: {name: 'average-rating-template'}"></div>
+      </div>
+
+      <div class="movie-review-container">
+        <div class="created-date" data-bind="text: created_date"></div>
+        "<span data-bind="html: content" class="review-text"></span>"
+      </div>
+    </div>
+
+    <div class="col-sm-1" style="margin-top:10px;">
+      <div class="review-vote">
+        <span class="fa fa-lg" data-bind="css: thumb_up_style, click: voteUp"></span>
+      </div>
+      <div class="fa fa-stack">
+        <span class="fa fa-stack-2x fa-circle-thin"></span>
+        <span class="fa fa-stack-1x review-score " data-bind="text: review_score"></span>
+      </div>
+      <div class="review-vote">
+        <span class="fa fa-lg fa-flip-horizontal" data-bind="css: thumb_down_style, click: voteDown"></span>
       </div>
     </div>
   </div>

@@ -20,7 +20,7 @@ var reviewHelper = require("../services/ReviewHelper");
 module.exports = {
 
   add: function(req, res){
-    var user_id = req.body.user_id;
+    var user_id = req.session.user.id;
     var ui_movie = req.body.movie;
     var review_content = req.body.review_content;
 
@@ -58,29 +58,29 @@ module.exports = {
     });
   },
 
-delete: function(req, res, next){
-  var review_id = req.body.review_id;
-  var user_id = req.session.user && req.session.user.id || null;
-  if (!user_id) return res.json("must be logged in to delete a review");
+  delete: function(req, res, next){
 
-  Review.findOne({id: review_id, user_id: user_id}).done(function(err, review){
-    if (err) return console.log(err);
-    if (!review) return res.json("review not found or not owner");
+    var review_id = req.body.review_id;
+    var user_id = req.session.user.id;
 
-    ReviewVote.destroy({review_id: review_id}).done(function(err){
+    Review.findOne({id: review_id, user_id: user_id}).done(function(err, review){
       if (err) return console.log(err);
-      review.destroy(function(){
-        return res.json("deleted");
+      if (!review) return res.json("review not found or not owner");
+
+      ReviewVote.destroy({review_id: review_id}).done(function(err){
+        if (err) return console.log(err);
+        review.destroy(function(){
+          return res.json("deleted");
+        });
       });
     });
-  });
-},
+  },
 
   vote: function(req, res){
     var direction = req.body.direction;
-    var user_id = req.session.user && req.session.user.id || null;
+    var user_id = req.session.user.id;
+
     var review_id = req.body.review_id;
-    if (!user_id) return res.json("need to be logged in to vote");
 
     if (direction == "none"){
       ReviewVote.destroy({review_id: review_id, user_id: user_id}).done(function(err){
@@ -131,8 +131,9 @@ delete: function(req, res, next){
   },
 
   get: function(req, res){
+
     var movie_id = req.body.movie_id;
-    var user_id = req.session.user && req.session.user.id || null;
+    var user_id = req.session.user.id;
     if (!movie_id){ //there are no reviews
       return res.json([]);
     }
@@ -151,7 +152,26 @@ delete: function(req, res, next){
     });
   },
 
-  getReviewsForUser: function(req, res){},
+  getReviewsForUser: function(req, res){
+    var user_id = req.body.user_id;
+    var current_user_id = req.session.user.id;
+
+    Review.find({user_id: user_id}).done(function(err, reviews){
+      reviewHelper.includeVoteTally(reviews, current_user_id, function(err){
+        if (err) return console.log(err);
+        reviewHelper.includeReviewerRatings(reviews, function(err){
+            if (err) return console.log(err);
+            reviewHelper.includeReviewerProfileInfo(reviews, function(err){
+              if (err) return console.log(err);
+              reviewHelper.includeMovieInfo(reviews, function(err){
+                if (err) return console.log(err);
+                res.json(reviews);
+              });
+            });
+          });
+        });
+    });
+  },
 
   /**
    * Overrides for the settings in `config/controllers.js`

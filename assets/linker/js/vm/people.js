@@ -94,6 +94,7 @@ function PeopleViewModel(current_user){
       data: {'_csrf': window.filmsie.csrf },
       cache: false,
       success: function(data){
+        if (data == "unauthorized") return;
         _.each(data, function(match){
           var person = new UserViewModel(match);
           //set image urls
@@ -121,6 +122,8 @@ function PeopleViewModel(current_user){
         id: user_id,
         '_csrf': window.filmsie.csrf },
       success: function(data){
+        if (data == "unauthorized") return;
+
         if (data == "user not found"){
           bootbox.alert("There is no user with that ID.");
         }
@@ -132,7 +135,7 @@ function PeopleViewModel(current_user){
 
         self.loadFavorites(user_id);
         self.loadLeastFavorites(user_id);
-        //self.loadReviews(user_id);
+        self.loadReviews(user_id);
       },
       error: function(err){
         console.log(err);
@@ -150,6 +153,8 @@ function PeopleViewModel(current_user){
         id: user_id,
         '_csrf': window.filmsie.csrf },
       success: function(data){
+        if (data == "unauthorized") return;
+
         if (data == "no movies"){
           return;
         }
@@ -173,6 +178,8 @@ function PeopleViewModel(current_user){
         id: user_id,
         '_csrf': window.filmsie.csrf },
       success: function(data){
+        if (data == "unauthorized") return;
+
         if (data == "no movies"){
           return;
         }
@@ -190,11 +197,12 @@ function PeopleViewModel(current_user){
     self.reviews([]);
     $.ajax({
       type: "POST",
-      url: "/user/reviews",
+      url: "/review/getReviewsForUser",
       data: {
-        id: user_id,
+        user_id: user_id,
         '_csrf': window.filmsie.csrf },
       success: function(data){
+        console.dir(data);
         if (data == "no reviews"){
           return;
         }

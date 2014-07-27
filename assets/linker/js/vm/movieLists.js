@@ -39,16 +39,16 @@ function MovieListsViewModel(current_user){
   }
 
   self.get_movie_lists = function(list_id){
-    self.getting_lists(true);
-    self.movie_lists([]);
 
-    if (!self.current_user().authenticated()){
-      if (list_id){
-        self.selected_list().id(list_id);
-        self.selected_list().getList();
-      }
-      return;
+    if (list_id){
+      self.selected_list(new MovieListViewModel({id: list_id}, self.current_user));
+      self.selected_list().getList();
+      if (self.movie_lists().length > 0 || !self.current_user().authenticated()) return;
     }
+
+    self.getting_lists(true);
+
+    self.movie_lists([]);
 
     $.ajax({
       type: "POST",
@@ -59,8 +59,6 @@ function MovieListsViewModel(current_user){
       success: function(data){
         _.each(data, function(list){
           var newList = new MovieListViewModel(list, self.current_user);
-          newList.thumbnail_base_url = self.thumbnail_base_url;
-          newList.large_image_base_url = self.large_image_base_url;
           self.movie_lists.push(newList);
           if (!self.selected_list() || newList.id() == list_id){
             self.selected_list(newList);

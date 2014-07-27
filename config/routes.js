@@ -37,16 +37,6 @@ module.exports.routes = {
     action: 'index'
   },
 
-  '/login': {
-    controller: 'UserController',
-    action: 'facebook'
-  },
-
-  '/logout': {
-    controller: 'UserController',
-    action: 'logout'
-  },
-
   '/privacy': {
     controller: 'UserController',
     action: 'privacy'

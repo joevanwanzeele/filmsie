@@ -20,6 +20,7 @@ var userHelper = require("../services/UserHelper");
 module.exports = {
 
   login: function (req, res) {
+
     userHelper.addOrUpdateFacebookUser(req.body, function(err, user){
       if (user instanceof Array) user = user[0];
       req.session.user = user;
@@ -29,16 +30,13 @@ module.exports = {
   },
 
   logout: function (req, res){
+
     req.session.user = null;
     req.session.authenticated = false;
     res.redirect('/');
   },
 
   friends: function(req, res, next){
-    if (!req.session.user){
-      console.log("not logged in");
-      return res.json("please log in.");
-    }
 
     var facebook_user_ids = _.map(req.body.data, function(fb_user){ return Number(fb_user.id); });
 
@@ -49,10 +47,6 @@ module.exports = {
   },
 
   matches: function(req, res, next){
-    if (!req.session.user){
-      console.log("not logged in");
-      return res.json("please log in.");
-    }
 
     userHelper.getMatches(req.session.user.id,
       function(matches){
@@ -61,10 +55,7 @@ module.exports = {
   },
 
   get: function(req, res, next){
-    if (!req.session.user){
-      console.log("not logged in");
-      return res.json("please log in.");
-    }
+
     var current_user_id = req.session.user.id;
     var user_id = req.body.id;
     User.findOne(user_id).done(function(err, user){
@@ -86,10 +77,7 @@ module.exports = {
   },
 
   favorites: function(req, res, next){
-    if (!req.session.user){
-      console.log("not logged in");
-      return res.json("please log in.");
-    }
+
     var user_id = req.body.id;
 
     MovieUserRating.find()
@@ -113,10 +101,6 @@ module.exports = {
   },
 
   leastFavorites: function(req, res, next){
-    if (!req.session.user){
-      console.log("not logged in");
-      return res.json("please log in.");
-    }
 
     var user_id = req.body.id;
 
@@ -138,15 +122,6 @@ module.exports = {
           return res.json(movies.sort(function(left,right){return left.profile_user_rating - right.profile_user_rating; }));
         });
       });
-  },
-
-  reviews: function(req, res, next){
-    if (!req.session.user){
-      console.log("not logged in");
-      return res.json("please log in.");
-    }
-
-    var user_id = req.body.user_id;
   },
 
   privacy: function(req, res, next){
