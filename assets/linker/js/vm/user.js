@@ -1,4 +1,4 @@
-function UserViewModel(parent, data){
+function UserViewModel(data){
   var self = this;
   self.parent = ko.observable(parent);
   self.id = ko.observable(data && data.id || '');
@@ -19,7 +19,10 @@ function UserViewModel(parent, data){
   self.friends = ko.observableArray([]);
   self.matches = ko.observableArray([]);
   self.loading_profile = ko.observable(false);
-  self.created_date = ko.observable(data && data.createdAt || null)
+  self.created_date = ko.observable(data && data.createdAt || null);
+  self.favorite_movies = ko.observableArray([]);
+  self.least_favorite_movies = ko.observableArray([]);
+  self.reviews = ko.observableArray([]);
 
   self.match_percent = ko.computed(function(){
     return self.match_score() * 100;
@@ -28,56 +31,6 @@ function UserViewModel(parent, data){
   self.member_time = ko.computed(function(){
     var begin_date = moment(self.created_date());
     return begin_date.fromNow(true);
-  });
-
-  self.viewUserProfile = function(vm){
-    self.parent().parent().selected_user(vm); //for quick initial loading
-    location.hash = "people/profile/" + vm.id();
-  }
-
-  self.loadUserProfile = function(user_id){
-    self.loading_profile(true);
-    $.ajax({
-      type: "POST",
-      url: "/user/get",
-      data: {
-        id: user_id,
-        '_csrf': window.filmsie.csrf },
-      success: function(data){
-        if (data == "user not found"){
-          bootbox.alert("There is no user with that ID.");
-        }
-        var user = new UserViewModel(self, data);
-        user.accessToken(self.accessToken());
-        self.parent().selected_user(user);
-        self.showing_user_profile(true);
-        self.loading_profile(false);
-      },
-      error: function(err){
-        console.log(err);
-        self.loading_profile(false);
-      }
-    });
-  }
-
-  self.which_people = ko.observable('matches');
-
-  self.which_people.subscribe(function(value){
-
-    switch(value){
-    case 'matches':
-      $('.matches-row').removeClass('hide-behind');
-      $('.friends-row').addClass('hide-behind');
-      $('#peopleMatches').collapse('show');
-      $('#peopleFriends').collapse('hide');
-      break;
-    case 'friends':
-      $('.matches-row').addClass('hide-behind');
-      $('.friends-row').removeClass('hide-behind');
-      $('#peopleMatches').collapse('hide');
-      $('#peopleFriends').collapse('show');
-      break;
-    }
   });
 
   self.processLogin = function(callback){
@@ -112,44 +65,17 @@ function UserViewModel(parent, data){
     });
   }
 
-  self.processLogout = function(callback){
-    $.ajax({
-      type: "POST",
-      url: "/user/logout",
-      data: {"_csrf": window.filmsie.csrf },
-      cache: false,
-      success: function(data){
-        self.reset();
-        parent.init();
-        self.parent().loadMovies();
-      }
-    });
-  }
-
-  self.login = function(callback){
-    FB.login(function(response) {
-      self.processLogin(response, callback);
-    }, {scope: 'public_profile, email, user_friends'});
-  }
-
-  self.logout = function(callback){
-    FB.logout(function(response) {
-      // Person is now logged out
-      self.processLogout(callback);
-    });
-  }
-
-  self.reset = function(){
-    self.id(null);
-    self.facebook_id(null);
-    self.first_name(null);
-    self.last_name(null);
-    self.name(null);
-    self.email(null);
-    self.gender(null);
-    self.fb_profile_url(null);
-    self.authenticated(false);
-  }
+  // self.reset = function(){
+  //   self.id(null);
+  //   self.facebook_id(null);
+  //   self.first_name(null);
+  //   self.last_name(null);
+  //   self.name(null);
+  //   self.email(null);
+  //   self.gender(null);
+  //   self.fb_profile_url(null);
+  //   self.authenticated(false);
+  // }
 
   self.profile_pic_url = ko.computed(function(){
     return "https://graph.facebook.com/"+ self.facebook_id() + "/picture?type=large&access_token=" + self.accessToken();
@@ -158,60 +84,4 @@ function UserViewModel(parent, data){
   self.profile_pic_url_small = ko.computed(function(){
     return "https://graph.facebook.com/"+ self.facebook_id() + "/picture?type=square&access_token=" + self.accessToken();
   });
-
-  self.peopleSort = function(left, right){
-      if (left.c_score() == right.c_score()){
-        return left.name() < right.name();
-      }
-      return left.c_score() < right.c_score();
-  }
-
-  self.getFriends = function(){
-    self.friends([]);
-
-    FB.api(
-      "/me/friends",
-      function (friends) {
-        if (friends && !friends.error) {
-          friends['_csrf'] = window.filmsie.csrf;
-
-          $.ajax({
-            type: "POST",
-            url: "/user/friends",
-            data: friends,
-            cache: false,
-            success: function(data){
-              _.each(data, function(friend){
-                var person = new UserViewModel(self, friend);
-                person.accessToken(self.accessToken());
-                self.friends.push(person);
-              });
-              self.friends.sort(self.peopleSort);
-              self.which_people('friends');
-            }
-          });
-        }
-    });
-  },
-
-  self.getMatches = function(){
-    self.matches([]);
-    $.ajax({
-      type: "POST",
-      url: "/user/matches",
-      data: {'_csrf': window.filmsie.csrf },
-      cache: false,
-      success: function(data){
-        _.each(data, function(match){
-          var person = new UserViewModel(self, match);
-          person.accessToken(self.accessToken());
-          self.matches.push(person);
-        });
-        self.matches.sort(self.peopleSort);
-        self.which_people('matches');
-      }
-    });
-  }
-
-  self.scrolledPeople = function(){}
 }

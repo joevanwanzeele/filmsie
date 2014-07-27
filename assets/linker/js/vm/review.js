@@ -1,9 +1,9 @@
-function MovieReviewViewModel(parent, data){
+function MovieReviewViewModel(data, current_user){
   var self = this;
-  self.parent = ko.observable(parent);
+  self.current_user = current_user;
   self.id = ko.observable(data && data.id || null);
   self.user_id = ko.observable(data && data.user_id || null);
-  self.movie = ko.observable(parent);
+  //self.movie = ko.observable(parent);
   self.createdAt = ko.observable(data && data.createdAt);
   self.content = ko.observable(data && data.content || null);
   self.up_votes = ko.observable(data && data.up_votes || 0);
@@ -19,11 +19,11 @@ function MovieReviewViewModel(parent, data){
   });
 
   self.reviewer_picture_url = ko.computed(function(){
-    return "https://graph.facebook.com/"+ self.reviewer_facebook_id() + "/picture?type=large&access_token=" + self.parent().parent().user().accessToken();
+    return "https://graph.facebook.com/"+ self.reviewer_facebook_id() + "/picture?type=large&access_token=" + self.current_user().accessToken();
   });
 
   self.is_owner = ko.computed(function(){
-    return self.user_id() == self.parent().parent().user().id();
+    return self.user_id() == self.current_user().id();
   });
 
   self.average_star_css = function(value){
@@ -46,7 +46,7 @@ function MovieReviewViewModel(parent, data){
   });
 
   self.vote = function(direction){
-    if (!self.parent().parent().user().authenticated()) return bootbox.alert("sign in to vote!");
+    if (!self.current_user().authenticated()) return bootbox.alert("sign in to vote!");
 
     if (self.current_user_vote() == direction) direction = "none"; //toggle removing vote
     self.current_user_vote(direction);
@@ -78,5 +78,4 @@ function MovieReviewViewModel(parent, data){
   self.voteDown = function(){
     self.vote("down");
   }
-
 }

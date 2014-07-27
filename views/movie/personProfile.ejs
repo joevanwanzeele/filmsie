@@ -22,6 +22,51 @@
           <div class="too-few"><span data-toggle="tooltip" data-placement="bottom" title="Too few rated movies in common">(Match Score Unknown)</span></div>
         <!-- /ko -->
       </div>
+    </div> <!-- row -->
+    <div class="row person-activity-row">
+      <div class="container person-activity-container">
+        <ul class="nav nav-tabs">
+          <li class="active"><a href="#favorites" data-toggle="pill">Favorite movies</a></li>
+          <li><a href="#least_favorites" data-toggle="pill">Least Favorite movies</a></li>
+          <li><a href="#reviews" data-toggle="pill">Reviews</a></li>
+        </ul>
+        <div class="tab-content col-md-10">
+          <div class="tab-pane active" id="favorites">
+            <div data-bind="template: {name: 'favorite-movie-template', foreach: $parent.favorite_movies}"></div>
+          </div>
+          <div class="tab-pane" id="least_favorites">
+            <div data-bind="template: {name: 'favorite-movie-template', foreach: $parent.least_favorite_movies}"></div>
+          </div>
+          <div class="tab-pane" id="reviews">
+            <div data-bind="template: {name: 'review-row-template', foreach: $parent.reviews}"></div>
+          </div>
+        </div><!-- tab content -->
+      </div>
     </div>
   </div>
+</script>
+
+<script type="text/html" id="favorite-movie-template">
+  <div class="row list-movie-row">
+    <div class="col-sm-1 pointer" data-bind="click: $parents[2].showDetails">
+      <img class="list-movie-image" data-bind="attr: {src: image_url($root) }" />
+    </div>
+    <div class="col-sm-5 pointer">
+      <h4 data-bind="click: $parents[2].showDetails, text: title_and_year"></h4>
+      <a data-bind="attr: {href: amazon_link }" target="_blank">
+        <img class="amazon-button-small amazon-list-item-button" src="/img/amazon.png" alt="find on amazon" />
+      </a>
+    </div>
+    <div class="col-sm-3"><span data-bind="text: $parent.first_name() + '\'s'"></span> rating: <div data-bind="template: {name: 'user-rating-template'}"></div></div>
+    <div class="col-sm-3" style="text-align:right">
+    </div>
+  </div>
+</script>
+
+<script type="text/html" id="user-rating-template">
+    <span class="fa" data-bind="css: user_star_css(2)"></span>
+    <span class="fa" data-bind="css: user_star_css(4)"></span>
+    <span class="fa" data-bind="css: user_star_css(6)"></span>
+    <span class="fa" data-bind="css: user_star_css(8)"></span>
+    <span class="fa" data-bind="css: user_star_css(10)"></span>
 </script>

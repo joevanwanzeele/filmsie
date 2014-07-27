@@ -18,7 +18,6 @@ var nodemailer = require("nodemailer");
 
 module.exports = {
   create: function(req, res, next){
-    console.dir(req.body);
     var user = req.session.user || null;
     if (!user) return res.json("must be logged in to submit feedback");
 

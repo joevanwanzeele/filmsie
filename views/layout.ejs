@@ -101,19 +101,19 @@
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
           <div class="container">
-            <ul class="nav navbar-nav" data-bind="if: user().authenticated()">
-              <li class="active" id="showMoviesNavButton"><a href="#movies" data-toggle="tooltip" data-placement="bottom" title="Movies"><span class="fa fa-lg fa-film"></span></a></li>
+            <ul class="nav navbar-nav" data-bind="if: current_user().authenticated()">
+              <li class="active" id="showMoviesNavButton"><a href="#movies/browse" data-toggle="tooltip" data-placement="bottom" title="Movies"><span class="fa fa-lg fa-film"></span></a></li>
               <li id="showPeopleNavButton"><a href="#people" data-toggle="tooltip" data-placement="bottom" title="People"><span class="fa fa-lg fa-users"></span></a></li>
               <li id="showListsNavButton"><a href="#lists" data-toggle="tooltip" data-placement="bottom" title="Your Lists"><span class="fa fa-lg fa-list"></span></a></li>
             </ul>
-            <ul class="nav navbar-nav navbar-right" data-bind="if: user().authenticated()">
-              <li><a href="/#user/account" class="profile-image-a"><img class="profile-image" data-bind="attr: {src: user().profile_pic_url()}" /></a></li>
+            <ul class="nav navbar-nav navbar-right" data-bind="if: current_user().authenticated()">
+              <li><a href="/#user/account" class="profile-image-a"><img class="profile-image" data-bind="attr: {src: current_user().profile_pic_url()}" /></a></li>
               <li><a href="/#user/account" data-toggle="tooltip" data-placement="bottom" title="Account Settings"><span class="fa fa-lg fa-cog"></span></a></li>
               <li><a href="/#user/logout" data-toggle="tooltip" data-placement="bottom" title="Sign Out"><span class="fa fa-lg fa-sign-out"></span></a></li>
               <li><a href="#" data-bind="click: showFeedbackModal" data-toggle="tooltip" data-placement="bottom" title="Feedback"><span class="fa fa-comment"></span></a></li>
             </ul>
-              <div class="nav navbar-nav navbar-right navbar-form" data-bind="if: !user().authenticated()">
-                <a class="btn btn-primary login-button" data-bind="click: user().login"><span class="fa fa-lg fa-facebook-square"> &nbsp; sign in</span></a>
+              <div class="nav navbar-nav navbar-right navbar-form" data-bind="if: !current_user().authenticated()">
+                <a class="btn btn-primary login-button" data-bind="click: login"><span class="fa fa-lg fa-facebook-square"> &nbsp; sign in</span></a>
                   <!-- <fb:login-button scope="public_profile,email,user_friends" onlogin="processLogin">
                   </fb:login-button> -->
               </div>
@@ -198,9 +198,13 @@
     <script src="/linker/js/filmsie.js"></script>
     <script src="/linker/js/moment.min.js"></script>
     <script src="/linker/js/sammy-latest.min.js"></script>
+    <script src="/linker/js/vm/feedback.js"></script>
+    <script src="/linker/js/vm/filmsie.js"></script>
     <script src="/linker/js/vm/movie.js"></script>
+    <script src="/linker/js/vm/movieLists.js"></script>
     <script src="/linker/js/vm/movielist.js"></script>
     <script src="/linker/js/vm/movies.js"></script>
+    <script src="/linker/js/vm/people.js"></script>
     <script src="/linker/js/vm/review.js"></script>
     <script src="/linker/js/vm/user.js"></script>
     <!--SCRIPTS END-->

@@ -87,11 +87,67 @@ module.exports = {
   },
 
   favorites: function(req, res, next){
-
+    if (!req.session.user){
+      console.log("not logged in");
+      return res.json("please log in.");
+    }
+    var user_id = req.body.id;
+    
+    MovieUserRating.find()
+      .where({user_id: user_id})
+      .sort('rating desc')
+      .limit(10)
+      .exec(function(err, ratings){
+        if (err) return console.log(err);
+        var movie_ids = _.pluck(ratings, 'movie_id');
+        //console.log(movie_ids);
+        Movie.find().where({id: movie_ids}).done(function(err, movies){
+          //console.dir(movies);
+          _.each(movies, function(movie){
+            var rating = _.findWhere(ratings, {movie_id: movie.id });
+            //console.dir(rating);
+            movie['profile_user_rating'] = rating.rating;
+          });
+          return res.json(movies.sort(function(left,right){return right.profile_user_rating - left.profile_user_rating; }));
+        });
+      });
   },
 
   leastFavorites: function(req, res, next){
+    if (!req.session.user){
+      console.log("not logged in");
+      return res.json("please log in.");
+    }
 
+    var user_id = req.body.id;
+
+    MovieUserRating.find()
+      .where({user_id: user_id})
+      .sort('rating asc')
+      .limit(10)
+      .exec(function(err, ratings){
+        if (err) return console.log(err);
+        var movie_ids = _.pluck(ratings, 'movie_id');
+        //console.log(movie_ids);
+        Movie.find().where({id: movie_ids}).done(function(err, movies){
+          //console.dir(movies);
+          _.each(movies, function(movie){
+            var rating = _.findWhere(ratings, {movie_id: movie.id });
+            //console.dir(rating);
+            movie['profile_user_rating'] = rating.rating;
+          });
+          return res.json(movies.sort(function(left,right){return left.profile_user_rating - right.profile_user_rating; }));
+        });
+      });
+  },
+
+  reviews: function(req, res, next){
+    if (!req.session.user){
+      console.log("not logged in");
+      return res.json("please log in.");
+    }
+
+    var user_id = req.body.user_id;
   },
 
   privacy: function(req, res, next){

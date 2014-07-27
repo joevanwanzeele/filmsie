@@ -8,7 +8,7 @@
       <div class="modal-body movie-details">
         <!-- ko if: !is_loading_details() -->
         <div class="detail-image-container">
-          <img data-bind="attr: {src: big_image_url}" />
+          <img data-bind="attr: {src: big_image_url($root)}" />
         </div>
         <br/>
         <p data-bind="text: synopsis"></p>

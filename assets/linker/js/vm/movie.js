@@ -1,59 +1,58 @@
-function CastMemberViewModel(data, parent){
+function CastMemberViewModel(data){
   var self = this;
-  self.parent = ko.observable(parent);
   self.cast_id = ko.observable(data.cast_id);
   self.name = ko.observable(data.name);
   self.character = ko.observable(data.character);
-  self.image_url = ko.observable(data.profile_path != null ?
-    self.parent().parent().thumbnail_base_url() + data.profile_path :
-    self.parent().not_found_image_url); //todo: replace with empty image path if none exists for cast member
+  self.profile_path = ko.observable(data && data.profile_path || null)
+
+  self.image_url = function(root){
+    return self.profile_path() ?
+      root.thumbnail_base_url() + self.profile_path() :
+      root.not_found_image_url;
+    }
 }
 
-function MovieViewModel(parent, data) {
+function GenreViewModel(data){
   var self = this;
-  self.parent = ko.observable(parent);
+  self.id = ko.observable(data.id);
+  self.name = ko.observable(data.name);
+}
+
+function MovieViewModel(data, current_user) {
+  var self = this;
+  self.current_user = current_user;
   self.id = ko.observable(data && data.id || '')
   self.tmdb_id = ko.observable(data && data.tmdb_id || '');
-  self.current_user_rating = ko.observable(data && data.current_user_rating || null);
-  self.average_rating = ko.observable(data && data.average_rating || null);
   self.title = ko.observable(data && data.title || '');
+
+  self.thumbnail_base_url = ko.observable(); //need to set these on creation
+  self.large_image_base_url = ko.observable(); //need to set these on creation
+
   self.backdrop_path = ko.observable(data && data.backdrop_path || null);
   self.poster_path = ko.observable(data && data.poster_path || null);
   self.genres = ko.observableArray([]);
   self.runtime = ko.observable();
   self.synopsis = ko.observable();
   self.imdb_id = ko.observable();
+  self.release_date = ko.observable(data && data.release_date || null);
+  self.cast_members = ko.observableArray([]);
+
+  self.current_user_rating = ko.observable(data && data.current_user_rating || null);
+  self.temp_rating = ko.observable(self.current_user_rating());
+  self.average_rating = ko.observable(data && data.average_rating || null);
+  self.profile_user_rating = ko.observable(data && data.profile_user_rating || null);
+
   self.is_loading_details = ko.observable(true);
   self.is_loading_cast = ko.observable(false);
-  self.cast_members = ko.observableArray([]);
   self.cast_is_hidden = ko.observable(true);
-  self.temp_rating = ko.observable(self.current_user_rating());
-  self.release_date = ko.observable(data && data.release_date || null);
-  self.review_count = ko.observable(data && data.review_count || 0)
+
   //reviews
   self.reviews = ko.observableArray([]);
   self.new_review_text = ko.observable();
-
+  self.review_count = ko.observable(data && data.review_count || 0);
   self.reviewCountText = ko.computed(function(){
     return self.review_count() > 0 ? self.review_count() : '';
   });
-
-  self.showReviewsModal = function(vm, e){
-    e.stopPropagation();
-    parent.selected_movie(self);
-    self.getReviews();
-
-    $('#reviewsModal').modal();
-    $('.modal').on("click", function(e){
-      $(this).modal('hide');
-    });
-    $('.modal-dialog').on("click", function(e){
-      e.stopPropagation();
-    });
-    $('.close').on("click", function(e){
-      $(e.target).closest('.modal').modal('hide');
-    });
-  }
 
   self.reviewsModalTitle = ko.computed(function(){
     return "Reviews for " + self.title();
@@ -69,7 +68,7 @@ function MovieViewModel(parent, data) {
       url: '/review/add',
       type: 'POST',
       data: {
-        user_id: self.parent().user().id(),
+        user_id: self.current_user().id(),
         movie: {
           id: self.id(),
           tmdb_id: self.tmdb_id(),
@@ -83,7 +82,7 @@ function MovieViewModel(parent, data) {
       success: function(data){
         if (!data.review) return bootbox.alert(data);
         self.review_count(data.review_count);
-        self.reviews.push(new MovieReviewViewModel(self, data.review));
+        self.reviews.push(new MovieReviewViewModel(data.review, self.current_user));
       }
     });
   }
@@ -121,7 +120,7 @@ function MovieViewModel(parent, data) {
       },
       success: function(reviews){
         _.each(reviews, function(review){
-          self.reviews.push(new MovieReviewViewModel(self, review));
+          self.reviews.push(new MovieReviewViewModel(review, self.current_user));
         });
         self.reviews.sort(function(a,b){ return b.review_score() - a.review_score() }); //sort by review vote
       }
@@ -129,25 +128,23 @@ function MovieViewModel(parent, data) {
   }
 
   self.current_user_has_reviewed = ko.computed(function(){
-    var review = _.find(self.reviews(), function(review){ return review.user_id() == self.parent().user().id() });
+    var review = _.find(self.reviews(), function(review){ return review.user_id() == self.current_user().id() });
     return typeof review != "undefined";
   });
 
-  self.not_found_image_url = "../img/unavailable-image.jpeg";
+  self.image_url = function(root){
+    return root.thumbnail_base_url() && self.poster_path() ?
+      root.thumbnail_base_url() + self.poster_path() :
+      root.not_found_image_url;
+  }
 
-  self.image_url = ko.computed(function(){
-    return self.parent().thumbnail_base_url() && self.poster_path() ?
-      self.parent().thumbnail_base_url() + self.poster_path() :
-      self.not_found_image_url;
-  });
-
-  self.big_image_url = ko.computed(function(){
+  self.big_image_url = function(root){
     var image_path = self.backdrop_path() || self.poster_path();
 
-    return (self.parent().large_image_base_url() && image_path) ?
-      self.parent().large_image_base_url() + image_path :
+    return (root.large_image_base_url() && image_path) ?
+      root.large_image_base_url() + image_path :
       '';
-  });
+  }
 
   self.genresString = ko.computed(function(){
     return self.genres().join(", ");
@@ -176,50 +173,10 @@ function MovieViewModel(parent, data) {
     return rounded_rating < value ? "fa-star-half" : "fa-star";
   }
 
-  self.showAddToListModal = function(vm, e){
-    e.stopPropagation();
-
-    if (!self.parent().user().authenticated()) return bootbox.alert("sign in to create movie lists");
-
-    self.parent().selected_movie(self);
-    self.parent().get_movie_lists();
-
-    $('#addToListModal').modal();
-    $('.modal').on("click", function(e){
-      $(this).modal('hide');
-    });
-    $('.modal-dialog').on("click", function(e){
-      e.stopPropagation();
-    });
-    $('.close').on("click", function(e){
-      $(e.target).closest('.modal').modal('hide');
-    });
-  }
-
-  self.showDetails = function(){
-    self.parent().movie_details(self);
-    self.is_loading_details(true);
-    $('#movie_details_modal').modal();
-
-    $.ajax({
-      type: "POST",
-      url: "/movie/details",
-      data: {
-        tmdb_id: self.tmdb_id(),
-        '_csrf': window.filmsie.csrf
-      },
-      cache: false,
-      success: function(data){
-        self.release_date(new Date(data.release_date));
-        _.each(data.genres, function(genre){
-          self.genres.push(genre.name);
-        });
-        self.runtime(data.runtime);
-        self.synopsis(data.overview);
-        self.imdb_id(data.imdb_id);
-        self.is_loading_details(false);
-      }
-    });
+  self.user_star_css = function(value){
+    var rounded_rating = Math.round(self.profile_user_rating());
+    if (value > rounded_rating + 1 || rounded_rating == 0) return "";
+    return rounded_rating < value ? "fa-star-half" : "fa-star";
   }
 
   self.getCast = function(){
@@ -235,9 +192,8 @@ function MovieViewModel(parent, data) {
         if (data.length == 0) { $('.cast-container').html("(unavailable)"); }
           else{
           _.each(data, function(castMember){
-            self.cast_members.push(new CastMemberViewModel(castMember, self));
+            self.cast_members.push(new CastMemberViewModel(castMember));
           });
-
         }
         self.is_loading_cast(false);
       }
@@ -282,7 +238,7 @@ function MovieViewModel(parent, data) {
   }
 
   self.setRating = function(rating, event) {
-    if (!self.parent().user().authenticated()){
+    if (!self.current_user().authenticated()){
       return bootbox.alert("Sign in to save your rating");
     };
 
@@ -301,7 +257,6 @@ function MovieViewModel(parent, data) {
     }
 
     self.current_user_rating(rating_value);
-
 
     $.ajax({
       type: "POST",

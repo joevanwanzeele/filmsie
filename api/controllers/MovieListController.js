@@ -19,8 +19,12 @@ var movieHelper = require("../services/MovieHelper");
 module.exports = {
 
   index: function(req, res, next){
+    var user = req.session.user || null;
+    if (!user) return res.json("must be logged in to view your movie lists");
+    var user_id = user.id;
+
     //console.dir(req.body);
-    MovieList.find({user_id: req.body.user_id })
+    MovieList.find({user_id: user_id })
       .done(function(err, existing) {
         if (err) console.log(err);
         return res.json(existing.sort(function(a,b){return a.name > b.name;}));
@@ -28,10 +32,18 @@ module.exports = {
   },
 
   add: function(req, res, next){
+    var user = req.session.user || null;
+    if (!user) return res.json("must be logged in to create a list");
+
+    var user_id = user.id;
+    var list_id = req.body.list_id;
+    var movie_param = req.body.movie;
+    var list_name = req.body.name;
+
     //add the movie to the movie database if it's not there, then get the id
-    movieHelper.addOrUpdateMovie(req.body.movie, function(err, movie){
-        MovieList.create({ user_id: req.body.user_id,
-                           name: req.body.name,
+    movieHelper.addOrUpdateMovie(movie_param, function(err, movie){
+        MovieList.create({ user_id: user_id,
+                           name: list_name,
                            movie_ids: [movie.id]})
                            .done(function(err, movie_list) {
                             if (err) {
@@ -43,8 +55,15 @@ module.exports = {
   },
 
   addMovie: function(req, res, next){
+    var user = req.session.user || null;
+    if (!user) return res.json("must be logged in to add a movie");
+
+    var user_id = user.id;
+    var list_id = req.body.list_id;
+
     movieHelper.addOrUpdateMovie(req.body.movie, function(err, movie){
-        MovieList.findOne(req.body.list_id, function(err, movie_list){
+        MovieList.findOne({id: list_id, user_id: user_id}, function(err, movie_list){
+          if (err) return console.log(err);
           movie_list.movie_ids.push(movie.id);
           movie_list.movie_ids = _.uniq(movie_list.movie_ids);
           movie_list.save(function(err){
