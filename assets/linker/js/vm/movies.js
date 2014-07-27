@@ -10,7 +10,6 @@ function MoviesViewModel(current_user) {
   self.genres = ko.observableArray([]);
   self.selected_genres = ko.observableArray([]);
   self.selected_year = ko.observable();
-  self.selected_movie = ko.observable();
   self.years = ko.observableArray([]);
 
   self.which_movies = ko.observable("browse");
@@ -89,23 +88,6 @@ function MoviesViewModel(current_user) {
 
   self.showRecommendations = function(vm, e){
     location.hash = "movies/recommended"
-  }
-
-  self.showReviewsModal = function(vm, e){
-    e.stopPropagation();
-    vm.getReviews();
-    self.selected_movie(vm);
-
-    $('#reviewsModal').modal();
-    $('.modal').on("click", function(e){
-      $(this).modal('hide');
-    });
-    $('.modal-dialog').on("click", function(e){
-      e.stopPropagation();
-    });
-    $('.close').on("click", function(e){
-      $(e.target).closest('.modal').modal('hide');
-    });
   }
 
   self.getGenres = function(){
@@ -222,7 +204,6 @@ function MoviesViewModel(current_user) {
 
     self.selected_genres([]);
     self.selected_year(null);
-    self.selected_movie(null);
     self.which_movies("browse");
 
     self.getGenres();

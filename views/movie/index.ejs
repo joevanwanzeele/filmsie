@@ -143,6 +143,30 @@ function processLogin(){};
 
 </script>
 
+<div id="reviewsModal" class="modal fade in" tabindex="-1" role="dialog" aria-labelledby="reviewsModalLabel" aria-hidden="true" data-bind="with: $root.selected_movie">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 id="reviewsModalLabel" class="modal-title" data-bind="text: reviewsModalTitle">Movie Reviews</h4>
+      </div>
+      <div class="modal-body">
+        <!-- ko if: !current_user_has_reviewed() && current_user().authenticated() -->
+        <textarea data-bind="value: new_review_text" placeholder="write a review..."></textarea>
+        <button class="btn btn-default" data-bind="click: saveReview">submit</button>
+        <hr/>
+        <!-- /ko  -->
+
+        <!-- ko if: !current_user().authenticated() -->
+        <div class="sign-in-message-container"><h4><a href="#" data-bind="click: $parent.login">Sign in</a> to post a review</h4></div>
+        <!-- /ko -->
+
+        <div data-bind="template: {name: 'review-row-template', foreach: reviews}"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <% include addToList.ejs %>
 
 <% include userProfile.ejs %>

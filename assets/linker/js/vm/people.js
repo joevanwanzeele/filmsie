@@ -202,7 +202,6 @@ function PeopleViewModel(current_user){
         user_id: user_id,
         '_csrf': window.filmsie.csrf },
       success: function(data){
-        console.dir(data);
         if (data == "no reviews"){
           return;
         }

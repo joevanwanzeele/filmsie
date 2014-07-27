@@ -10,6 +10,8 @@ function FilmsieViewModel(){
   self.is_showing_lists = ko.observable(false);
 
   self.movie_details = ko.observable();
+  self.selected_movie = ko.observable();
+
   self.is_loading_details = ko.observable(false);
 
   self.thumbnail_base_url = ko.observable();
@@ -70,21 +72,24 @@ function FilmsieViewModel(){
     self.movie_lists().get_movie_lists();
 
     $('#addToListModal').modal();
-    $('.modal').on("click", function(e){
-      $(this).modal('hide');
-    });
-    $('.modal-dialog').on("click", function(e){
-      e.stopPropagation();
-    });
-    $('.close').on("click", function(e){
-      $(e.target).closest('.modal').modal('hide');
-    });
+    self.setModalProperties();
+  }
+
+  self.showReviewsModal = function(vm, e){
+    e.stopPropagation();
+    vm.getReviews();
+    self.selected_movie(vm);
+
+    $('#reviewsModal').modal();
+    self.setModalProperties();
   }
 
   self.showDetails = function(vm){
     self.movie_details(vm);
     self.is_loading_details(true);
+
     $('#movie_details_modal').modal();
+    self.setModalProperties();
 
     $.ajax({
       type: "POST",
@@ -167,6 +172,7 @@ function FilmsieViewModel(){
     self.movies(new MoviesViewModel(self.current_user));
     self.people(new PeopleViewModel(self.current_user));
     self.movie_lists(new MovieListsViewModel(self.current_user));
+    self.selected_movie(null);
 
     self.movie_details(null);
 
@@ -206,6 +212,19 @@ function FilmsieViewModel(){
 
   self.openProfileModal = function(){
     $('#userProfileModal').modal();
+    self.setModalProperties();
+  }
+
+  self.setModalProperties = function(){
+    $('.modal').on("click", function(e){
+      $(this).modal('hide');
+    });
+    $('.modal-dialog').on("click", function(e){
+      e.stopPropagation();
+    });
+    $('.close').on("click", function(e){
+      $(e.target).closest('.modal').modal('hide');
+    });
   }
 
   self.setUpRouting = function(){

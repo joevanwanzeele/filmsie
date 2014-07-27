@@ -107,8 +107,8 @@
               <li id="showListsNavButton"><a href="#lists" data-toggle="tooltip" data-placement="bottom" title="Your Lists"><span class="fa fa-lg fa-list"></span></a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right" data-bind="if: current_user().authenticated()">
-              <li><a href="/#user/account" class="profile-image-a"><img class="profile-image" data-bind="attr: {src: current_user().profile_pic_url()}" /></a></li>
-              <li><a href="/#user/account" data-toggle="tooltip" data-placement="bottom" title="Account Settings"><span class="fa fa-lg fa-cog"></span></a></li>
+              <li><a class="profile-image-a"><img class="profile-image" data-bind="attr: {src: current_user().profile_pic_url()}, click: openProfileModal" /></a></li>
+              <li><a data-toggle="tooltip" data-placement="bottom" title="Account Settings" data-bind="click: openProfileModal"><span class="fa fa-lg fa-cog"></span></a></li>
               <li><a href="/#user/logout" data-toggle="tooltip" data-placement="bottom" title="Sign Out"><span class="fa fa-lg fa-sign-out"></span></a></li>
               <li><a href="#" data-bind="click: showFeedbackModal" data-toggle="tooltip" data-placement="bottom" title="Feedback"><span class="fa fa-comment"></span></a></li>
             </ul>
@@ -146,7 +146,7 @@
     -->
 
     <!--TEMPLATES-->
-    
+
     <!--TEMPLATES END-->
 
 

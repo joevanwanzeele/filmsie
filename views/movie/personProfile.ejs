@@ -48,7 +48,7 @@
 
 <script type="text/html" id="person-review-template">
   <div class="list-review-row row">
-    <div class="col-sm-1">
+    <div class="col-sm-2">
       <div class="movie-details-container">
         <img class="list-movie-image" data-bind="attr:{ src: movie_image_url($root) }" />
         <div class="person-review-movie-title">
@@ -56,7 +56,7 @@
         </div>
       </div>
     </div>
-    <div class="col-sm-10">
+    <div class="col-sm-9">
       <div class="reviewer-rating-container">
         <div style="float:left"><span data-bind="text: reviewer_name"></span>s rating: </div>
         <div class="rating-star-container" data-bind="template: {name: 'average-rating-template'}"></div>
@@ -96,6 +96,15 @@
     </div>
     <div class="col-sm-3"><span data-bind="text: $parent.first_name() + '\'s'"></span> rating: <div data-bind="template: {name: 'user-rating-template'}"></div></div>
     <div class="col-sm-3" style="text-align:right">
+    <div class="add-to-list-button-container" data-bind="click: $root.showAddToListModal" data-toggle="tooltip" data-placement="right" title="Add to List">
+      <span class="fa fa-lg fa-list"></span>
+    </div>
+    <div class="show-reviews-button-container" data-bind="click: $root.showReviewsModal" data-toggle="tooltip" data-placement="right" title="Reviews">
+      <span class="fa fa-stack">
+        <span class="fa fa-stack-1x fa-lg fa-comments-o"></span>
+        <strong class="fa fa-stack-1x review-count" data-bind="text: reviewCountText"></strong>
+      </span>
+    </div>
     </div>
   </div>
 </script>

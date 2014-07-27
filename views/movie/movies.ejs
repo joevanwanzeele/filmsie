@@ -67,30 +67,6 @@
   </div>
 </div>
 
-<div id="reviewsModal" class="modal fade in" tabindex="-1" role="dialog" aria-labelledby="reviewsModalLabel" aria-hidden="true" data-bind="with: selected_movie">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h4 id="reviewsModalLabel" class="modal-title" data-bind="text: reviewsModalTitle">Movie Reviews</h4>
-      </div>
-      <div class="modal-body">
-        <!-- ko if: !current_user_has_reviewed() && current_user().authenticated() -->
-        <textarea data-bind="value: new_review_text" placeholder="write a review..."></textarea>
-        <button class="btn btn-default" data-bind="click: saveReview">submit</button>
-        <hr/>
-        <!-- /ko  -->
-
-        <!-- ko if: !current_user().authenticated() -->
-        <div class="sign-in-message-container"><h4><a href="#" data-bind="click: $parent.login">Sign in</a> to post a review</h4></div>
-        <!-- /ko -->
-
-        <div data-bind="template: {name: 'review-row-template', foreach: reviews}"></div>
-      </div>
-    </div>
-  </div>
-</div>
-
 <% include movieRatings.ejs %>
 
 <!-- /ko -->
@@ -100,10 +76,10 @@
     <div class="movie-title-container" data-bind="click: $parents[1].showDetails">
       <h5 data-bind="text: title"></h5>
     </div>
-    <div class="add-to-list-button-container" data-bind="click: $parents[1].showAddToListModal" data-toggle="tooltip" data-placement="right" title="Add to List">
+    <div class="add-to-list-button-container" data-bind="click: $root.showAddToListModal" data-toggle="tooltip" data-placement="right" title="Add to List">
       <span class="fa fa-lg fa-list"></span>
     </div>
-    <div class="show-reviews-button-container" data-bind="click: $parent.showReviewsModal" data-toggle="tooltip" data-placement="right" title="Reviews">
+    <div class="show-reviews-button-container" data-bind="click: $root.showReviewsModal" data-toggle="tooltip" data-placement="right" title="Reviews">
       <span class="fa fa-stack">
         <span class="fa fa-stack-1x fa-lg fa-comments-o"></span>
         <strong class="fa fa-stack-1x review-count" data-bind="text: reviewCountText"></strong>

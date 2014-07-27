@@ -16,6 +16,7 @@
  */
 
 var userHelper = require("../services/UserHelper");
+var movieHelper = require("../services/MovieHelper");
 
 module.exports = {
 
@@ -95,7 +96,9 @@ module.exports = {
             //console.dir(rating);
             movie['profile_user_rating'] = rating.rating;
           });
-          return res.json(movies.sort(function(left,right){return right.profile_user_rating - left.profile_user_rating; }));
+          movieHelper.includeReviewCount(movies, function(){
+            return res.json(movies.sort(function(left,right){return right.profile_user_rating - left.profile_user_rating; }));
+          });
         });
       });
   },
@@ -119,7 +122,9 @@ module.exports = {
             //console.dir(rating);
             movie['profile_user_rating'] = rating.rating;
           });
-          return res.json(movies.sort(function(left,right){return left.profile_user_rating - right.profile_user_rating; }));
+          movieHelper.includeReviewCount(movies, function(){
+            return res.json(movies.sort(function(left,right){return left.profile_user_rating - right.profile_user_rating; }));
+          });
         });
       });
   },

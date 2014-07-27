@@ -8,9 +8,13 @@
 @darkBlue: #106E8D;
 @darkGray: #4A4A4A;
 @red: #D16565;
-@cardBackground: #CCCCCC;
+@cardBackground: rgba(180,180,180,.5);
 
 html { -webkit-font-smoothing: antialiased; }
+
+textarea{
+  color:#000;
+}
 
 body{
   background-image: url("/img/wild_oliva.png");
@@ -110,7 +114,8 @@ td {
 
 .movies-loading-placeholder{
   background-color: transparent !important;
-  /* background-color: rgb(0,0,0,0) !important; */
+  background-color: rgb(0,0,0,0) !important;
+  border-color: transparent !important;
   color:#fff;
   float:none;
   width:100%;
@@ -135,8 +140,9 @@ td {
 
 .movie-container {
   background-color: @cardBackground;
+  border:solid 2px rgb(180,180,180);
   color:#000;
-  height:257px;
+  height:260px;
   width: 160px;
   margin:10px;
   border-radius: 4px;
@@ -388,6 +394,7 @@ td {
 
 .list-movie-row, .list-person-row, .list-review-row{
   background-color: @cardBackground;
+  border: 2px solid rgb(180,180,180);
   border-radius: 4px;
   color:#000;
   -webkit-box-shadow: -3px 3px 5px 0px rgba(0,0,0,0.75);
@@ -753,6 +760,24 @@ td {
   /* max-height:500px;
   overflow-y: scroll; */
   text-align:left;
+  .add-to-list-button-container, .show-reviews-button-container{
+      /* left: 5px; */
+    /* top: 60px; */
+    height: 15px;
+    width: 15px;
+    position: absolute;
+    display: block;
+    clear: none;
+    cursor: pointer;
+  }
+  .add-to-list-button-container{
+    top:55px;
+  }
+
+  .show-reviews-button-container{
+    left:0px;
+    top:0px;
+  }
 }
 
 .modal-header{
@@ -765,6 +790,7 @@ td {
   position:relative;
   bottom:0px;
   font-weight:bold;
+  line-height:1.3em;
 }
 
 .created-date{
