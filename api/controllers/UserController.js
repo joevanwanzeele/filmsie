@@ -16,7 +16,6 @@
  */
 
 var userHelper = require("../services/UserHelper");
-var graph = require('fbgraph');
 
 module.exports = {
 
@@ -92,7 +91,7 @@ module.exports = {
       return res.json("please log in.");
     }
     var user_id = req.body.id;
-    
+
     MovieUserRating.find()
       .where({user_id: user_id})
       .sort('rating desc')

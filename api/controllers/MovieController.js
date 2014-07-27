@@ -15,7 +15,6 @@
  * @docs        :: http://sailsjs.org/#!documentation/controllers
  */
 
-var graph = require('fbgraph');
 var movieHelper = require("../services/MovieHelper");
 var userHelper = require("../services/UserHelper");
 
