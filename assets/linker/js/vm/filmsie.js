@@ -201,7 +201,7 @@ function FilmsieViewModel(){
   }
 
   self.loadLists = function(list_id){
-    self.movie_lists().get_movie_lists(list_id);
+    self.movie_lists().get_movie_lists(list_id, true);
     $('.active').removeClass('active');
     $('#showListsNavButton').addClass('active');
     self.is_showing_movies(false);

@@ -51,10 +51,10 @@ function PeopleViewModel(current_user){
   }
 
   self.peopleSort = function(left, right){
-      if (left.c_score() == right.c_score()){
+      if (left.match_score() == right.match_score()){
         return left.name() < right.name();
       }
-      return left.c_score() < right.c_score();
+      return left.match_score() < right.match_score();
   }
 
   self.getFriends = function(){

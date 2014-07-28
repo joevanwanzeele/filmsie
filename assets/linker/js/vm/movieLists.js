@@ -38,7 +38,7 @@ function MovieListsViewModel(current_user){
     });
   }
 
-  self.get_movie_lists = function(list_id){
+  self.get_movie_lists = function(list_id, show_list_page){
     self.getting_lists(true);
 
     self.movie_lists([]);
@@ -50,7 +50,7 @@ function MovieListsViewModel(current_user){
         '_csrf': window.filmsie.csrf
       },
       success: function(data){
-        if (!list_id && data.length){
+        if (!list_id && data.length && show_list_page){
           return location.hash = "lists/" + data[0].id;
         }
         _.each(data, function(list){

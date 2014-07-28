@@ -65,18 +65,6 @@ function UserViewModel(data){
     });
   }
 
-  // self.reset = function(){
-  //   self.id(null);
-  //   self.facebook_id(null);
-  //   self.first_name(null);
-  //   self.last_name(null);
-  //   self.name(null);
-  //   self.email(null);
-  //   self.gender(null);
-  //   self.fb_profile_url(null);
-  //   self.authenticated(false);
-  // }
-
   self.profile_pic_url = ko.computed(function(){
     return "https://graph.facebook.com/"+ self.facebook_id() + "/picture?type=large&access_token=" + self.accessToken();
   });

@@ -72,7 +72,7 @@ a {
 
 .left-panel{
   .section-nav{
-    margin-top:60px;
+    margin-top:75px;
   }
   .footer{
     position:absolute;
@@ -120,6 +120,7 @@ td {
 .movie-table-container{
   margin-top:20px;
   overflow:auto;
+  margin-left:-20px;
   /* position:absolute;
   overflow-x:hidden;
   margin-left:20px; */
@@ -149,6 +150,12 @@ td {
 .table-no-border>tbody>tr>td,
 .table-no-border>tfoot>tr>td {
   border-top: none;
+}
+
+.movies-nav{
+  .btn{
+    margin-bottom:15px;
+  }
 }
 
 .movie-container {
@@ -629,18 +636,18 @@ td {
 
 .movie-table-header{
   padding-left:0;
-  .movie-sort-container{
-    position:relative;
-    left:535px;
-    top:-31px;
-    clear:none;
-    font-weight:bold;
-  }
+  margin-left:-15px;
 
   .search-title-container{
     padding-left:0;
+    margin-bottom: 20px;
+    background-color: rgba(0,0,0,.3);
+    line-height: 40px;
+    border-radius: 4px;
+    height:45px;
     .movie-list-label{
-      font-size:20px;
+      font-size:1.6em;
+
       font-weight:bold;
       text-align:left;
     }
@@ -690,11 +697,12 @@ td {
 
 .search-btn{
   z-index:2;
+  margin-bottom:0px !important;
 }
 
 .search-row, .friends-row, .matches-row{
   position: relative;
-  top: -16px;
+  top: -17px;
 }
 
 #peopleMatches, #peopleFriends{
@@ -816,4 +824,11 @@ td {
 .created-date{
   font-size:small;
   font-weight:bold;
+}
+
+.lists-nav{
+  margin-top:65px !important;
+  .btn{
+    margin-bottom:10px;
+  }
 }
