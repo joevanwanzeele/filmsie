@@ -25,9 +25,6 @@ function MovieViewModel(data, current_user) {
   self.tmdb_id = ko.observable(data && data.tmdb_id || '');
   self.title = ko.observable(data && data.title || '');
 
-  self.thumbnail_base_url = ko.observable(); //need to set these on creation
-  self.large_image_base_url = ko.observable(); //need to set these on creation
-
   self.backdrop_path = ko.observable(data && data.backdrop_path || null);
   self.poster_path = ko.observable(data && data.poster_path || null);
   self.genres = ko.observableArray([]);
@@ -119,6 +116,7 @@ function MovieViewModel(data, current_user) {
         '_csrf': window.filmsie.csrf
       },
       success: function(reviews){
+        self.review_count(reviews.length);
         _.each(reviews, function(review){
           self.reviews.push(new MovieReviewViewModel(review, self.current_user));
         });

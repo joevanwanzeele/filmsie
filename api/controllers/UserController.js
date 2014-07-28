@@ -44,7 +44,9 @@ module.exports = {
     var current_user_id = req.session.user.id;
 
     userHelper.getUsersByFacebookIds(current_user_id, facebook_user_ids,
-      function(friends){ res.json(friends); });
+      function(friends){
+        res.json(friends.sort(function(a,b){ return b.c_score - a.c_score; })); 
+      });
   },
 
   matches: function(req, res, next){

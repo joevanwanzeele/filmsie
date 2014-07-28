@@ -39,13 +39,6 @@ function MovieListsViewModel(current_user){
   }
 
   self.get_movie_lists = function(list_id){
-
-    if (list_id){
-      self.selected_list(new MovieListViewModel({id: list_id}, self.current_user));
-      self.selected_list().getList();
-      if (self.movie_lists().length > 0 || !self.current_user().authenticated()) return;
-    }
-
     self.getting_lists(true);
 
     self.movie_lists([]);
@@ -57,13 +50,17 @@ function MovieListsViewModel(current_user){
         '_csrf': window.filmsie.csrf
       },
       success: function(data){
+        if (!list_id && data.length){
+          return location.hash = "lists/" + data[0].id;
+        }
         _.each(data, function(list){
           var newList = new MovieListViewModel(list, self.current_user);
           self.movie_lists.push(newList);
-          if (!self.selected_list() || newList.id() == list_id){
+
+          if (newList.id() == list_id){
             self.selected_list(newList);
           }
-          self.selected_list().getList();
+          if (self.selected_list()) self.selected_list().getList();
           self.getting_lists(false);
         });
       }
@@ -122,7 +119,7 @@ function MovieListsViewModel(current_user){
             bootbox.alert("\"" + list.name() + "\"" + " has been deleted.");
             self.movie_lists.remove(list);
             self.selected_list(null);
-            self.showLists();
+            self.get_movie_lists();
           }
           else { console.log(data); }
         }

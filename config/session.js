@@ -51,7 +51,7 @@ module.exports.session = {
   collection: 'sessions',
   username: 'nodejitsu',
   ttl: 60000,
-  password: process.env.MONGO_PSSWD,
+  password: process.env.MONGO_PSSWD || 'a253679f158491fdd3da18bdbae1b3eb',
   stringify: true,
   auto_reconnect: true
 

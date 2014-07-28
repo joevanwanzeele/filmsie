@@ -1,7 +1,7 @@
 <!-- ko with: movie_lists -->
 <div class="container-fluid main-content">
   <div class="left-panel col-md-2">
-    <div class="section-nav">
+    <div class="section-nav lists-nav">
       <ul class="row" data-bind="foreach: movie_lists">
         <li>
           <a class="btn btn-default" data-bind="css: {'active': $parent.selected_list() && $parent.selected_list().id() == id() }, html: name_and_length(), attr: {'href': '#lists/' + id() }"></a>
@@ -15,7 +15,7 @@
     <div class="movie-list-content" data-bind="with: selected_list" >
       <div class="movie-list-header container" data-bind="visible: id()">
         <div class="row" data-bind="visible: is_public() || is_owner()">
-          <div class="col-sm-6">
+          <div class="col-sm-5">
             <span class="movie-list-title" data-bind="html: name"></span>
           </div>
           <div class="col-sm-2">
@@ -23,12 +23,12 @@
             <h4>public: <input type="checkbox" data-bind="checked: is_public" /></h4>
             <!-- /ko -->
           </div>
-          <div class="col-sm-2 sm-links">
-            <div class="social-button"><span class="fa fa-2x fa-facebook-square" data-bind="click: $parent.shareOnFacebook"></span></div>
-            <div class="social-button"><a data-bind="attr: {href: twitterLink }" target="_blank"><span class="fa fa-2x fa-twitter-square"></span></a></div>
-            <div class="social-button"><span class="fa fa-2x fa-reddit-square"></span></div>
+          <div class="col-sm-3 sm-links">
+            <div><iframe class="fb-frame share-list-fb-frame" data-bind="attr: {src: $root.facebook_iframe_url }"></iframe></div>
+            <div class="social-button"><a data-bind="attr: {href: $root.twitterLink }" target="_blank" alt="tweet this"><span class="fa fa-2x fa-twitter-square"></span></a></div>
+            <div class="social-button"><a data-bind="attr: {href: $root.redditLink }" target="_blank" alt="submit to reddit"><span class="fa fa-2x fa-reddit-square"></span></a></div>
           </div>
-          <div class="col-sm-2" style="text-align:left">
+          <div class="col-sm-2" style="text-align:right">
             <div class="delete-list-button pointer" data-bind="click: $parent.deleteList">
               <span class="fa fa-2x fa-times-circle"></span>
             </div>

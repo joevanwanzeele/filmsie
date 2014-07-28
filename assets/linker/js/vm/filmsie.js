@@ -20,6 +20,21 @@ function FilmsieViewModel(){
 
   self.feedback = ko.observable(new FeedbackViewModel(self));
 
+  self.facebook_iframe_url = ko.computed(function(){
+    return "http://www.facebook.com/plugins/like.php?href=" +
+    encodeURIComponent(window.location.href) + "&width=200&layout=button_count&action=like&show_faces=true&share=true&height=21&appId=248849825312110";
+  });
+
+  self.twitterLink = ko.computed(function(){
+    return "https://twitter.com/intent/tweet?url=" +
+      encodeURIComponent(window.location.href) +
+      "&hashtags=filmsie";
+  });
+
+  self.redditLink = ko.computed(function(){
+    return "http://www.reddit.com/submit?url=" + encodeURIComponent(window.location);
+  });
+
   self.getConfigSettings = function(){
     if (!self.thumbnail_base_url()){
       $.ajax({
@@ -77,8 +92,8 @@ function FilmsieViewModel(){
 
   self.showReviewsModal = function(vm, e){
     e.stopPropagation();
-    vm.getReviews();
     self.selected_movie(vm);
+    self.selected_movie().getReviews();
 
     $('#reviewsModal').modal();
     self.setModalProperties();
@@ -185,7 +200,8 @@ function FilmsieViewModel(){
     self.setUpRouting();
   }
 
-  self.loadLists = function(){
+  self.loadLists = function(list_id){
+    self.movie_lists().get_movie_lists(list_id);
     $('.active').removeClass('active');
     $('#showListsNavButton').addClass('active');
     self.is_showing_movies(false);
@@ -231,12 +247,10 @@ function FilmsieViewModel(){
     var app = Sammy(function() {
           this.get('/#lists', function() {
             self.loadLists();
-            self.movie_lists().get_movie_lists()
           });
 
           this.get('/#lists/:list_id', function() {
-            self.loadLists();
-            self.movie_lists().get_movie_lists(this.params.list_id)
+            self.loadLists(this.params.list_id);
           });
 
           this.get('/#feedback', function(){

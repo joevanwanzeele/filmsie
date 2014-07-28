@@ -60,6 +60,7 @@ function MovieListViewModel(data, current_user){
         '_csrf': window.filmsie.csrf
       },
       success: function(data){
+        if (data == "list does not exist") return bootbox.alert("List no longer exists");
         self.movies([]);
         self.name(data.list.name);
         self.is_public(data.list.is_public);
