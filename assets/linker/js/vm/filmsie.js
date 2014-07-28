@@ -12,6 +12,8 @@ function FilmsieViewModel(){
   self.movie_details = ko.observable();
   self.selected_movie = ko.observable();
 
+  self.current_url = ko.observable();
+
   self.is_loading_details = ko.observable(false);
 
   self.thumbnail_base_url = ko.observable();
@@ -21,19 +23,26 @@ function FilmsieViewModel(){
   self.feedback = ko.observable(new FeedbackViewModel(self));
 
   self.facebook_iframe_url = ko.computed(function(){
+    self.people();
+    self.movies();
+    self.movie_lists();
     return "http://www.facebook.com/plugins/like.php?href=" +
-    encodeURIComponent(window.location.href) + "&width=200&layout=button_count&action=like&show_faces=true&share=true&height=21&appId=248849825312110";
+    encodeURIComponent(self.current_url()) + "&width=200&layout=button_count&action=like&show_faces=true&share=true&height=21&appId=248849825312110";
   });
 
   self.twitterLink = ko.computed(function(){
     return "https://twitter.com/intent/tweet?url=" +
-      encodeURIComponent(window.location.href) +
+      encodeURIComponent(self.current_url()) +
       "&hashtags=filmsie";
   });
 
   self.redditLink = ko.computed(function(){
-    return "http://www.reddit.com/submit?url=" + encodeURIComponent(window.location);
+    return "http://www.reddit.com/submit?url=" + encodeURIComponent(self.current_url());
   });
+
+  window.onhashchange = function () {
+    self.current_url(window.location.href);
+  }
 
   self.getConfigSettings = function(){
     if (!self.thumbnail_base_url()){
