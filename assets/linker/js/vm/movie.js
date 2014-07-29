@@ -37,6 +37,7 @@ function MovieViewModel(data, current_user) {
   self.current_user_rating = ko.observable(data && data.current_user_rating || null);
   self.temp_rating = ko.observable(self.current_user_rating());
   self.average_rating = ko.observable(data && data.average_rating || null);
+  self.total_ratings = ko.observable(data && data.total_ratings || null);
   self.profile_user_rating = ko.observable(data && data.profile_user_rating || null);
 
   self.is_loading_details = ko.observable(true);

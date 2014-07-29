@@ -74,10 +74,4 @@ function MovieListViewModel(data, current_user){
       }
     });
   }
-
-  self.twitterLink = ko.computed(function(){
-    return "https://twitter.com/intent/tweet?url=" +
-      encodeURIComponent("http://www.filmsie.com/#lists/" + self.id()) +
-      "&hashtags=filmsie&text=" + self.name();
-  });
 }

@@ -59,6 +59,11 @@ module.exports = {
       defaultsTo: false
     },
 
+    receive_emails: {
+      type: 'boolean',
+      defaultsTo: true
+    },
+
     profile_pic_url: {
       type: 'string'
     },
@@ -72,6 +77,9 @@ module.exports = {
 
     if (typeof values.verified !== 'boolean'){
       values.verified = values.verified == 'true';
+    }
+    if (typeof values.receive_emails !== 'boolean'){
+      values.receive_emails = values.receive_emails == 'true';
     }
 
     next();

@@ -4,7 +4,7 @@
     <div class="section-nav">
       <ul class="row">
         <li>
-          <a class="btn btn-default" data-bind="css: {'active': which_people() == 'matches' }" href="#people/matches">My Matches</a>
+          <a class="btn" data-bind="css: {'active': which_people() == 'matches' }" href="#people/matches">My Matches</a>
           <div class="row matches-row hide-behind">
             <div class="expand-panel">
               <div id="peopleMatches" class="panel-collapse collapse">
@@ -18,7 +18,7 @@
           </div>
         </li>
         <li>
-          <a class="btn btn-default" data-bind="css: {'active': which_people() == 'friends' }" href="#people/friends">My friends</a>
+          <a class="btn" data-bind="css: {'active': which_people() == 'friends' }" href="#people/friends">My friends</a>
           <div class="row friends-row hide-behind">
             <div class="expand-panel">
               <div id="peopleFriends" class="panel-collapse collapse">
@@ -57,7 +57,7 @@
       <div class="col-xs-10">
         <span class="list-person-name" data-bind="text: name"></span>
         <div class="progress match-menu-progress">
-          <div class="progress-bar progress-bar-success" role="progressbar" data-bind="attr:{ 'area-valuenow': match_percent }, style: {width: match_percent() + '%'}" aria-valuemin="0" aria-valuemax="100">
+          <div class="progress-bar" role="progressbar" data-bind="attr:{ 'area-valuenow': match_percent }, style: {width: match_percent() + '%'}" aria-valuemin="0" aria-valuemax="100">
           </div>
         </div>
       </div>

@@ -20,7 +20,6 @@ module.exports.policies = {
 
   MovieController: {
     '*': true,
-
     recommended: 'isAuthenticated'
   },
 

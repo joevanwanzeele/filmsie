@@ -8,9 +8,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
     <meta property="og:site_name" content="Filmsie">
-		<meta property="og:url" content="http://www.filmsie.com">
+		<!-- <meta property="og:url" content="http://www.filmsie.com"> -->
 		<meta property="og:type" content="website">
-		<meta property="og:title" content="Filmsie - Everyone's a critic">
+		<!-- <meta property="og:title" content="Filmsie - Everyone's a critic"> -->
 		<meta property="og:description" content="Filmsie.com is a place to review and discover movies with your friends">
 		<meta property="og:image" content="http://www.filmsie.com/img/logo.png">
 		<meta property="fb:app_id" content="248849825312110">
@@ -107,14 +107,14 @@
               <li id="showListsNavButton"><a href="#lists" data-toggle="tooltip" data-placement="bottom" title="Your Lists"><span class="fa fa-lg fa-list"></span></a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right" data-bind="if: current_user().authenticated()">
-              <li><a data-toggle="tooltip" data-placement="bottom" title="Account Settings" data-bind="click: openProfileModal"><span class="fa fa-lg fa-cog"></span></a></li>
-              <li><a href="/#user/logout" data-toggle="tooltip" data-placement="bottom" title="Sign Out"><span class="fa fa-lg fa-sign-out"></span></a></li>
+              <li><a data-toggle="tooltip" data-placement="bottom" title="My Profile" data-bind="attr: {href: current_user_profile_link }"><span class="fa fa-lg fa-cog"></span></a></li>
+              <li><a href="/#user/logout" data-toggle="tooltip" data-placement="bottom" title="Log Out"><span class="fa fa-lg fa-sign-out"></span></a></li>
               <li><a href="#" data-bind="click: showFeedbackModal" data-toggle="tooltip" data-placement="bottom" title="Feedback"><span class="fa fa-comment"></span></a></li>
               <li><iframe class="fb-frame" src="http://www.facebook.com/plugins/like.php?href=http%3A%2F%2Fwww.filmsie.com&width=200&layout=button_count&action=like&show_faces=true&share=false&height=21&appId=248849825312110"></iframe></li>
-              <li><a class="profile-image-a"><img class="profile-image" data-bind="attr: {src: current_user().profile_pic_url()}, click: openProfileModal" /></a></li>
+              <li><a class="profile-image-a" data-bind="attr: {href: current_user_profile_link}"><img class="profile-image" data-bind="attr: {src: current_user().profile_pic_url() }" /></a></li>
             </ul>
               <div class="nav navbar-nav navbar-right navbar-form" data-bind="if: !current_user().authenticated()">
-                <a class="btn btn-primary login-button" data-bind="click: login"><span class="fa fa-lg fa-facebook-square"> &nbsp; sign in</span></a>
+                <a class="btn btn-primary login-button" data-bind="click: login"><span class="fa fa-lg fa-facebook-square"> &nbsp; Log In</span></a>
               </div>
           </div>
         </div><!-- /.navbar-collapse -->

@@ -61,6 +61,8 @@ module.exports = {
     } else tmdb.miscNowPlayingMovies({page: Number(req.body.page)}, processMovieResults);
 
     function processMovieResults(err, results) {
+      if (err) return console.log(err);
+      if (!results.results) return res.json("no results");
       _.each(results.results, function(movie){
         movie["tmdb_id"] = movie.id;
         Movie.findOne({tmdb_id: movie.id}).done(function(err, existing){

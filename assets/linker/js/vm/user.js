@@ -23,6 +23,7 @@ function UserViewModel(data){
   self.favorite_movies = ko.observableArray([]);
   self.least_favorite_movies = ko.observableArray([]);
   self.reviews = ko.observableArray([]);
+  self.receive_emails = ko.observable(true && (data ? data.receive_emails : true));
 
   self.match_percent = ko.computed(function(){
     return self.match_score() * 100;

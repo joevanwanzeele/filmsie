@@ -33,9 +33,12 @@ module.exports = {
          if (all_movie_ratings.length > 0){
             var found = _.findWhere(movies, {tmdb_id: tmdb_id});
 
-            if (found) found["average_rating"] = _.reduce(all_movie_ratings, function(avg, movie_rating){
-              return avg + movie_rating.rating / all_movie_ratings.length;
-            },0).toFixed(2); //include average review
+            if (found){ found["average_rating"] = _.reduce(all_movie_ratings, function(avg, movie_rating){
+                return avg + movie_rating.rating / all_movie_ratings.length;
+              },0).toFixed(2); //include average review
+
+              found["total_ratings"] = all_movie_ratings.length;
+            }
 
             if (user_id){ //include current user reviews
 

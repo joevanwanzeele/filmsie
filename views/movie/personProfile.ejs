@@ -13,13 +13,16 @@
         </ul>
         <!-- ko if: match_score() > 0 -->
         <div class="progress match-progress">
-          <div class="progress-bar progress-bar-success" role="progressbar" data-bind="attr:{ 'area-valuenow': match_score() * 100 }, style: {width: (match_score() * 100) + '%'}" aria-valuemin="0" aria-valuemax="100">
+          <div class="progress-bar" role="progressbar" data-bind="attr:{ 'area-valuenow': match_score() * 100 }, style: {width: (match_score() * 100) + '%'}" aria-valuemin="0" aria-valuemax="100">
             <span data-bind="text: (match_score() * 100) + '% match'"></span>
           </div>
         </div>
         <!-- /ko -->
-        <!-- ko if: match_score() <= 0 -->
+        <!-- ko if: match_score() <= 0 && $root.current_user().id() != id() -->
           <div class="too-few"><span data-toggle="tooltip" data-placement="bottom" title="Too few rated movies in common">(Match Score Unknown)</span></div>
+        <!-- /ko -->
+        <!-- ko if: $root.current_user().id() == id() -->
+          <span>Receive ocassional email updates: <input type="checkbox" data-bind="checked: receive_emails" /></span>
         <!-- /ko -->
       </div>
       <div class="col-md-3">
