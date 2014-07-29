@@ -111,7 +111,9 @@ module.exports = {
           if (!list) return res.json("list does not exist");
           Movie.find().where({ id: list.movie_ids }).exec(function(err, movies) {
             if (err) return console.log(err);
-            movieHelper.includeRatings(movies, user_id, function(movies_with_ratings){ return res.json({list: list, movies: movies_with_ratings}); });
+            movieHelper.includeRatings(movies, user_id, function(movies_with_ratings){
+              return res.json({list: list, movies: movies_with_ratings});
+            });
           });
         });
     }

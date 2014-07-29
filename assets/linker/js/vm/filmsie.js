@@ -23,7 +23,7 @@ function FilmsieViewModel(){
   self.feedback = ko.observable(new FeedbackViewModel(self));
 
   self.current_user_profile_link = ko.computed(function(){
-    return "/#people/profile/" + self.current_user().id() 
+    return "/#people/profile/" + self.current_user().id()
   });
 
   self.facebook_iframe_url = ko.computed(function(){

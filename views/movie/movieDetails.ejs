@@ -14,7 +14,9 @@
         <p data-bind="text: synopsis"></p>
         <ul>
           <li><div class="details-label">Released: </div><div data-bind="text: formatted_release_date"></div></li>
+          <!-- ko if: total_ratings() > 0 -->
           <li><div class="details-label">Average rating: </div><div class="average-rating-container" data-bind="template: {name: 'average-rating-template'}"></div><div data-bind="text: '('+ total_ratings() + ' ratings)'"></div></li>
+          <!-- /ko -->
           <li><div class="details-label">Your rating: </div><div class="star-rating-container" data-bind="template: {name: 'current-rating-template'}"></div></li>
           <li><div class="details-label">Genres: </div><div data-bind="text: genresString"></div></li>
           <li><div data-bind="click: toggleCast, css: { 'fa-minus-square' : !cast_is_hidden() }" class="fa fa-plus-square pointer details-label"></div><div>Cast</div>

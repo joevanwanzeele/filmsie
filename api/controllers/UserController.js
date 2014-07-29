@@ -45,7 +45,7 @@ module.exports = {
 
     userHelper.getUsersByFacebookIds(current_user_id, facebook_user_ids,
       function(friends){
-        res.json(friends.sort(function(a,b){ return b.c_score - a.c_score; })); 
+        res.json(friends.sort(function(a,b){ return b.c_score - a.c_score; }));
       });
   },
 
@@ -80,7 +80,7 @@ module.exports = {
   },
 
   favorites: function(req, res, next){
-
+    var current_user_id = req.session.user.id;
     var user_id = req.body.id;
 
     MovieUserRating.find()
@@ -99,14 +99,16 @@ module.exports = {
             movie['profile_user_rating'] = rating.rating;
           });
           movieHelper.includeReviewCount(movies, function(){
-            return res.json(movies.sort(function(left,right){return right.profile_user_rating - left.profile_user_rating; }));
+            movieHelper.includeRatings(movies, current_user_id, function(movies_with_ratings){
+              return res.json(movies_with_ratings.sort(function(left,right){return right.profile_user_rating - left.profile_user_rating; }));
+            });
           });
         });
       });
   },
 
   leastFavorites: function(req, res, next){
-
+    var current_user_id = req.session.user.id;
     var user_id = req.body.id;
 
     MovieUserRating.find()
@@ -125,7 +127,9 @@ module.exports = {
             movie['profile_user_rating'] = rating.rating;
           });
           movieHelper.includeReviewCount(movies, function(){
-            return res.json(movies.sort(function(left,right){return left.profile_user_rating - right.profile_user_rating; }));
+            movieHelper.includeRatings(movies, current_user_id, function(movies_with_ratings){
+              return res.json(movies_with_ratings.sort(function(left,right){return left.profile_user_rating - right.profile_user_rating; }));
+            });
           });
         });
       });

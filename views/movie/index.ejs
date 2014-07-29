@@ -112,11 +112,11 @@
 
 <script type="text/html" id="list-movie-template">
   <div class="row list-movie-row">
-    <div class="col-sm-1 pointer" data-bind="click: $parents[2].showDetails">
+    <div class="col-sm-1 pointer" data-bind="click: $root.showDetails">
       <img class="list-movie-image" data-bind="attr: {src: image_url($root) }" />
     </div>
     <div class="col-sm-4 pointer">
-      <h4 data-bind="click: $parents[2].showDetails, text: title_and_year"></h4>
+      <h4 data-bind="click: $root.showDetails, text: title_and_year"></h4>
       <a data-bind="attr: {href: amazon_link }" target="_blank">
         <img class="amazon-button-small amazon-list-item-button" src="/img/amazon.png" alt="find on amazon" />
       </a>
