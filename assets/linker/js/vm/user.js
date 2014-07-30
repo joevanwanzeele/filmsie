@@ -34,37 +34,37 @@ function UserViewModel(data){
     return begin_date.fromNow(true);
   });
 
-  self.processLogin = function(callback){
-    FB.getLoginStatus(function(response) {
-     if (response.status == "connected"){
-       self.accessToken(response.authResponse.accessToken);
-       self.authenticated(true);
-       FB.api('/me', function(user) {
-         if (user.error) return console.log(user.error);
-         self.facebook_id(user.id);
-         self.first_name(user.first_name);
-         self.last_name(user.last_name);
-         self.name(user.name);
-         self.email(user.email);
-         self.gender(user.gender);
-         self.fb_profile_url(user.link);
-         user["_csrf"] = window.filmsie.csrf;
-         $.ajax({
-           type: "POST",
-           url: "/user/login",
-           data: user,
-           cache: false,
-           success: function(data){
-             self.id(data.id);
-             self.parent().init();
-           }
-         });
-       });
-     } else {
-       self.parent().init();
-     }
-    });
-  }
+  // self.processLogin = function(callback){
+  //   FB.getLoginStatus(function(response) {
+  //    if (response.status == "connected"){
+  //      self.accessToken(response.authResponse.accessToken);
+  //      self.authenticated(true);
+  //      FB.api('/me', function(user) {
+  //        if (user.error) return console.log(user.error);
+  //        self.facebook_id(user.id);
+  //        self.first_name(user.first_name);
+  //        self.last_name(user.last_name);
+  //        self.name(user.name);
+  //        self.email(user.email);
+  //        self.gender(user.gender);
+  //        self.fb_profile_url(user.link);
+  //        user["_csrf"] = window.filmsie.csrf;
+  //        $.ajax({
+  //          type: "POST",
+  //          url: "/user/login",
+  //          data: user,
+  //          cache: false,
+  //          success: function(data){
+  //            self.id(data.id);
+  //            self.parent().init();
+  //          }
+  //        });
+  //      });
+  //    } else {
+  //      self.parent().init();
+  //    }
+  //   });
+  // }
 
   self.profile_pic_url = ko.computed(function(){
     return "https://graph.facebook.com/"+ self.facebook_id() + "/picture?type=large&access_token=" + self.accessToken();

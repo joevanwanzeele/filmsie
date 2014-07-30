@@ -20,6 +20,12 @@ function FilmsieViewModel(){
   self.large_image_base_url = ko.observable();
   self.not_found_image_url = "../img/unavailable-image.jpeg";
 
+  self.left_menu_is_open = ko.observable(true);
+
+  self.toggle_left_menu = function(){
+    self.left_menu_is_open(!self.left_menu_is_open());
+  };
+
   self.feedback = ko.observable(new FeedbackViewModel(self));
 
   self.current_user_profile_link = ko.computed(function(){
@@ -140,6 +146,13 @@ function FilmsieViewModel(){
     });
   }
 
+  self.left_menu_class = function(){
+    if (self.left_menu_is_open()){
+      return "fa-angle-double-left";
+    }
+    return "fa-angle-double-right";
+  }
+
   self.processLogin = function(callback){
     FB.getLoginStatus(function(response) {
      if (response.status == "connected"){
@@ -158,6 +171,7 @@ function FilmsieViewModel(){
            success: function(data){
              self.current_user().id(data.id);
              self.init();
+             self.beginSessionPolling();
            }
          });
        });
@@ -192,6 +206,18 @@ function FilmsieViewModel(){
       // Person is now logged out
       self.processLogout(callback);
     });
+  }
+
+  self.beginSessionPolling = function(){
+    console.dir('set up session polling');
+    setInterval(FB.getLoginStatus(function(response) {
+      console.dir(response);
+      if (response.status == "connected"){
+        self.current_user().accessToken(response.authResponse.accessToken);
+      } else {
+        self.processLogout();
+      }
+    }, true), 300000); //every 5 minutes
   }
 
   self.init = function(){
