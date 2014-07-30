@@ -209,13 +209,15 @@ function FilmsieViewModel(){
   }
 
   self.beginSessionPolling = function(){
-    setInterval(FB.getLoginStatus(function(response) {
-      if (response.status == "connected"){
-        self.current_user().accessToken(response.authResponse.accessToken);
-      } else {
-        self.processLogout();
-      }
-    }, true), 300000); //every 5 minutes
+    setInterval(function(){
+      FB.getLoginStatus(function(response) {
+        console.dir(response);
+        if (response.status == "connected"){
+          self.current_user().accessToken(response.authResponse.accessToken);
+        } else {
+          self.processLogout();
+        }
+      }, true); }, 180000); //every 3 minutes
   }
 
   self.init = function(){
