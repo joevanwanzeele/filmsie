@@ -209,9 +209,7 @@ function FilmsieViewModel(){
   }
 
   self.beginSessionPolling = function(){
-    console.dir('set up session polling');
     setInterval(FB.getLoginStatus(function(response) {
-      console.dir(response);
       if (response.status == "connected"){
         self.current_user().accessToken(response.authResponse.accessToken);
       } else {
