@@ -24,6 +24,7 @@ function UserViewModel(data){
   self.least_favorite_movies = ko.observableArray([]);
   self.reviews = ko.observableArray([]);
   self.receive_emails = ko.observable(true && (data ? data.receive_emails : true));
+  self.not_found_image_url = "../img/unavailable-image.jpeg";
 
   self.match_percent = ko.computed(function(){
     return self.match_score() * 100;
@@ -34,43 +35,13 @@ function UserViewModel(data){
     return begin_date.fromNow(true);
   });
 
-  // self.processLogin = function(callback){
-  //   FB.getLoginStatus(function(response) {
-  //    if (response.status == "connected"){
-  //      self.accessToken(response.authResponse.accessToken);
-  //      self.authenticated(true);
-  //      FB.api('/me', function(user) {
-  //        if (user.error) return console.log(user.error);
-  //        self.facebook_id(user.id);
-  //        self.first_name(user.first_name);
-  //        self.last_name(user.last_name);
-  //        self.name(user.name);
-  //        self.email(user.email);
-  //        self.gender(user.gender);
-  //        self.fb_profile_url(user.link);
-  //        user["_csrf"] = window.filmsie.csrf;
-  //        $.ajax({
-  //          type: "POST",
-  //          url: "/user/login",
-  //          data: user,
-  //          cache: false,
-  //          success: function(data){
-  //            self.id(data.id);
-  //            self.parent().init();
-  //          }
-  //        });
-  //      });
-  //    } else {
-  //      self.parent().init();
-  //    }
-  //   });
-  // }
-
   self.profile_pic_url = ko.computed(function(){
+    if (!self.facebook_id() || !self.accessToken()) return self.not_found_image_url;
     return "https://graph.facebook.com/"+ self.facebook_id() + "/picture?type=large&access_token=" + self.accessToken();
   });
 
   self.profile_pic_url_small = ko.computed(function(){
+    if (!self.facebook_id() || !self.accessToken()) return self.not_found_image_url;
     return "https://graph.facebook.com/"+ self.facebook_id() + "/picture?type=square&access_token=" + self.accessToken();
   });
 }

@@ -12,7 +12,7 @@ function PeopleViewModel(current_user){
   self.showing_user_profile = ko.observable(false);
   self.loading_profile = ko.observable(false);
 
-  self.which_people = ko.observable('matches');
+  self.which_people = ko.observable('friends');
 
   self.which_people.subscribe(function(value){
     switch(value){
@@ -38,24 +38,24 @@ function PeopleViewModel(current_user){
     self.which_people('');
 
     switch(who){
-    case "friends":
-      self.getFriends();
+    case "matches":
+      self.getMatches();
       break;
     case "profile":
       self.loadUserProfile(id);
       break;
-    case "matches":
+    case "friends":
     default:
-      self.getMatches();
+      self.getFriends();
     }
   }
 
-  self.peopleSort = function(left, right){
-      if (left.match_score() == right.match_score()){
-        return left.name() < right.name();
-      }
-      return left.match_score() < right.match_score();
-  }
+  // self.peopleSort = function(left, right){
+  //     if (left.match_score() == right.match_score()){
+  //       return left.name() < right.name();
+  //     }
+  //     return left.match_score() < right.match_score();
+  // }
 
   self.getFriends = function(){
     self.friends([]);
@@ -78,7 +78,7 @@ function PeopleViewModel(current_user){
                 person.accessToken(self.current_user().accessToken());
                 self.friends.push(person);
               });
-              self.friends.sort(self.peopleSort);
+              //self.friends.sort(self.peopleSort);
               self.which_people('friends');
             }
           });
@@ -101,7 +101,7 @@ function PeopleViewModel(current_user){
           person.accessToken(self.current_user().accessToken());
           self.matches.push(person);
         });
-        self.matches.sort(self.peopleSort);
+        //self.matches.sort(self.peopleSort);
         self.which_people('matches');
       }
     });

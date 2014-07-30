@@ -4,20 +4,6 @@
     <div class="section-nav">
       <ul class="row">
         <li>
-          <a class="btn" data-bind="css: {'active': which_people() == 'matches' }" href="#people/matches">My Matches</a>
-          <div class="row matches-row hide-behind">
-            <div class="expand-panel">
-              <div id="peopleMatches" class="panel-collapse collapse">
-                <div class="panel-body">
-                  <ul data-bind="foreach: matches">
-                    <li data-bind="template: {name: 'people-menu-item' }"></li>
-                  </ul>
-                </div>
-              </div> <!-- /match list panel -->
-            </div>
-          </div>
-        </li>
-        <li>
           <a class="btn" data-bind="css: {'active': which_people() == 'friends' }" href="#people/friends">My friends</a>
           <div class="row friends-row hide-behind">
             <div class="expand-panel">
@@ -28,6 +14,20 @@
                   </ul>
                 </div>
               </div> <!-- /friend list panel -->
+            </div>
+          </div>
+        </li>
+        <li>
+          <a class="btn" data-bind="css: {'active': which_people() == 'matches' }" href="#people/matches">My Matches</a>
+          <div class="row matches-row hide-behind">
+            <div class="expand-panel">
+              <div id="peopleMatches" class="panel-collapse collapse">
+                <div class="panel-body">
+                  <ul data-bind="foreach: matches">
+                    <li data-bind="template: {name: 'people-menu-item' }"></li>
+                  </ul>
+                </div>
+              </div> <!-- /match list panel -->
             </div>
           </div>
         </li>
