@@ -17,14 +17,10 @@ function MoviesViewModel(current_user) {
   self.which_movies.subscribe(function(value){
       switch (value) {
         case 'search':
-          $('#searchOptions').collapse({toggle: false});
           $('#searchOptions').collapse('show');
-          $('.search-row').removeClass("hide-behind");
           break;
         default:
-          $('#searchOptions').collapse({toggle: false});
           $('#searchOptions').collapse('hide');
-          $('.search-row').addClass("hide-behind");
       }
   });
 
@@ -70,6 +66,11 @@ function MoviesViewModel(current_user) {
     self.total_results(0);
   }
 
+  self.searchButtonSearch = function(root){
+    self.search();
+    root.closeMenu();
+  }
+
   self.search = function(){
     if (self.getting()) return;
     self.movies([]);
@@ -77,8 +78,8 @@ function MoviesViewModel(current_user) {
     self.getMovies();
   }
 
-  self.searchOnEnter = function(data, event){
-    if (event.keyCode == 13) self.search();
+  self.searchOnEnter = function(root, data, event){
+    if (event.keyCode == 13) self.searchButtonSearch(root);
     return true;
   }
 

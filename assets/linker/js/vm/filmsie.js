@@ -346,6 +346,7 @@ function FilmsieViewModel(){
 
           this.get('/#movies/search', function(){
             self.loadMovies('search');
+            self.left_menu_is_open(true);
           });
 
           this.get('/#movies/browse', function(){
