@@ -39,6 +39,7 @@
     <link rel="stylesheet" href="/linker/styles/bootstrap.min.css">
     <link rel="stylesheet" href="/linker/styles/custom.css">
     <!--STYLES END-->
+
     <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
 
     <script type="text/javascript">
@@ -102,9 +103,9 @@
         <div class="collapse navbar-collapse" id="main-navbar">
           <div class="container">
             <ul class="nav navbar-nav" data-bind="if: current_user().authenticated()">
-              <li class="active" id="showMoviesNavButton"><a href="#movies/browse" data-toggle="tooltip" data-placement="bottom" title="Movies"><span class="fa fa-lg fa-film"></span></a></li>
-              <li id="showPeopleNavButton"><a href="#people" data-toggle="tooltip" data-placement="bottom" title="People"><span class="fa fa-lg fa-users"></span></a></li>
-              <li id="showListsNavButton"><a href="#lists" data-toggle="tooltip" data-placement="bottom" title="Your Lists"><span class="fa fa-lg fa-list"></span></a></li>
+              <li class="active" id="showMoviesNavButton"><a href="#movies/browse" data-toggle="tooltip" data-placement="bottom" title="Movies">Movies <span class="fa fa-lg fa-film"></span></a></li>
+              <li id="showPeopleNavButton"><a href="#people" data-toggle="tooltip" data-placement="bottom" title="People">People <span class="fa fa-lg fa-users"></span></a></li>
+              <li id="showListsNavButton"><a href="#lists" data-toggle="tooltip" data-placement="bottom" title="Your Lists">Your Lists <span class="fa fa-lg fa-list"></span></a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right" data-bind="if: current_user().authenticated()">
               <li><a data-toggle="tooltip" data-placement="bottom" title="My Profile" data-bind="attr: {href: current_user_profile_link }"><span class="fa fa-lg fa-cog"></span></a></li>
@@ -123,7 +124,7 @@
 
     <%- body %>
 
-  
+
     <!--
         Client-side Templates
         ========================
@@ -179,16 +180,22 @@
       })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
       ga('create', 'UA-53330626-1', 'auto');
+      ga('require', 'displayfeatures');
       ga('send', 'pageview');
 
 
       $("body").tooltip({ selector: '[data-toggle=tooltip]' });
 
-      $(".movie-table-container").css({height: (window.innerHeight - 225) + "px"});
-
-      $(window).resize(function(){
-        $(".movie-table-container").css({height: (window.innerHeight - 225) + "px"});
-      });
+      //$(".movie-table-container").css({height: (window.innerHeight - 200) + "px"});
+      // $(".movie-table-container, .people-container").css({height: (window.innerHeight -140) + "px"});
+      //
+      // $(".left-menu-button").css({'padding-top': (window.innerHeight - 140)/2 + "px"});
+      //
+      // $(window).resize(function(){
+      //   $(".left-menu-button").css({'padding-top': (window.innerHeight - 140)/2 + "px"});
+      //   //$(".movie-table-container").css({height: (window.innerHeight - 200) + "px"});
+      //   $(".movie-table-container, .people-container").css({height: (window.innerHeight -140) + "px"});
+      // });
     </script>
 
     <!--SCRIPTS-->

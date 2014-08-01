@@ -111,6 +111,7 @@ function MoviesViewModel(current_user) {
       var el = "<div id='loadingMoviesPlaceholder' class='movie-container movies-loading-placeholder' data-bind='visible: getting'><span class='fa fa-5x fa-spin fa-cog'></span></div>";
       if ($('.movie-table-container > .movie-container').length == 0) {
         $('.movie-table-container').html(el);
+
       }
       else {
         $('.movie-container').last().after(el);

@@ -117,12 +117,12 @@
     </div>
     <div class="col-sm-4 pointer">
       <h4 data-bind="click: $root.showDetails, text: title_and_year"></h4>
-      <a data-bind="attr: {href: amazon_link }" target="_blank">
-        <img class="amazon-button-small amazon-list-item-button" src="/img/amazon.png" alt="find on amazon" />
-      </a>
     </div>
     <div class="col-sm-3">your rating: <div data-bind="template: {name: 'current-rating-template'}"></div></div>
     <div class="col-sm-4" style="text-align:right">
+      <a data-bind="attr: {href: amazon_link }" target="_blank">
+        <img class="amazon-button-small amazon-list-item-button" src="/img/amazon.png" alt="find on amazon" />
+      </a>
       <div class="delete-list-item-button pointer" data-bind="click: $parent.removeMovie">
         <span class="fa fa-lg fa-times-circle"></span>
       </div>

@@ -5,6 +5,9 @@ function FilmsieViewModel(){
   self.movie_lists = ko.observable();
   self.people = ko.observable();
 
+  self.windowInnerHeight = ko.observable(window.innerHeight);
+  self.windowInnerWidth = ko.observable(window.innerWidth);
+
   self.is_showing_people = ko.observable(false);
   self.is_showing_movies = ko.observable(false);
   self.is_showing_lists = ko.observable(false);
@@ -53,6 +56,11 @@ function FilmsieViewModel(){
   window.onhashchange = function () {
     self.current_url(window.location.href);
   }
+
+  $(window).resize(function(){
+    self.windowInnerHeight(window.innerHeight);
+    self.windowInnerWidth(window.innerWidth);
+  });
 
   self.getConfigSettings = function(){
     if (!self.thumbnail_base_url()){
@@ -146,12 +154,43 @@ function FilmsieViewModel(){
     });
   }
 
-  self.left_menu_class = function(){
+  self.left_menu_class = ko.computed(function(){
     if (self.left_menu_is_open()){
       return "fa-angle-double-left";
     }
     return "fa-angle-double-right";
+  });
+
+  self.closeMenu = function(){
+    self.left_menu_is_open(false);
+    return true;
   }
+
+  self.left_panel_class = ko.computed(function(){
+    return self.left_menu_is_open() ? "col-xs-2" : "";
+  });
+
+  self.left_menu_button_top_padding = ko.computed(function(){
+    return (self.windowInnerHeight() - 140)/2 + "px";
+
+  });
+
+  self.right_panel_class = ko.computed(function(){
+    return self.left_menu_is_open() ? "col-xs-10" : "col-xs-12";
+  });
+
+  self.movie_container_margin = ko.computed(function(){
+    return 5 + ((self.windowInnerWidth() - 40) % 210) / (Math.floor((self.windowInnerWidth() - 40) / 210) * 2) + "px";
+    //dividing the remaining extra space up among the total number of movies
+  });
+
+  self.movie_table_container_height = ko.computed(function(){
+    return self.windowInnerHeight() - 100 + 'px';
+  });
+
+  self.people_container_height = ko.computed(function(){
+    return self.windowInnerHeight() - 53 + 'px';
+  });
 
   self.processLogin = function(callback){
     FB.getLoginStatus(function(response) {
@@ -211,7 +250,6 @@ function FilmsieViewModel(){
   self.beginSessionPolling = function(){
     setInterval(function(){
       FB.getLoginStatus(function(response) {
-        console.dir(response);
         if (response.status == "connected"){
           self.current_user().accessToken(response.authResponse.accessToken);
         } else {
@@ -286,6 +324,7 @@ function FilmsieViewModel(){
     var app = Sammy(function() {
           this.get('/#lists', function() {
             self.loadLists();
+            self.left_menu_is_open(true);
           });
 
           this.get('/#lists/:list_id', function() {
@@ -298,6 +337,7 @@ function FilmsieViewModel(){
 
           this.get('/#movies', function(){
             self.loadMovies();
+            self.left_menu_is_open(true);
           });
 
           this.get('/#movies/recommended', function(){
@@ -315,6 +355,7 @@ function FilmsieViewModel(){
           this.get('/#people', function(){
             self.loadPeople();
             self.people().loadPeople();
+            self.left_menu_is_open(true);
           });
 
           this.get('/#people/matches', function(){

@@ -6,7 +6,7 @@ function CastMemberViewModel(data){
   self.profile_path = ko.observable(data && data.profile_path || null)
 
   self.image_url = function(root){
-    return self.profile_path() ?
+    return self.profile_path() && root.thumbnail_base_url() ?
       root.thumbnail_base_url() + self.profile_path() :
       root.not_found_image_url;
     }

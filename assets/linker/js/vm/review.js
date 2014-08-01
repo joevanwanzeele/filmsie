@@ -14,10 +14,10 @@ function MovieReviewViewModel(data, current_user){
   self.movie_poster_path = ko.observable(data && data.movie_poster_path || null)
 
   self.movie_image_url = function(root){
-    return self.movie_poster_path() ?
+    return self.movie_poster_path() && root.thumbnail_base_url() ?
       root.thumbnail_base_url() + self.movie_poster_path() :
       root.not_found_image_url;
-    }
+  }
 
   self.reviewer_name = ko.observable(data && data.reviewer_first_name || null);
   self.reviewer_facebook_id = ko.observable(data && data.reviewer_facebook_id || null);

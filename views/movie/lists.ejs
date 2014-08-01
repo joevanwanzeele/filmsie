@@ -1,22 +1,23 @@
 <!-- ko with: movie_lists -->
 <div class="container-fluid main-content">
-  <div class="left-panel col-md-2">
-    <div class="section-nav lists-nav">
-      <ul class="row" data-bind="foreach: movie_lists">
-        <li>
-          <a class="btn" data-bind="css: {'active': $parent.selected_list() && $parent.selected_list().id() == id() }, html: name_and_length(), attr: {'href': '#lists/' + id() }"></a>
-        </li>
-      </ul>
-    </div>
-    <% include footer.ejs %>
-  </div>
+  <div class="main-panel col-xs-12">
+    <div class="menu-panel" data-bind="css: {'to-left': !$root.left_menu_is_open() }">
+      <div class='left-menu-button' data-bind="click: $root.toggle_left_menu, style: {'padding-top': $root.left_menu_button_top_padding }"><span class="fa fa-2x" data-bind="css: $root.left_menu_class"></span></div>
+      <div class="section-nav lists-nav">
+        <ul class="row" data-bind="foreach: movie_lists">
+          <li>
+            <a class="btn" data-bind="css: {'active': $parent.selected_list() && $parent.selected_list().id() == id() }, html: name_and_length(), attr: {'href': '#lists/' + id() }, click: $root.closeMenu"></a>
+          </li>
+        </ul>
+      </div>
+      <% include footer.ejs %>
+    </div> <!-- /menu panel -->
 
-  <div class="right-panel col-md-10">
     <div class="movie-list-content" data-bind="with: selected_list" >
-      <div class="movie-list-header container" data-bind="visible: id()">
+      <div class="movie-table-header container" data-bind="visible: id()">
         <div class="row" data-bind="visible: is_public() || is_owner()">
-          <div class="col-sm-5">
-            <span class="movie-list-title" data-bind="html: name"></span>
+          <div class="col-sm-5" style="text-align:right">
+            <span class="movie-list-label" data-bind="html: name"></span>
           </div>
           <div class="col-sm-2">
             <!-- ko if: is_owner() -->
@@ -28,7 +29,7 @@
             <div class="social-button"><a data-bind="attr: {href: $root.twitterLink }" target="_blank" alt="tweet this"><span class="fa fa-2x fa-twitter-square"></span></a></div>
             <div class="social-button"><a data-bind="attr: {href: $root.redditLink }" target="_blank" alt="submit to reddit"><span class="fa fa-2x fa-reddit-square"></span></a></div>
           </div>
-          <div class="col-sm-2" style="text-align:right">
+          <div class="col-sm-2">
             <div class="delete-list-button pointer" data-bind="click: $parent.deleteList">
               <span class="fa fa-2x fa-times-circle"></span>
             </div>
@@ -36,20 +37,33 @@
         </div>
       </div>
       <!-- ko if: is_public() || is_owner() -->
-      <div class="movie-list-container" data-bind="template: {name: 'list-movie-template', foreach: movies}"></div>
+      <div class="movie-list-container" data-bind="template: {name: 'movie-template', foreach: movies}, style: {'height': $root.movie_table_container_height }"></div>
       <!-- /ko -->
       <div class="row" data-bind="visible: !is_public() && !is_owner() && name()">
-        <div class="container col-sm-12">
+        <div class="container col-xs-12">
           <div style="width:100%;text-align:center"><h3>This list is private.</h3></div>
         </div>
       </div>
       <div class="row" data-bind="visible: $parent.movie_lists().length == 0 && !$parent.getting_lists()">
-        <div class="container col-sm-12">
+        <div class="container col-xs-12">
           <div style="width:100%;text-align:center"><h3>You haven't created any lists yet.</h3></div>
         </div>
       </div>
     </div>
-  </div> <!-- right panel -->
+    <div class="mobile-ad-container">
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <!-- mobile optimized ad -->
+    <ins class="adsbygoogle"
+         style="display:inline-block;width:320px;height:50px"
+         data-ad-client="ca-pub-3032974844755662"
+         data-ad-slot="1284259236"></ins>
+    <script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+    </div>
+  </div> <!-- main panel -->
 </div> <!-- main content -->
 
 <!-- /ko -->
+
+<% include movieCardTemplate.ejs %>

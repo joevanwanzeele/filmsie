@@ -1,43 +1,44 @@
 <!-- ko with: people -->
 <div class="container-fluid main-content">
-  <div class="left-panel col-md-2">
-    <div class="section-nav">
-      <ul class="row">
-        <li>
-          <a class="btn" data-bind="css: {'active': which_people() == 'friends' }" href="#people/friends">My friends</a>
-          <div class="row friends-row hide-behind">
-            <div class="expand-panel">
-              <div id="peopleFriends" class="panel-collapse collapse">
-                <div class="panel-body">
-                  <ul data-bind="foreach: friends">
-                    <li data-bind="template: {name: 'people-menu-item' }"></li>
-                  </ul>
-                </div>
-              </div> <!-- /friend list panel -->
+  <div class="main-panel col-xs-12">
+    <div class="menu-panel" data-bind="css: {'to-left': !$root.left_menu_is_open() }">
+      <div class='left-menu-button' data-bind="click: $root.toggle_left_menu, style: {'padding-top': $root.left_menu_button_top_padding }"><span class="fa fa-2x" data-bind="css: $root.left_menu_class"></span></div>
+      <div class="section-nav">
+        <ul class="row">
+          <li>
+            <a class="btn" data-bind="css: {'active': which_people() == 'friends' }" href="#people/friends">My friends</a>
+            <div class="row friends-row hide-behind">
+              <div class="expand-panel">
+                <div id="peopleFriends" class="panel-collapse collapse">
+                  <div class="panel-body">
+                    <ul data-bind="foreach: friends">
+                      <li data-bind="template: {name: 'people-menu-item' }"></li>
+                    </ul>
+                  </div>
+                </div> <!-- /friend list panel -->
+              </div>
             </div>
-          </div>
-        </li>
-        <li>
-          <a class="btn" data-bind="css: {'active': which_people() == 'matches' }" href="#people/matches">My Matches</a>
-          <div class="row matches-row hide-behind">
-            <div class="expand-panel">
-              <div id="peopleMatches" class="panel-collapse collapse">
-                <div class="panel-body">
-                  <ul data-bind="foreach: matches">
-                    <li data-bind="template: {name: 'people-menu-item' }"></li>
-                  </ul>
-                </div>
-              </div> <!-- /match list panel -->
+          </li>
+          <li>
+            <a class="btn" data-bind="css: {'active': which_people() == 'matches' }" href="#people/matches">My Matches</a>
+            <div class="row matches-row hide-behind">
+              <div class="expand-panel">
+                <div id="peopleMatches" class="panel-collapse collapse">
+                  <div class="panel-body">
+                    <ul data-bind="foreach: matches">
+                      <li data-bind="template: {name: 'people-menu-item' }"></li>
+                    </ul>
+                  </div>
+                </div> <!-- /match list panel -->
+              </div>
             </div>
-          </div>
-        </li>
-      </ul>
-    </div> <!-- section nav -->
-    <% include footer.ejs %>
-  </div> <!-- left panel -->
+          </li>
+        </ul>
+      </div> <!-- section nav -->
+      <% include footer.ejs %>
+    </div> <!-- menu panel -->
 
-  <div class="right-panel col-md-10">
-    <div class="people-container">
+    <div class="people-container" data-bind="style: {height: $root.people_container_height}">
       <!-- ko if: showing_user_profile() && !loading_profile() -->
         <div data-bind="template: { name: 'person-profile-template', data: viewing_profile_for }"></div>
       <!-- /ko -->
@@ -45,11 +46,24 @@
         <div class="container" style="width:100%;text-align:center;margin-top:150px"><span class="fa fa-5x fa-spin fa-cog"></span></div>
       <!-- /ko -->
     </div>
-  </div> <!-- right panel -->
+    <div class="mobile-ad-container">
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <!-- mobile optimized ad -->
+    <ins class="adsbygoogle"
+         style="display:inline-block;width:320px;height:50px"
+         data-ad-client="ca-pub-3032974844755662"
+         data-ad-slot="1284259236"></ins>
+    <script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+    </div>
+  </div> <!-- main panel -->
 </div> <!-- main content -->
 
 <script type="text/html" id="people-menu-item">
-  <div class="person-menu-item container-fluid" data-bind="click: $parent.viewUserProfile">
+  <a data-bind="attr: {href: '/#people/profile/' + id()}, click: $root.closeMenu">
+  <!-- <div class="person-menu-item container-fluid" data-bind="click: $parent.viewUserProfile"> -->
+    <div class="person-menu-item container-fluid">
     <div class="pic-name-row row">
       <div class="col-xs-2">
         <img data-bind="attr: {src: profile_pic_url_small}" />
@@ -63,6 +77,7 @@
       </div>
     </div>
   </div>
+  </a>
 </script>
 
 <% include personProfile.ejs %>

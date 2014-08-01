@@ -1,73 +1,75 @@
 <!-- ko with: movies -->
 <div class="container-fluid main-content">
-  <div class="left-panel col-md-2">
-    <div class="section-nav movies-nav">
-      <!-- <div class='left-menu-button'><span class="fa fa-lg" data-bind="css: $root.left_menu_class"></span></div> -->
-      <ul class="row">
-        <li><a class="btn filmsie-btn browse-btn" href="#movies/browse" data-bind="css: {'active': which_movies() == 'browse' }">Browse</a></li>
-        <li><a class="btn filmsie-btn recommend-btn" href="#movies/recommended" data-bind="css: {'active': which_movies() == 'recommended' }">Recommended For You</a></li>
-        <li>
-          <a class="btn filmsie-btn search-btn" href="#movies/search" data-bind="css: {'active': which_movies() == 'search' }">Search</a>
-          <div class="row search-row hide-behind">
-            <div class="panel expand-panel">
-              <div id="searchOptions" class="panel-collapse collapse">
-                <div class="panel-body">
-                  <div class="input-group">
-                    <input type="text" data-bind="value: search_query, valueUpdate: 'afterkeydown', event: {keypress: searchOnEnter }" placeholder="search by title" class="form-control">
-                    <span class="input-group-btn">
-                      <button class="btn do-search-btn" data-bind="click: search" type="button"><span class="glyphicon glyphicon-search"></span></button>
-                    </span>
-                  </div><br/>
-                  <div class="panel">
-                    <div class="panel-heading">
-                      <span class="panel-title">
-                          year
+  <div class="main-panel col-xs-12">
+
+    <div class="menu-panel" data-bind="css: {'to-left': !$root.left_menu_is_open() }">
+      <div class='left-menu-button' data-bind="click: $root.toggle_left_menu, style: {'padding-top': $root.left_menu_button_top_padding }"><span class="fa fa-2x" data-bind="css: $root.left_menu_class"></span></div>
+      <div class="section-nav movies-nav">
+        <ul class="row">
+          <li><a class="btn filmsie-btn browse-btn" href="#movies/browse" data-bind="css: {'active': which_movies() == 'browse' }, click: $root.closeMenu">Browse</a></li>
+          <li><a class="btn filmsie-btn recommend-btn" href="#movies/recommended" data-bind="css: {'active': which_movies() == 'recommended' }, click: $root.closeMenu">Recommended For You</a></li>
+          <li>
+            <a class="btn filmsie-btn search-btn" href="#movies/search" data-bind="css: {'active': which_movies() == 'search' }">Search</a>
+            <div class="row search-row hide-behind">
+              <div class="panel expand-panel">
+                <div id="searchOptions" class="panel-collapse collapse">
+                  <div class="panel-body">
+                    <div class="input-group">
+                      <input type="text" data-bind="value: search_query, valueUpdate: 'afterkeydown', event: {keypress: searchOnEnter }" placeholder="search by title" class="form-control">
+                      <span class="input-group-btn">
+                        <button class="btn do-search-btn" data-bind="click: search" type="button"><span class="glyphicon glyphicon-search"></span></button>
                       </span>
+                    </div><br/>
+                    <div class="panel">
+                      <div class="panel-heading">
+                        <span class="panel-title">
+                            year
+                        </span>
+                      </div>
+                      <div id="yearList" class="panel">
+                        <div class="panel-body">
+                          <select multiple="false" data-bind="options: years, value: selected_year, optionsCaption: 'any year'"></select>
+                        </div>
+                      </div>
                     </div>
-                    <div id="yearList" class="panel">
-                      <div class="panel-body">
-                        <select multiple="false" data-bind="options: years, value: selected_year, optionsCaption: 'any year'"></select>
+                    <div class="panel">
+                      <div class="panel-heading">
+                        <span class="panel-title">
+                            genre
+                        </span>
+                      </div>
+                      <div id="genreList" class="panel">
+                        <div class="panel-body">
+                          <select data-bind="options: genres, optionsText: 'name', selectedOptions: selected_genres, optionsCaption: 'any genre'" multiple="true"></select>
+                        </div>
                       </div>
                     </div>
                   </div>
-                  <div class="panel">
-                    <div class="panel-heading">
-                      <span class="panel-title">
-                          genre
-                      </span>
-                    </div>
-                    <div id="genreList" class="panel">
-                      <div class="panel-body">
-                        <select data-bind="options: genres, optionsText: 'name', selectedOptions: selected_genres, optionsCaption: 'any genre'" multiple="true"></select>
-                      </div>
-                    </div>
+                  <div class="clear-button-container">
+                    <button class="btn btn-warn" data-bind="click: clearSearch">clear</button>
                   </div>
                 </div>
-                <div class="clear-button-container">
-                  <button class="btn btn-warn" data-bind="click: clearSearch">clear</button>
-                </div>
-              </div>
-          </div> <!-- search options panel -->
-        </div>
-        </li>
-      </ul>
+            </div> <!-- search options panel -->
+          </div>
+          </li>
+        </ul>
 
-    </div> <!-- section nav -->
+      </div> <!-- section nav -->
 
-    <% include footer.ejs %>
+      <% include footer.ejs %>
 
-  </div> <!-- left panel -->
+    </div> <!-- menu panel -->
 
-  <div class="right-panel col-md-10">
     <div class="movie-table-header">
       <div class="search-title-container container-fluid">
-        <div class="movie-list-label col-sm-9" data-bind="text: search_title"></div>
-        <div class="movie-count col-sm-2" data-bind="text: movie_count_text"></div>
+        <div class="movie-list-label col-xs-9" data-bind="text: search_title"></div>
+        <div class="movie-count col-xs-2" data-bind="text: movie_count_text"></div>
       </div>
     </div>
-    <div class="movie-table-container" data-bind="template: {name: 'movie-template', foreach: movies}, event: {scroll: scrolled}"></div>
+    <div class="movie-table-container" data-bind="template: {name: 'movie-template', foreach: movies}, event: {scroll: scrolled}, style: {height: $root.movie_table_container_height}"></div>
+    <!--
     <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-    <!-- below movie container -->
+
     <div class="container">
     <ins class="adsbygoogle"
          style="display:inline-block;width:728px;height:90px"
@@ -77,31 +79,23 @@
     <script>
     (adsbygoogle = window.adsbygoogle || []).push({});
     </script>
-  </div>
+    -->
+    <div class="mobile-ad-container">
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <!-- mobile optimized ad -->
+    <ins class="adsbygoogle"
+         style="display:inline-block;width:320px;height:50px"
+         data-ad-client="ca-pub-3032974844755662"
+         data-ad-slot="1284259236"></ins>
+    <script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+    </div>
+  </div> <!-- /main panel -->
 </div>
 
 <% include movieRatings.ejs %>
 
 <!-- /ko -->
 
-<script type="text/html" id="movie-template">
-  <div class="movie-container">
-    <div class="movie-title-container" data-bind="click: $parents[1].showDetails">
-      <h5 data-bind="text: title"></h5>
-    </div>
-    <div class="add-to-list-button-container" data-bind="click: $root.showAddToListModal" data-toggle="tooltip" data-placement="right" title="Add to List">
-      <span class="fa fa-lg fa-list"></span>
-    </div>
-    <div class="show-reviews-button-container" data-bind="click: $root.showReviewsModal" data-toggle="tooltip" data-placement="right" title="Reviews">
-      <span class="fa fa-stack">
-        <span class="fa fa-stack-1x fa-lg fa-comments-o"></span>
-        <strong class="fa fa-stack-1x review-count" data-bind="text: reviewCountText"></strong>
-      </span>
-    </div>
-    <div class="image-container">
-      <img class="pointer" data-bind="attr: {src: image_url($root) }, click: $parents[1].showDetails" />
-    </div>
-    <div class="average-rating-container" data-bind="template: {name: 'average-rating-template'}"></div>
-    <div class="star-rating-container" data-bind="template: {name: 'current-rating-template'}"></div>
-  </div>
-</script>
+<% include movieCardTemplate.ejs %>
