@@ -18,7 +18,7 @@ module.exports = {
   		console.log('y has more items in it, the last ' + (y.length - shortestArrayLength) + ' item(s) will be ignored');
   	}
 
-    if (shortestArrayLength < 4) return 0;
+    if (shortestArrayLength < 4) return null;
 
   	var xy = [];
   	var x2 = [];

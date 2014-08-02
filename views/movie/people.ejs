@@ -72,10 +72,13 @@
       </div>
       <div class="col-xs-10">
         <span class="list-person-name" data-bind="text: name"></span>
+        <!-- ko if: c_score() -->
         <div class="progress match-menu-progress">
-          <div class="progress-bar" role="progressbar" data-bind="attr:{ 'area-valuenow': match_percent }, style: {width: match_percent() + '%'}" aria-valuemin="0" aria-valuemax="100">
+          <div class="progress-bar" role="progressbar" data-bind="attr:{ 'area-valuenow': match_percent }, style: {width: (50 + (match_percent() / 2)) + '%'}, css: {'negative-progress': c_score() < 0 }" aria-valuemin="0" aria-valuemax="100">
+            <!-- <span data-bind="text: match_percent() + '% match'"></span> -->
           </div>
         </div>
+        <!-- /ko -->
       </div>
     </div>
   </div>

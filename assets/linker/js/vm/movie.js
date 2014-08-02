@@ -218,19 +218,13 @@ function MovieViewModel(data, current_user) {
   }
 
   self.updateRatingClass = function(vm, event){
-    //alert(event.pageX);
+    //this is applied to the container element, so use width/10 to determine which star..
 
-    var el = $(event.target);
-    var star_value = Number($(el).attr('star')) * 2;
-
+    var el = $(event.target).closest('.rating-container');
     var x_coordinate = event.pageX - el.offset().left;
+    var division_length = Math.floor(Math.floor(el.width()) / 10);
+    var star_value = Math.ceil(x_coordinate / division_length);
 
-    var is_in_left_half = x_coordinate < el.width() / 2;
-
-    if (is_in_left_half){
-      self.temp_rating(star_value - 1);
-      return;
-    }
     self.temp_rating(star_value);
   }
 

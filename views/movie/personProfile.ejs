@@ -13,14 +13,14 @@
           <li>Movies Rated: <span data-bind="text: rating_count"></span></li><br/>
           <li>Reviews Written: <span data-bind="text: review_count"></span></li><br/>
         </ul>
-        <!-- ko if: match_score() > 0 -->
+        <!-- ko if: c_score() -->
         <div class="progress match-progress">
-          <div class="progress-bar" role="progressbar" data-bind="attr:{ 'area-valuenow': match_score() * 100 }, style: {width: (match_score() * 100) + '%'}" aria-valuemin="0" aria-valuemax="100">
-            <span data-bind="text: Math.round((match_score() * 100)) + '% match'"></span>
+          <div class="progress-bar" role="progressbar" data-bind="attr:{ 'area-valuenow': match_percent }, style: {width: (50 + (match_percent() / 2)) + '%'}, css: {'negative-progress': c_score() < 0 }" aria-valuemin="0" aria-valuemax="100">
+            <span data-bind="text: match_percent() + '% match'"></span>
           </div>
         </div>
         <!-- /ko -->
-        <!-- ko if: match_score() <= 0 && $root.current_user().id() != id() -->
+        <!-- ko if: !c_score() && $root.current_user().id() != id() -->
           <div class="too-few"><span data-toggle="tooltip" data-placement="bottom" title="Too few rated movies in common">(Match Score Unknown)</span></div>
         <!-- /ko -->
         <!-- ko if: $root.current_user().id() == id() -->

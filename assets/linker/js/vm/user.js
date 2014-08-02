@@ -5,7 +5,7 @@ function UserViewModel(data){
   self.facebook_id = ko.observable(data && data.facebook_id || null);
   self.accessToken = ko.observable();
   self.c_score = ko.observable(data && data.c_score || null);
-  self.match_score = ko.observable(data && data.match_score || null);
+  //self.match_score = ko.observable(data && data.match_score || null);
   self.rating_count = ko.observable(data && data.rating_count || 0);
   self.review_count = ko.observable(data && data.review_count || 0);
   self.first_name = ko.observable(data && data.first_name || '');
@@ -27,7 +27,8 @@ function UserViewModel(data){
   self.not_found_image_url = "../img/unavailable-image.jpeg";
 
   self.match_percent = ko.computed(function(){
-    return self.match_score() * 100;
+    //return self.match_score() * 100;
+    return self.c_score() * 100;
   });
 
   self.member_time = ko.computed(function(){
