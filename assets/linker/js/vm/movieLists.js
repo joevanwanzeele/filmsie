@@ -118,13 +118,24 @@ function MovieListsViewModel(current_user){
           if (data == "deleted"){
             bootbox.alert("\"" + list.name() + "\"" + " has been deleted.");
             self.movie_lists.remove(list);
-            self.selected_list(null);
-            self.get_movie_lists();
+            self.get_movie_lists(null, true);
           }
           else { console.log(data); }
         }
       });
-
     });
+  }
+
+  self.shareOnFacebook = function(){
+    FB.api(
+      'me/zeele_inc:create',
+      'post',
+      {
+        movie_list: window.location.href
+      },
+      function(response) {
+        console.dir(response);
+      }
+    );
   }
 }

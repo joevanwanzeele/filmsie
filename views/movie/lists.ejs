@@ -18,7 +18,7 @@
     <div class="movie-list-content" data-bind="with: selected_list" >
       <div class="movie-table-header container" data-bind="visible: id()">
         <div class="row" data-bind="visible: is_public() || is_owner()">
-          <div class="col-sm-5" style="text-align:right">
+          <div class="col-sm-6" style="text-align:right">
             <span class="movie-list-label" data-bind="html: name"></span>
           </div>
           <div class="col-sm-2">
@@ -26,10 +26,11 @@
             <h4>public: <input type="checkbox" data-bind="checked: is_public" /></h4>
             <!-- /ko -->
           </div>
-          <div class="col-sm-3 sm-links">
-            <div><iframe class="fb-frame share-list-fb-frame" data-bind="attr: {src: $root.facebook_iframe_url }"></iframe></div>
-            <div class="social-button"><a data-bind="attr: {href: $root.twitterLink }" target="_blank" alt="tweet this"><span class="fa fa-2x fa-twitter-square"></span></a></div>
-            <div class="social-button"><a data-bind="attr: {href: $root.redditLink }" target="_blank" alt="submit to reddit"><span class="fa fa-2x fa-reddit-square"></span></a></div>
+          <div class="col-sm-2 sm-links">
+            <!-- <div><iframe class="fb-frame share-list-fb-frame" data-bind="attr: {src: $root.facebook_iframe_url }"></iframe></div> -->
+            <div class="social-button facebook-button" data-bind="click: $parent.shareOnFacebook"><span class="fa fa-2x fa-facebook-square"></span></div>
+            <div class="social-button twitter-button"><a data-bind="attr: {href: $root.twitterLink }" target="_blank" alt="tweet this"><span class="fa fa-2x fa-twitter-square"></span></a></div>
+            <div class="social-button reddit-button"><a data-bind="attr: {href: $root.redditLink }" target="_blank" alt="submit to reddit"><span class="fa fa-2x fa-reddit-square"></span></a></div>
           </div>
           <div class="col-sm-2">
             <div class="delete-list-button pointer" data-bind="click: $parent.deleteList">

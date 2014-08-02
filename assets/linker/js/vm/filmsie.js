@@ -336,7 +336,7 @@ function FilmsieViewModel(){
           });
 
           this.get('/#movies', function(){
-            self.loadMovies();
+            self.loadMovies('browse');
             self.left_menu_is_open(true);
           });
 

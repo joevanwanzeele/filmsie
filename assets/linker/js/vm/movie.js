@@ -218,6 +218,8 @@ function MovieViewModel(data, current_user) {
   }
 
   self.updateRatingClass = function(vm, event){
+    //alert(event.pageX);
+
     var el = $(event.target);
     var star_value = Number($(el).attr('star')) * 2;
 
