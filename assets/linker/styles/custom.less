@@ -133,8 +133,7 @@ td {
   background-color: rgb(0,0,0,0) !important;
   border-color: transparent !important;
   color:#fff;
-  float:none;
-  width:100%;
+  /* width:100%; */
   text-align:center;
   -webkit-box-shadow: none !important;
   -moz-box-shadow: none !important;
@@ -288,26 +287,38 @@ td {
 }
 
 .movie-details{
+  line-height:30px;
+  text-align:left;
+  .star-rating-container{
+    margin-left:0;
+  }
   img {
     max-height:340px;
+    max-width:100%;
   }
   p {
     text-indent:20px;
   }
-  ul {
-    list-style-type: none;
-    li {
-      line-height:30px;
-    }
-  }
   .details-label{
-    float:left;
-    width:100px;
     text-align:right;
-    margin-right:15px;
     line-height:30px;
   }
 }
+
+/*
+
+@media only screen
+and (min-device-width : 320px)
+and (max-device-width : 999px) {
+ .movie-table-header{
+   display:none;
+ }
+ .mobile-ad-container{
+   display:block;
+ }
+}
+
+*/
 
 .panel-group select{
   height:110px;
@@ -462,6 +473,7 @@ footer{
 .to-left{
   position:absolute;
   left:-240px;
+  overflow:hidden;
   background-color:rgba(0,0,0,.1);
   -webkit-transition:all 0.3s ease-in-out;
   -moz-transition:all 0.3s ease-in-out;
@@ -471,6 +483,8 @@ footer{
 
 .section-nav{
   margin-top:25px;
+  overflow-y:auto;
+  overflow-x:hidden;
   ul {
     list-style: none;
     padding-left:0;
@@ -820,13 +834,13 @@ and (max-device-width : 999px) {
   .movie-list-label{
     font-size:1.6em;
     line-height:45px;
-    text-align:center;
+    text-align:right;
     font-weight:bold;
   }
 
   .movie-count{
     margin-top:3px;
-    text-align:right;
+    text-align:left;
     font-size:18px;
   }
 
@@ -838,21 +852,15 @@ and (max-device-width : 999px) {
   }
 }
 
-
-/*
-.movie-list-header {
-  background-color: rgba(0,0,0, .3);
-  line-height: 40px;
-  padding-left:0;
-  margin-left:40px;
-  .movie-list-title{
-    font-size:1.6em;
-    line-height:45px;
-    font-weight:bold;
+.clear-rating-button{
+  float:left;
+  margin-left:10px;
+  line-height:25px;
+  cursor:pointer;
+  :hover{
+    color: #fff;
   }
-
-} */
-
+}
 
 .social-button{
   cursor: pointer;

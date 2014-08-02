@@ -252,7 +252,8 @@ function MovieViewModel(data, current_user) {
     }
 
     if (self.current_user_rating() == rating_value){
-      rating_value = null; //allows user to clear their rating
+      self.clearRating(); //allows user to clear their rating
+      return;
     }
 
     self.current_user_rating(rating_value);
@@ -271,6 +272,22 @@ function MovieViewModel(data, current_user) {
               rating: rating_value,
               '_csrf': window.filmsie.csrf
             },
+    });
+  }
+
+  self.clearRating = function(){
+    self.current_user_rating(null);
+    self.resetRatingClasses();
+    $.ajax({
+      type: "POST",
+      url: "/movie/clearRating",
+      data: {
+        movie_id: self.id(),
+        '_csrf': window.filmsie.csrf
+      },
+      success: function(response){
+        if (response == "success") self.current_user_rating(null);
+      }
     });
   }
 

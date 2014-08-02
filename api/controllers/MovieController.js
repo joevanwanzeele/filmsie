@@ -115,7 +115,6 @@ module.exports = {
   },
 
   rate: function(req, res){
-    if (!req.session.user) return;
     var user_id = req.session.user.id;
     var ui_movie = req.body.movie;
     var rating = Number(req.body.rating);
@@ -149,6 +148,17 @@ module.exports = {
           }
       });
     });
+  },
+
+  clearRating: function(req, res){
+    var user_id = req.session.user.id;
+    var movie_id = req.body.movie_id;
+
+    MovieUserRating.destroy({user_id: user_id, movie_id: movie_id})
+      .done(function(err){
+        if (err) console.log(err);
+        return res.json("success");
+      });
   },
 
   details: function(req, res){

@@ -16,7 +16,7 @@
       <img class="pointer" data-bind="attr: {src: image_url($root) }, click: $root.showDetails" />
     </div>
     <div class="average-rating-container" data-bind="template: {name: 'average-rating-template'}"></div>
-    <div class="star-rating-container" data-bind="template: {name: 'current-rating-template'}"></div>
+    <div class="clear-rating-button" data-bind="visible: current_user_rating() > 0, click: clearRating"><span class="fa fa-1x fa-undo"></span></div><div class="star-rating-container" data-bind="template: {name: 'current-rating-template'}"></div>
   </div>
 </script>
 
