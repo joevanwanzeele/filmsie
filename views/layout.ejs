@@ -103,9 +103,9 @@
         <div class="collapse navbar-collapse" id="main-navbar">
           <div class="container">
             <ul class="nav navbar-nav" data-bind="if: current_user().authenticated()">
-              <li class="active" id="showMoviesNavButton"><a href="#movies/browse" data-toggle="tooltip" data-placement="bottom" title="Movies">Movies <span class="fa fa-lg fa-film"></span></a></li>
-              <li id="showPeopleNavButton"><a href="#people" data-toggle="tooltip" data-placement="bottom" title="People">People <span class="fa fa-lg fa-users"></span></a></li>
-              <li id="showListsNavButton"><a href="#lists" data-toggle="tooltip" data-placement="bottom" title="Your Lists">Your Lists <span class="fa fa-lg fa-list"></span></a></li>
+              <li class="active" id="showMoviesNavButton"><a href="#movies/browse">Movies <span class="fa fa-lg fa-film"></span></a></li>
+              <li id="showPeopleNavButton"><a href="#people" data-toggle="tooltip">People <span class="fa fa-lg fa-users"></span></a></li>
+              <li id="showListsNavButton"><a href="#lists" data-toggle="tooltip">Your Lists <span class="fa fa-lg fa-list"></span></a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right" data-bind="if: current_user().authenticated()">
               <li><a data-toggle="tooltip" data-placement="bottom" title="My Profile" data-bind="attr: {href: current_user_profile_link }"><span class="fa fa-lg fa-cog"></span></a></li>
