@@ -28,7 +28,7 @@ function UserViewModel(data){
 
   self.match_percent = ko.computed(function(){
     //return self.match_score() * 100;
-    return self.c_score() * 100;
+    return Math.round(self.c_score() * 100);
   });
 
   self.member_time = ko.computed(function(){
