@@ -112,7 +112,6 @@ function MoviesViewModel(current_user) {
       var el = "<div id='loadingMoviesPlaceholder' class='movie-container movies-loading-placeholder' data-bind='visible: getting'><span class='fa fa-5x fa-spin fa-cog'></span></div>";
       if ($('.movie-table-container > .movie-container').length == 0) {
         $('.movie-table-container').html(el);
-
       }
       else {
         $('.movie-container').last().after(el);
@@ -165,6 +164,7 @@ function MoviesViewModel(current_user) {
       url: "movie/recommended",
       data: { '_csrf': window.filmsie.csrf },
       success: function(data){
+        if (data.length == 0) { return data.total_results(0); }
         self.total_results(data.total_results);
         _.each(data.results, function(movie){
           self.movies.push(new MovieViewModel(movie, self.current_user));

@@ -7,7 +7,9 @@
       <div class="section-nav movies-nav">
         <ul class="row">
           <li><a class="btn filmsie-btn browse-btn" href="#movies/browse" data-bind="css: {'active': which_movies() == 'browse' }, click: $root.closeMenu">Browse</a></li>
+          <!-- ko if: current_user().authenticated() -->
           <li><a class="btn filmsie-btn recommend-btn" href="#movies/recommended" data-bind="css: {'active': which_movies() == 'recommended' }, click: $root.closeMenu">Recommended For You</a></li>
+          <!-- /ko -->
           <li>
             <a class="btn filmsie-btn search-btn" href="#movies/search" data-bind="css: {'active': which_movies() == 'search' }">Search</a>
             <div class="row search-row" data-bind="css: { 'hide-behind': which_movies() != 'search'}">
@@ -55,7 +57,8 @@
         </ul>
 
       </div> <!-- section nav -->
-
+      <br/><br/>
+      <iframe src="//z-na.amazon-adsystem.com/widgets/q?ServiceVersion=20070822&Operation=GetAdHtml&ID=OneJS&OneJS=1&banner_type=setandforget&campaigns=primeent&placement=assoc_banner_placement_default&region=US&marketplace=amazon&tracking_id=filmsie03-20&ad_type=banner&height=125&width=125&linkid=3FHUXVSIIZFKADJ3&f=ifr" width="125" height="125" scrolling="no" border="0" marginwidth="0" style="border:none;" frameborder="0"></iframe>
       <% include footer.ejs %>
 
     </div> <!-- menu panel -->
