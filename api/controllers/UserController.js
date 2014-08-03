@@ -86,7 +86,7 @@ module.exports = {
     MovieUserRating.find()
       .where({user_id: user_id})
       .sort('rating desc')
-      .limit(20)
+      //.limit(20)
       .exec(function(err, ratings){
         if (err) return console.log(err);
         var movie_ids = _.pluck(ratings, 'movie_id');
@@ -114,7 +114,7 @@ module.exports = {
     MovieUserRating.find()
       .where({user_id: user_id})
       .sort('rating asc')
-      .limit(20)
+      //.limit(20)
       .exec(function(err, ratings){
         if (err) return console.log(err);
         var movie_ids = _.pluck(ratings, 'movie_id');

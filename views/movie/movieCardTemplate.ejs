@@ -39,8 +39,14 @@
     <div class="image-container">
       <img class="pointer" data-bind="attr: {src: image_url($root) }, click: $root.showDetails" />
     </div>
-    <span>average rating: </span><div class="average-rating-container" data-bind="template: {name: 'average-rating-template'}"></div>
-    <span data-bind="text: $parent.first_name() + '\'s'"></span> rating: <div data-bind="template: {name: 'user-rating-template'}"></div>
+    <!-- ko if: $parent.id() == $root.current_user().id() -->
+    <span>average rating </span><div class="average-rating-container" data-bind="template: {name: 'average-rating-template'}"></div>
+    <!-- /ko -->
+    <!-- ko if: $parent.id() != $root.current_user().id() -->
+    <span data-bind="text: $parent.first_name() + '\'s'"></span> rating <div data-bind="template: {name: 'user-rating-template'}"></div>
+    <!-- /ko -->
+    <span>your rating</span>
+    <div style="width:100%"><div class="clear-rating-button" data-bind="visible: current_user_rating() > 0, click: clearRating"><span class="fa fa-1x fa-undo"></span></div><div class="star-rating-container rating-container" data-bind="template: {name: 'current-rating-template'}"></div>
   </div>
 </script>
 
