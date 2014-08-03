@@ -180,7 +180,12 @@ function FilmsieViewModel(){
   });
 
   self.movie_container_margin = ko.computed(function(){
-    return 5 + ((self.windowInnerWidth() - 40) % 210) / (Math.floor((self.windowInnerWidth() - 40) / 210) * 2) + "px";
+    var main_content_margin = 40;
+    if (navigator.appVersion.indexOf("Win")!=-1) {
+      main_content_margin = 48; //to account for scrollbar.
+    }
+
+    return 5 + ((self.windowInnerWidth() - main_content_margin) % 210) / (Math.floor((self.windowInnerWidth() - main_content_margin) / 210) * 2) + "px";
     //dividing the remaining extra space up among the total number of movies
   });
 
@@ -275,6 +280,10 @@ function FilmsieViewModel(){
     self.people().thumbnail_base_url = self.movies().thumbnail_base_url;
     self.people().large_image_base_url = self.movies().large_image_base_url;
     self.setUpRouting();
+
+    if (navigator.appVersion.indexOf("Win")!=-1) {
+      $('.expand-panel').css("margin-left", "62px"); //to account for scrollbar.
+    }
   }
 
   self.loadLists = function(list_id){
