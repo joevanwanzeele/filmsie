@@ -181,7 +181,7 @@ function FilmsieViewModel(){
   self.movie_container_margin = ko.computed(function(){
     var main_content_margin = 40;
     if (navigator.appVersion.indexOf("Win")!=-1) {
-      main_content_margin = 60; //to account for scrollbar.
+      main_content_margin = 0; //to account for scrollbar.
     }
 
     return 5 + ((self.windowInnerWidth() - main_content_margin) % 210) / (Math.floor((self.windowInnerWidth() - main_content_margin) / 210) * 2) + "px";
