@@ -172,7 +172,6 @@ function FilmsieViewModel(){
 
   self.left_menu_button_top_padding = ko.computed(function(){
     return (self.windowInnerHeight() - 140)/2 + "px";
-
   });
 
   self.right_panel_class = ko.computed(function(){
@@ -195,6 +194,13 @@ function FilmsieViewModel(){
 
   self.people_container_height = ko.computed(function(){
     return self.windowInnerHeight() - 53 + 'px';
+  });
+
+  self.expand_panel_margin_left = ko.computed(function(){
+    if (navigator.appVersion.indexOf("Win")!=-1) {
+      return "62px"; //to account for scrollbar.
+    }
+    return "70px";
   });
 
   self.processLogin = function(callback){

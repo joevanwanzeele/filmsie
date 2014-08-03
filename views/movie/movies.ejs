@@ -13,7 +13,7 @@
           <li>
             <a class="btn filmsie-btn search-btn" href="#movies/search" data-bind="css: {'active': which_movies() == 'search' }">Search</a>
             <div class="row search-row" data-bind="css: { 'hide-behind': which_movies() != 'search'}">
-              <div class="panel expand-panel">
+              <div class="panel expand-panel" data-bind="style: {'margin-left': $root.expand_panel_margin_left }">
                 <div id="searchOptions" class="panel-collapse collapse" data-bind="css: {in: which_movies() == 'search'}">
                   <div class="panel-body">
                     <div class="input-group">
