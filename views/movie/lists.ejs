@@ -14,10 +14,10 @@
       <iframe src="//z-na.amazon-adsystem.com/widgets/q?ServiceVersion=20070822&Operation=GetAdHtml&ID=OneJS&OneJS=1&banner_type=setandforget&campaigns=primeent&placement=assoc_banner_placement_default&region=US&marketplace=amazon&tracking_id=filmsie03-20&ad_type=banner&height=125&width=125&linkid=3FHUXVSIIZFKADJ3&f=ifr" width="125" height="125" scrolling="no" border="0" marginwidth="0" style="border:none;" frameborder="0"></iframe>
       <% include footer.ejs %>
     </div> <!-- /menu panel -->
-
     <div class="movie-list-content" data-bind="with: selected_list" >
-      <div class="movie-table-header container" data-bind="visible: id()">
-        <div class="row" data-bind="visible: is_public() || is_owner()">
+      <!-- ko if: id() != '' && $root.is_showing_lists() && (is_public() || is_owner()) -->
+      <div class="movie-table-header container">
+        <div class="row">
           <div class="col-sm-6" style="text-align:right">
             <span class="movie-list-label" data-bind="html: name"></span>
           </div>
@@ -39,19 +39,24 @@
           </div>
         </div>
       </div>
+      <!-- /ko -->
       <!-- ko if: is_public() || is_owner() -->
       <div class="movie-list-container" data-bind="template: {name: 'movie-template', foreach: movies}, style: {'height': $root.movie_table_container_height }"></div>
       <!-- /ko -->
-      <div class="row" data-bind="visible: !is_public() && !is_owner() && name()">
+      <!-- ko if: !is_public() && !is_owner() && name() != '' -->
+      <div class="row">
         <div class="container col-xs-12">
           <div style="width:100%;text-align:center"><h3>This list is private.</h3></div>
         </div>
       </div>
-      <div class="row" data-bind="visible: $parent.movie_lists().length == 0 && !$parent.getting_lists()">
+      <!-- /ko -->
+      <!-- ko if: $parent.movie_lists().length == 0 && !$parent.getting_lists() -->
+      <div class="row">
         <div class="container col-xs-12">
           <div style="width:100%;text-align:center"><h3>You haven't created any lists yet.</h3></div>
         </div>
       </div>
+      <!-- /ko -->
     </div>
     <div class="mobile-ad-container">
     <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
