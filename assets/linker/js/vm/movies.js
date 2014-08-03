@@ -60,10 +60,12 @@ function MoviesViewModel(current_user) {
   });
 
   self.clearSearch = function(){
+    self.getting(true);
     self.search_query('');
     self.selected_genres([]);
-    //self.selected_year(null);
+    self.selected_year(null);
     self.total_results(0);
+    self.getting(false);
   }
 
   self.searchButtonSearch = function(root){
@@ -76,6 +78,11 @@ function MoviesViewModel(current_user) {
     self.movies([]);
     self.page(0);
     self.getMovies();
+  }
+
+  self.browse = function(){
+    self.clearSearch();
+    self.search();
   }
 
   self.searchOnEnter = function(root, data, event){
@@ -131,7 +138,7 @@ function MoviesViewModel(current_user) {
     var genres = self.selected_genres()[0] && self.selected_genres()[0] != undefined
         ? _.map(self.selected_genres(), function(genre){ return genre.id; })
         : null;
-
+        
     $.ajax({
       type: "POST",
       url: "/movie/search",
@@ -244,8 +251,7 @@ function MoviesViewModel(current_user) {
       case "browse":
         $('.browse-btn').addClass('active');
         self.which_movies("browse");
-        self.clearSearch();
-        self.search();
+        self.browse();
         break;
     }
   }

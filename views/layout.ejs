@@ -86,6 +86,7 @@
     };
 
     </script>
+    <!-- ko if: initialized -->
     <nav class="navbar navbar-inverse" style="border-radius: 0" role="navigation">
       <div class="container-fluid">
         <!-- Brand and toggle get grouped for better mobile display -->
@@ -98,7 +99,6 @@
           </button>
           <a class="navbar-brand logo-container" href="/"><img src="img/logo.png" class="logo" /></a>
         </div>
-
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="main-navbar">
           <div class="container">
@@ -121,10 +121,9 @@
         </div><!-- /.navbar-collapse -->
       </div><!-- /.container-fluid -->
     </nav>
-
     <%- body %>
 
-
+   <!-- /ko -->
     <!--
         Client-side Templates
         ========================

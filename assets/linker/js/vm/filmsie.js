@@ -5,6 +5,8 @@ function FilmsieViewModel(){
   self.movie_lists = ko.observable();
   self.people = ko.observable();
 
+  self.initialized = ko.observable(false);
+  self.polling_interval_id = ko.observable();
   self.windowInnerHeight = ko.observable(window.innerHeight);
   self.windowInnerWidth = ko.observable(window.innerWidth);
 
@@ -232,6 +234,8 @@ function FilmsieViewModel(){
   }
 
   self.processLogout = function(callback){
+    clearInterval(self.polling_interval_id());
+    self.polling_interval_id(null);
     $.ajax({
       type: "POST",
       url: "/user/logout",
@@ -252,6 +256,7 @@ function FilmsieViewModel(){
   }
 
   self.logout = function(callback){
+    self.initialized(false);
     FB.logout(function(response) {
       // Person is now logged out
       self.processLogout(callback);
@@ -259,14 +264,16 @@ function FilmsieViewModel(){
   }
 
   self.beginSessionPolling = function(){
-    setInterval(function(){
+    var interval_id = setInterval(function(){
       FB.getLoginStatus(function(response) {
         if (response.status == "connected"){
           self.current_user().accessToken(response.authResponse.accessToken);
         } else {
           self.processLogout();
         }
-      }, true); }, 180000); //every 3 minutes
+      }, true); }, 180000);//every 3 minutes
+
+    self.polling_interval_id(interval_id);
   }
 
   self.init = function(){
@@ -290,6 +297,7 @@ function FilmsieViewModel(){
     if (navigator.appVersion.indexOf("Win")!=-1) {
       $('.expand-panel').css("margin-left", "62px"); //to account for scrollbar.
     }
+    self.initialized(true);
   }
 
   self.loadLists = function(list_id){
