@@ -9,6 +9,7 @@ function FilmsieViewModel(){
   self.polling_interval_id = ko.observable();
   self.windowInnerHeight = ko.observable(window.innerHeight);
   self.windowInnerWidth = ko.observable(window.innerWidth);
+  self.personActivityContainerWidth = ko.observable($('.person-activity-container').width());
 
   self.is_showing_people = ko.observable(false);
   self.is_showing_movies = ko.observable(false);
@@ -62,6 +63,7 @@ function FilmsieViewModel(){
   $(window).resize(function(){
     self.windowInnerHeight(window.innerHeight);
     self.windowInnerWidth(window.innerWidth);
+    self.personActivityContainerWidth($('person-activity-container').width());
   });
 
   self.getConfigSettings = function(){
@@ -189,6 +191,10 @@ function FilmsieViewModel(){
     return 5 + ((self.windowInnerWidth() - main_content_margin) % 210) / (Math.floor((self.windowInnerWidth() - main_content_margin) / 210) * 2) + "px";
     //dividing the remaining extra space up among the total number of movies
   });
+
+  self.favorite_movie_container_margin = ko.computed(function(){
+    return 5 + ((self.personActivityContainerWidth() - 15) % 210) / (Math.floor((self.personActivityContainerWidth() - 15) / 210) * 2) + "px";
+  })
 
   self.movie_table_container_height = ko.computed(function(){
     return self.windowInnerHeight() - 100 + 'px';
