@@ -134,11 +134,13 @@
 <script type="text/javascript">
   $(function(){
     var vm = new FilmsieViewModel();
+    vm.init();
     processLogin = vm.processLogin;
     ko.applyBindings(vm);
 
     var callbacks = $.Callbacks();
   });
+
 
 function processLogin(){};
 

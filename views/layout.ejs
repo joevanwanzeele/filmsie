@@ -73,16 +73,16 @@
         version    : 'v2.0'
       });
 
-      FB.getLoginStatus(function(response) {
-        if (response.status === 'connected') {
-          processLogin();
-        }
-        else {
-          FB.login(function(response) {
-            processLogin();
-          }, {scope: 'public_profile, email, user_friends'});
-        }
-      });
+      // FB.getLoginStatus(function(response) {
+      //   if (response.status === 'connected') {
+      //     processLogin();
+      //   }
+      //   else {
+      //     // FB.login(function(response) {
+      //     //   processLogin();
+      //     // }, {scope: 'public_profile, email, user_friends'});
+      //   }
+      // });
     };
 
     </script>
@@ -114,9 +114,11 @@
               <li><iframe class="fb-frame" src="http://www.facebook.com/plugins/like.php?href=http%3A%2F%2Fwww.filmsie.com&width=200&layout=button_count&action=like&show_faces=true&share=false&height=21&appId=248849825312110"></iframe></li>
               <li><a class="profile-image-a" data-bind="attr: {href: current_user_profile_link}"><img class="profile-image" data-bind="attr: {src: current_user().profile_pic_url() }" /></a></li>
             </ul>
+              <!-- ko if: initialized -->
               <div class="nav navbar-nav navbar-right navbar-form" data-bind="if: !current_user().authenticated()">
                 <a class="btn btn-primary login-button" data-bind="click: login"><span class="fa fa-lg fa-facebook-square"> &nbsp; Log In</span></a>
               </div>
+              <!-- /ko -->
           </div>
         </div><!-- /.navbar-collapse -->
       </div><!-- /.container-fluid -->
@@ -146,7 +148,7 @@
     -->
 
     <!--TEMPLATES-->
-    
+
     <!--TEMPLATES END-->
 
 

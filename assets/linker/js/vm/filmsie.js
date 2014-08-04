@@ -283,6 +283,7 @@ function FilmsieViewModel(){
   }
 
   self.init = function(){
+    console.dir('init called');
     self.getConfigSettings();
 
     self.movies(new MoviesViewModel(self.current_user));
