@@ -60,10 +60,23 @@ module.exports = {
       .done(function(err, users){
         users = _.map(users, function(user){ user["current_user_id"] = current_user_id; return user; });
         async.each(users, includeCorrelationScore, function(){
-          users = _.filter(users, function(user){ return user.c_score != -1 && user.id != current_user_id; });
+          users = _.filter(users, function(user){ return user.match_score > 50 && user.id != current_user_id; });
+          //console.dir(users);
           cb(users);
         });
     });
+  },
+
+  getCorrelatedUsers: function(current_user_id, cb){
+    User.find()
+      .done(function(err, users){
+        users = _.map(users, function(user){ user["current_user_id"] = current_user_id; return user; });
+        async.each(users, includeCorrelationScore, function(){
+          users = _.filter(users, function(users){ return Math.abs(user.c_score) > .1 && user.id != current_user_id; });
+          //console.dir(users);
+          cb(users);
+        });
+      });
   }
 }
 
@@ -75,25 +88,25 @@ function calculateScore(user, combined_ratings, cb){
     return group.length == 2 ? _.pluck(group, "rating") : false }));
 
   if (two_ratings.length == 0) {
-    user["c_score"] = -1; //they haven't rated any of the same movies
+    user["c_score"] = 0; //they haven't rated any of the same movies
+    user["match_score"] = 0;
+    user ["avg_diff"] = -1;
     return cb();
   }
 
+  //console.dir(two_ratings);
+
   var first_array = _.map(two_ratings, function(ratings){return ratings[0];});
   var second_array = _.map(two_ratings, function(ratings){ return ratings[1];});
-  // console.dir(first_array);
-  // console.dir(second_array);
 
-  var c_score = mathUtils.getPearsonsCorrelation(first_array, second_array);
+  var c_score = mathUtils.getPopulationCorrelation(first_array, second_array);
+  var avg_diff = mathUtils.getAverageDifference(first_array, second_array);
   if (isNaN(c_score)) c_score = null;
 
-
-  // var getDifference = _.memoize(function(both_ratings){ return Math.abs(both_ratings[0] - both_ratings[1]) || 1; });
-  // var differences = _.map(two_ratings, getDifference);
-  //
-  // var score = two_ratings.length / _.reduce(differences, function(mem, val){ return mem + val});
-  //console.dir(c_score);
   user["c_score"] = c_score ? c_score.toFixed(2) : null; //between -1 and 1, for calculations
+  user["avg_diff"] = avg_diff;
+  user["match_score"] = 25 + (25 * (c_score || 0)) + (50 - (5.6 * avg_diff))
+
   //user["match_score"] = (.5 + c_score / 2).toFixed(2); //to keep it between 0 and 1
   return cb();
 }

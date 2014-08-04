@@ -16,7 +16,18 @@ describe('Movie Controller tests:', function () {
         },
         adapters: {
           default: 'testMemoryDb'
-        }
+        },
+        session:{
+          adapter: 'redis',
+
+          host: 'localhost',
+          port: 6379,
+          ttl: 60000,
+          db: 0,
+          pass: '',
+          prefix: 'sess:'
+        },
+
 
       }, function(err, sails) {
            // export properties for upcoming tests with supertest.js

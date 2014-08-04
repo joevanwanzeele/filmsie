@@ -25,16 +25,16 @@
     </div>
     <div class="row">
       <div class="col-xs-12">
-        <!-- ko if: c_score() && id() != $root.current_user().id() -->
+        <!-- ko if: match_score() && id() != $root.current_user().id() -->
         <div class="match-progress-container">
           <div class="progress match-progress">
-            <div class="progress-bar" role="progressbar" data-bind="attr:{ 'area-valuenow': match_percent }, style: {width: (50 + (match_percent() / 2)) + '%'}, css: {'negative-progress': c_score() < 0 }" aria-valuemin="0" aria-valuemax="100">
+            <div class="progress-bar" role="progressbar" data-bind="attr:{ 'area-valuenow': match_percent }, style: {width: match_percent() + '%'}" aria-valuemin="0" aria-valuemax="100">
               <span data-bind="text: match_percent() + '% match'"></span>
             </div>
           </div>
         </div>
         <!-- /ko -->
-        <!-- ko if: !c_score() && $root.current_user().id() != id() -->
+        <!-- ko if: !match_score() && $root.current_user().id() != id() -->
           <div class="too-few"><span data-toggle="tooltip" data-placement="bottom" title="Too few rated movies in common">(Match Score Unknown)</span></div>
         <!-- /ko -->
       </div>

@@ -1,57 +1,42 @@
 module.exports = {
 
-  getPearsonsCorrelation: function(x, y)
-  {
-  	var shortestArrayLength = 0;
-  	if(x.length == y.length)
-  	{
-  		shortestArrayLength = x.length;
-  	}
-  	else if(x.length > y.length)
-  	{
-  		shortestArrayLength = y.length;
-  		console.log('x has more items in it, the last ' + (x.length - shortestArrayLength) + ' item(s) will be ignored');
-  	}
-  	else
-  	{
-  		shortestArrayLength = x.length;
-  		console.log('y has more items in it, the last ' + (y.length - shortestArrayLength) + ' item(s) will be ignored');
-  	}
+  getPopulationCorrelation: function(x, y){
+    //**assume x and y are ordered arrays of same length**
 
-    if (shortestArrayLength < 4) return null;
+    if (x.length < 5 && _.isEqual(x,y)) return 0;
+    if (_.isEqual(x,y)) return 1; //if they have all (and only) same ratings, we'll call them positively correlated.
 
-  	var xy = [];
-  	var x2 = [];
-  	var y2 = [];
+    var meanX = _.reduce(x, function(memo, num){ return memo + num; }, 0) / x.length;
+    var meanY = _.reduce(y, function(memo, num){ return memo + num; }, 0) / y.length;
 
-  	for(var i=0; i<shortestArrayLength; i++)
-  	{
-  		xy.push(x[i] * y[i]);
-  		x2.push(x[i] * x[i]);
-  		y2.push(y[i] * y[i]);
-  	}
+    var stdX = this.getStandardDeviation(x, meanX) || .0000001; //to avoid /0 errors
+    var stdY = this.getStandardDeviation(y, meanY) || .0000001;
 
-  	var sum_x = 0;
-  	var sum_y = 0;
-  	var sum_xy = 0;
-  	var sum_x2 = 0;
-  	var sum_y2 = 0;
+    var sum = 0;
 
-  	for(var i=0; i<shortestArrayLength; i++)
-  	{
-  		sum_x += x[i];
-  		sum_y += y[i];
-  		sum_xy += xy[i];
-  		sum_x2 += x2[i];
-  		sum_y2 += y2[i];
-  	}
+    for (var i=0; i<x.length; i++){
+      sum += ((x[i] - meanX) / stdX) * ((y[i] - meanY) / stdY);
+    }
 
-  	var step1 = (shortestArrayLength * sum_xy) - (sum_x * sum_y);
-  	var step2 = (shortestArrayLength * sum_x2) - (sum_x * sum_x);
-  	var step3 = (shortestArrayLength * sum_y2) - (sum_y * sum_y);
-  	var step4 = Math.sqrt(step2 * step3);
-  	var answer = step1 / step4;
+    return 1/x.length * sum;
+  },
 
-  	return answer;
+  getStandardDeviation: function(array, mean){
+    if (!mean){
+      mean = _.reduce(array, function(memo, num){ return memo + num; }, 0) / array.length; //for performance
+    }
+    return Math.sqrt(_.reduce(array, function(memo, num){ return Math.pow(num - mean, 2) + memo; }, 0) / array.length );
+  },
+
+  getAverageDifference: function(x, y){
+    //** assume x and y are ordered arrays of same length **
+    var length = x.length;
+    var sum = 0;
+    for (var i = 0; i<length; i++){
+      sum += Math.abs(x[i] - y[i]);
+    }
+
+    return sum/length;
   }
+
 }

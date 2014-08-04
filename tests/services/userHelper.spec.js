@@ -5,7 +5,7 @@ var userHelper = require("../../api/services/UserHelper");
 describe('User Helper Tests:', function () {
     describe('Correlation Score Calculation Tests:', function () {
 
-        it ('should return 0 for users with less than 4 rated movies in common', function(){
+        it ('should return null for users with less than 4 rated movies in common', function(){
           var user_a_id = "12345";
           var user_b_id = "67890";
 
@@ -23,7 +23,7 @@ describe('User Helper Tests:', function () {
           var user = {};
           var result = userHelper.calculateScore(user, combined_ratings, function(){});
 
-          assert.equal(user.c_score, 0);
+          assert.equal(user.c_score, null);
         });
 
         it ('should return the correct result for users with 4 ratings in common', function(){

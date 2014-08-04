@@ -26,7 +26,7 @@ function MoviesViewModel(current_user) {
 
   self.search_title = ko.computed(function(){
     if (self.which_movies() == "recommended"){
-      if (self.movies().length == 0 && !self.getting()) return "We recommend that you rate some more movies!";
+      if (self.movies().length == 0 && !self.getting()) return "Rate more movies to find recommendations.";
       return "Recommended for you";
     }
 
@@ -138,7 +138,7 @@ function MoviesViewModel(current_user) {
     var genres = self.selected_genres()[0] && self.selected_genres()[0] != undefined
         ? _.map(self.selected_genres(), function(genre){ return genre.id; })
         : null;
-        
+
     $.ajax({
       type: "POST",
       url: "/movie/search",
