@@ -73,16 +73,16 @@
         version    : 'v2.0'
       });
 
-      // FB.getLoginStatus(function(response) {
-      //   if (response.status === 'connected') {
-      //     processLogin();
-      //   }
-      //   else {
-      //     // FB.login(function(response) {
-      //     //   processLogin();
-      //     // }, {scope: 'public_profile, email, user_friends'});
-      //   }
-      // });
+      FB.getLoginStatus(function(response) {
+        if (response.status === 'connected') {
+          processLogin();
+        }
+        else {
+          // FB.login(function(response) {
+          //   processLogin();
+          // }, {scope: 'public_profile, email, user_friends'});
+        }
+      });
     };
 
     </script>
@@ -148,7 +148,7 @@
     -->
 
     <!--TEMPLATES-->
-    
+
     <!--TEMPLATES END-->
 
 
