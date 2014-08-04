@@ -10,7 +10,7 @@
           <a class="list-group-item" data-bind="html: name_and_length, click: $parent.addMovie"></a>
         </div>
         <div class="input-group" id="newListName" data-bind="css: {'has-error': !list_name_is_valid() }">
-          <input type="text" data-bind="value: new_list_name" placeholder="new list" class="form-control" />
+          <input type="text" data-bind="value: new_list_name, valueUpdate: 'afterkeydown', event: {keypress: function(data, event) { createOnEnter($root, data, event); return true; }}" placeholder="new list" class="form-control" />
           <span class="input-group-btn">
             <button type="button" class="btn btn-default" data-bind="click: add_new_movie_list">add</button>
           </span>

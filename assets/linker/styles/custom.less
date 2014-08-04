@@ -11,7 +11,6 @@
 @cardBackground: rgba(180,180,180,.5);
 @orangeRed: rgba(221, 170, 7, 0.7);
 @orangeRedSolid: rgba(221, 170, 7, 1);
-@redOrange: rgba(206, 82, 13, 0.7);
 
 html { -webkit-font-smoothing: antialiased; }
 
@@ -374,20 +373,9 @@ and (max-device-width : 999px) {
   .modal-header{
     text-align:center;
   }
-  ul {
-    list-style: none;
-    padding-left:0;
-    li{
-      margin-bottom:5px;
-      button{
-        white-space:normal;
-        width:258px;
-        text-align:left;
-        .list-length{
-          float:right;
-        }
-      }
-    }
+  .btn{
+    border:1px solid rgb(221, 170, 7);
+    border-color: rgba(221, 170, 7, .7);
   }
 }
 
@@ -953,6 +941,9 @@ and (max-device-width : 999px) {
   }
 }
 
+.list-group-item{
+  margin-bottom:15px;
+}
 
 .movie-list-title{
   .badge{
@@ -1042,6 +1033,41 @@ and (max-device-width : 999px) {
       margin-top:20px;
     }
   }
+
+}
+
+.nav-tabs, .nav-justified{
+  font-weight:bold;
+  border-bottom-color:@orangeRedSolid;
+  border-bottom-color:@orangeRed;
+  li a{
+    /* border-bottom-color:@orangeRedSolid !important;
+    border-bottom-color:@orangeRed !important; */
+    border-bottom-color:#000 !important;
+  }
+  li a{
+    color:#fff;
+  }
+  li .active a{
+    color:#000;
+    background-color:@orangeRedSolid !important;
+    border-color:@orangeRedSolid !important;
+  }
+  li:hover a{
+    color:#fff;
+    background-color:@orangeRed;
+    border-color:@orangeRedSolid;
+    border-color:@orangeRed;
+  }
+}
+
+.nav-tabs>li.active>a, .nav-tabs>li.active>a:hover, .nav-tabs>li.active>a:focus{
+  color:#000;
+  background-color:@orangeRedSolid !important;
+  /* border-color:@orangeRedSolid !important; */
+  border-color:@orangeRedSolid !important;
+  border-color:@orangeRed !important;
+  border-bottom-color:#000 !important;
 }
 
 #favorites, #least_favorites, #reviews{

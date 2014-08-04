@@ -67,6 +67,11 @@ function MovieListsViewModel(current_user){
     });
   }
 
+  self.createOnEnter = function(root, data, event){
+    if (event.keyCode == 13) self.add_new_movie_list(data);
+    return true;
+  }
+
   self.add_new_movie_list = function(vm, e){
     if (!self.new_list_name()){
       self.list_name_is_valid(false);
