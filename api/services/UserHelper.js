@@ -105,9 +105,12 @@ function calculateScore(user, combined_ratings, cb){
 
   user["c_score"] = c_score ? c_score.toFixed(2) : null; //between -1 and 1, for calculations
   user["avg_diff"] = avg_diff;
-  user["match_score"] = 25 + (25 * (c_score || 0)) + (50 - (5.6 * avg_diff))
 
-  //user["match_score"] = (.5 + c_score / 2).toFixed(2); //to keep it between 0 and 1
+  var correlationValue = 25 + (25 * (c_score || 0)); // from 0 to 50
+  var scoreSimilarityValue = Math.max(0, 50 - (50 / (2 * first_array.length) + 5.6 * (avg_diff)));
+
+  user["match_score"] = correlationValue + scoreSimilarityValue;
+
   return cb();
 }
 

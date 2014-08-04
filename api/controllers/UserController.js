@@ -45,7 +45,7 @@ module.exports = {
 
     userHelper.getUsersByFacebookIds(current_user_id, facebook_user_ids,
       function(friends){
-        res.json(friends.sort(function(a,b){ return b.c_score - a.c_score; }));
+        res.json(friends.sort(function(a,b){ return b.match_score - a.match_score; }));
       });
   },
 
@@ -53,7 +53,7 @@ module.exports = {
 
     userHelper.getMatches(req.session.user.id,
       function(matches){
-        res.json(matches.sort(function(a,b){ return b.c_score - a.c_score; }));
+        res.json(matches.sort(function(a,b){ return b.match_score - a.match_score; }));
       });
   },
 
