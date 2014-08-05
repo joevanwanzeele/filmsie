@@ -332,10 +332,10 @@ function FilmsieViewModel(){
     self.is_showing_movies(true);
   }
 
-  self.openProfileModal = function(){
-    $('#userProfileModal').modal();
-    self.setModalProperties();
-  }
+  // self.openProfileModal = function(){
+  //   $('#userProfileModal').modal();
+  //   self.setModalProperties();
+  // }
 
   self.setModalProperties = function(){
     $('.modal').on("click", function(e){
@@ -354,6 +354,7 @@ function FilmsieViewModel(){
           this.get('/#lists', function() {
             self.loadLists();
             self.left_menu_is_open(true);
+            $('#main-navbar').collapse('hide');
           });
 
           this.get('/#lists/:list_id', function() {
@@ -362,11 +363,13 @@ function FilmsieViewModel(){
 
           this.get('/#feedback', function(){
             self.showFeedbackModal();
+            $('#main-navbar').collapse('hide');
           });
 
           this.get('/#movies', function(){
             self.loadMovies('browse');
             self.left_menu_is_open(true);
+            $('#main-navbar').collapse('hide');
           });
 
           this.get('/#movies/recommended', function(){
@@ -380,12 +383,14 @@ function FilmsieViewModel(){
 
           this.get('/#movies/browse', function(){
             self.loadMovies('browse');
+            $('#main-navbar').collapse('hide');
           });
 
           this.get('/#people', function(){
             self.loadPeople();
             self.people().loadPeople();
             self.left_menu_is_open(true);
+            $('#main-navbar').collapse('hide');
           });
 
           this.get('/#people/matches', function(){
@@ -401,6 +406,7 @@ function FilmsieViewModel(){
           this.get('/#people/profile/:id', function(){
             self.loadPeople();
             self.people().loadPeople("profile", this.params.id);
+            $('#main-navbar').collapse('hide');
           });
 
           this.get('/#_=_', function(){
@@ -415,9 +421,9 @@ function FilmsieViewModel(){
             self.logout();
           });
 
-          this.get('/#user/account', function(){
-            self.openProfileModal();
-          });
+          // this.get('/#user/account', function(){
+          //   self.openProfileModal();
+          // });
       });
       app.raise_errors = true;
       app.run();

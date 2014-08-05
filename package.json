@@ -1,7 +1,7 @@
 {
     "name": "filmsie",
     "private": true,
-    "version": "0.0.0-162",
+    "version": "0.0.0-163",
     "description": "The social movie review site",
     "dependencies": {
         "sails": "0.9.16",
@@ -13,7 +13,8 @@
         "request": "2.36.0",
         "async": "0.9.0",
         "underscore": "1.5.2",
-        "nodemailer": "1.0.3"
+        "nodemailer": "1.0.3",
+        "fb-signed-parser": "0.0.3"
     },
     "scripts": {
         "start": "node app.js",

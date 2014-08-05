@@ -17,6 +17,7 @@
 
 var userHelper = require("../services/UserHelper");
 var movieHelper = require("../services/MovieHelper");
+var fbParser = require("fb-signed-parser");
 
 module.exports = {
 
@@ -35,6 +36,22 @@ module.exports = {
     req.session.user = null;
     req.session.authenticated = false;
     res.redirect('/');
+  },
+
+  deauthorize: function(req, res){
+
+    var signed_request = req.param('signed_request');
+    var data = fb_parser.parse(signed_request, sails.config.facebook.app_secret);
+    var facebook_id = data.user_id;
+
+    User.findOne({facebook_id: facebook_id})
+      .done(function(err, user){
+        if (err) console.log(err);
+        user.fb_authorized = false;
+        user.save();
+      });
+    console.log(data);
+    return res.json("ok");
   },
 
   friends: function(req, res, next){
