@@ -35,6 +35,7 @@
     -->
 
     <!--STYLES-->
+    <link rel="stylesheet" href="/linker/styles/bootstrap-modal.css">
     <link rel="stylesheet" href="/linker/styles/bootstrap-theme.min.css">
     <link rel="stylesheet" href="/linker/styles/bootstrap.min.css">
     <link rel="stylesheet" href="/linker/styles/custom.css">
@@ -187,16 +188,8 @@
 
       $("body").tooltip({ selector: '[data-toggle=tooltip]' });
 
-      //$(".movie-table-container").css({height: (window.innerHeight - 200) + "px"});
-      // $(".movie-table-container, .people-container").css({height: (window.innerHeight -140) + "px"});
-      //
-      // $(".left-menu-button").css({'padding-top': (window.innerHeight - 140)/2 + "px"});
-      //
-      // $(window).resize(function(){
-      //   $(".left-menu-button").css({'padding-top': (window.innerHeight - 140)/2 + "px"});
-      //   //$(".movie-table-container").css({height: (window.innerHeight - 200) + "px"});
-      //   $(".movie-table-container, .people-container").css({height: (window.innerHeight -140) + "px"});
-      // });
+      //support overlapping modals with the below code
+
     </script>
 
     <!--SCRIPTS-->
@@ -204,6 +197,8 @@
     <script src="/linker/js/sails.io.js"></script>
     <script src="/linker/js/app.js"></script>
     <script src="/linker/js/bootbox.min.js"></script>
+    <script src="/linker/js/bootstrap-modal.js"></script>
+    <script src="/linker/js/bootstrap-modalmanager.js"></script>
     <script src="/linker/js/moment.min.js"></script>
     <script src="/linker/js/sammy-latest.min.js"></script>
     <script src="/linker/js/touchmouse.js"></script>

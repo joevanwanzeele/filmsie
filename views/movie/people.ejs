@@ -6,7 +6,9 @@
       <div class="section-nav">
         <ul class="row">
           <li>
-            <a class="btn" data-bind="css: {'active': which_people() == 'friends' }" href="#people/friends">My friends</a>
+            <div class="row">
+              <a class="btn" data-bind="css: {'active': which_people() == 'friends' }" href="#people/friends">My friends</a>
+            </div>
             <div class="row friends-row hide-behind">
               <div class="expand-panel">
                 <div id="peopleFriends" class="panel-collapse collapse">
@@ -20,7 +22,9 @@
             </div>
           </li>
           <li>
-            <a class="btn" data-bind="css: {'active': which_people() == 'matches' }" href="#people/matches">My Matches</a>
+            <div class="row">
+              <a class="btn" data-bind="css: {'active': which_people() == 'matches' }" href="#people/matches">My Matches</a>
+            </div>
             <div class="row matches-row hide-behind">
               <div class="expand-panel">
                 <div id="peopleMatches" class="panel-collapse collapse">

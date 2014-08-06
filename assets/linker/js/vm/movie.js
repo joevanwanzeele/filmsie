@@ -1,15 +1,58 @@
 function CastMemberViewModel(data){
   var self = this;
   self.cast_id = ko.observable(data.cast_id);
+  self.id = ko.observable(data.id);
   self.name = ko.observable(data.name);
   self.character = ko.observable(data.character);
-  self.profile_path = ko.observable(data && data.profile_path || null)
+  self.profile_path = ko.observable(data && data.profile_path || null);
+  self.biography = ko.observable();
+  self.birth_date = ko.observable();
+  self.death_date = ko.observable();
+  self.place_of_birth = ko.observable();
+  self.imdb_id = ko.observable();
+  self.aka = ko.observableArray([]);
+  self.is_loading_details = ko.observable(false);
+
+  self.imdb_url = ko.computed(function(){
+    return "http://www.imdb.com/name/" + self.imdb_id() + "/";
+  });
 
   self.image_url = function(root){
     return self.profile_path() && root.thumbnail_base_url() ?
       root.thumbnail_base_url() + self.profile_path() :
       root.not_found_image_url;
-    }
+  }
+
+  self.getDetails = function(parent){
+    parent.selected_cast_member(self);
+    $('#cast_member_details_modal').modal('show');
+    self.is_loading_details(true);
+    $.ajax({
+      type: "POST",
+      url: "/movie/castMemberDetails",
+      data: {
+        'cast_member_id': self.id(),
+        '_csrf': window.filmsie.csrf },
+      success:function(response){
+        self.aka([]);
+        self.biography(response.biography);
+        self.birth_date(response.birthday);
+        self.death_date(response.deathday);
+        self.place_of_birth(response.place_of_birth);
+        self.imdb_id(response.imdb_id);
+        _.each(response.also_known_as, function(aka){
+          self.aka.push(aka);
+        });
+        //$('#movie_details_modal').modal('hide');
+
+        $('#cast_member_details_modal').on('shown.bs.modal', function (e) {
+          $(this).css('z-index', 9999);
+        });
+
+        self.is_loading_details(false);
+      }
+    });
+  }
 }
 
 function GenreViewModel(data){
@@ -43,7 +86,7 @@ function MovieViewModel(data, current_user) {
   self.is_loading_details = ko.observable(true);
   self.is_loading_cast = ko.observable(false);
   self.cast_is_hidden = ko.observable(true);
-
+  self.selected_cast_member = ko.observable();
   //reviews
   self.reviews = ko.observableArray([]);
   self.new_review_text = ko.observable();

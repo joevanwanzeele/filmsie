@@ -172,10 +172,22 @@ module.exports = {
 
   cast: function(req, res){
     var tmdb = require('moviedb')(sails.config.mdbApi.api_key);
+    var tmdb_id = req.body.tmdb_id;
+    if (!tmdb_id) return res.json('');
 
-    tmdb.movieCredits({id: req.body.tmdb_id}, function(err, response){
+    tmdb.movieCredits({id: tmdb_id}, function(err, response){
       if (err) {return console.log(err);}
       res.json(response.cast);
+    });
+  },
+
+  castMemberDetails: function(req, res){
+    var cast_member_id = req.body.cast_member_id;
+    var tmdb = require('moviedb')(sails.config.mdbApi.api_key);
+
+    tmdb.personInfo({id: cast_member_id}, function(err, response){
+      if (err) { return console.log(err); }
+      res.json(response);
     });
   },
 

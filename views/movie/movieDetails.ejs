@@ -52,4 +52,52 @@
       </div>
     </div>
   </div>
+  <script type="text/html" id="cast-member-template">
+    <div class="cast-member-container container pointer" data-bind="click: function(vm, e){ getDetails($parent); }">
+      <span data-bind="text: name"></span><br/>
+      <img data-bind="attr: {src: image_url($root) }" /><br/>
+      <div class="character-container" data-bind="text: character"></div>
+    </div>
+  </script>
+
+  <!-- ko if: selected_cast_member -->
+
+  <div id="cast_member_details_modal" data-bind="with: selected_cast_member" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="cast_member_details_label" aria-hidden="true">
+    <div class="modal-dialog modal-md">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h4 class="modal-title" id="cast_member_details_label" data-bind="text: name"></h4>
+        </div>
+        <div class="modal-body">
+          <!-- ko if: !is_loading_details() -->
+
+          <div class="container" style="text-align:center;width:100%">
+            <img data-bind="attr: {src: image_url($root) }" /><br/>
+            <!-- ko if: aka().length -->
+            <div data-bind="foreach: aka" class="person-date">
+              <span data-bind="text: $data"></span>
+            </div>
+            <!-- /ko -->
+            <div class="person-date">
+              <span>Born: </span><span data-bind="text: birth_date"></span><br/>
+              <!-- ko if: death_date() -->
+              <span>Died: </span><span data-bind="text: death_date"></span><br/>
+              <!-- /ko -->
+            </div>
+            <div class="biography">
+              <span data-bind="text:biography"></span><br/>
+            </div>
+            <a data-bind="attr: {href: imdb_url }" target="_blank">IMDB info</a>
+          </div>
+          <!-- /ko -->
+          <!-- ko if: is_loading_details() -->
+          <div class="container" style="width:100%;text-align:center"><span class="fa fa-5x fa-spin fa-cog"></span></div>
+          <!-- /ko -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- /ko -->
 </div>

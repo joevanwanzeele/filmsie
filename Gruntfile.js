@@ -29,7 +29,8 @@ module.exports = function (grunt) {
    */
 
   var cssFilesToInject = [
-    'linker/**/*.css'
+    'linker/**/*.css',
+    'linker/styles/bootstrap-modal.css',
   ];
 
 
@@ -59,7 +60,11 @@ module.exports = function (grunt) {
     // *->    put other dependencies here   <-*
     'linker/js/jquery*.js',
     // All of the rest of your app scripts imported here
-    'linker/**/*.js'
+    'linker/**/*.js',
+
+    '/linker/js/bootstrap-modal.js',
+
+    '/linker/js/bootstrap-modalmanager.js'
   ];
 
 
