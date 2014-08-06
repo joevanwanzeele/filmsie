@@ -21,7 +21,10 @@ var userHelper = require("../services/UserHelper");
 module.exports = {
 
   index: function(req, res){
-      res.view({facebook_app_id: sails.config.facebook.client_id });  //image doesn't exist yet
+    res.header('Cache-Control', 'private, no-cache, no-store, must-revalidate');
+    res.header('Expires', '-1');
+    res.header('Pragma', 'no-cache');
+    res.view({facebook_app_id: sails.config.facebook.client_id });  //image doesn't exist yet
   },
 
   getConfigSettings: function(req, res){

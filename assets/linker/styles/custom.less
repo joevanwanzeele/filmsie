@@ -497,13 +497,22 @@ footer{
   }
 }
 
-.mobile-ad-container{
-  display:none;
+
+.ad-container{
   width:100%;
   text-align:center;
   position:fixed;
   bottom:0px;
   z-index:9998;
+  opacity:.8;
+}
+
+.web-ad{
+  display:none;
+}
+
+.mobile-ad{
+  display:none;
 }
 
 @media only screen
@@ -512,9 +521,15 @@ and (max-device-width : 999px) {
  .movie-table-header{
    display:none;
  }
- .mobile-ad-container{
-   display:block;
+
+ .web-ad{
+   display:none !important;
  }
+
+ .mobile-ad{
+   display:inline-block !important;
+ }
+
 }
 
 .left-menu-button{
