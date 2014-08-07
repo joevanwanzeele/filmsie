@@ -282,27 +282,12 @@ function MovieViewModel(data, current_user) {
     self.temp_rating(self.current_user_rating());
   }
 
-  self.setRating = function(rating, event) {
+  self.setRating = function(vm, event) {
     if (!self.current_user().authenticated()){
       return bootbox.alert("Sign in to save your rating");
     };
 
-    var el = $(event.target);
-
-    var rating_value = rating * 2;
-    var x_coordinate = event.pageX - el.offset().left;
-    var is_in_left_half = x_coordinate < el.width() / 2;
-
-    if (is_in_left_half){
-      rating_value -= 1;
-    }
-
-    if (self.current_user_rating() == rating_value){
-      self.clearRating(); //allows user to clear their rating
-      return;
-    }
-
-    self.current_user_rating(rating_value);
+    self.current_user_rating(self.temp_rating());
 
     $.ajax({
       type: "POST",
@@ -315,7 +300,7 @@ function MovieViewModel(data, current_user) {
                 backdrop_path: self.backdrop_path(),
                 imdb_id: self.imdb_id(),
                 release_date: self.release_date() },
-              rating: rating_value,
+              rating: self.current_user_rating(),
               '_csrf': window.filmsie.csrf
             },
     });

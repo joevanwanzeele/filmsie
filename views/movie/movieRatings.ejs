@@ -1,22 +1,22 @@
 <script type="text/html" id="current-rating-template">
-  <div class="pointer rating-container" data-bind="event: {'mouseout': resetRatingClasses, touchmousemove: updateRatingClass }">
-    <div class="star-rating fa-stack" data-bind="style: {opacity: temp_rating() ? '1' : '.5'}, event: {'touchmouseup': function(vm, event){setRating(1, event); return true; }}">
+  <div class="pointer rating-container" data-bind="event: {'mouseout': resetRatingClasses, touchmousemove: updateRatingClass, touchmouseup: setRating }">
+    <div class="star-rating fa-stack" data-bind="style: {opacity: temp_rating() ? '1' : '.5'}">
       <span class="fa fa-stack-2x fa-star-o"></span>
       <span class="fa fa-stack-2x top-star-stack" star="1" data-bind="css: ratingClass(1)"></span>
     </div>
-    <div class="star-rating fa-stack" data-bind="style: {opacity: temp_rating() ? '1' : '.5'}, event: {'touchmouseup': function(vm, event){setRating(2, event); return true; }}">
+    <div class="star-rating fa-stack" data-bind="style: {opacity: temp_rating() ? '1' : '.5'}">
       <span class="fa fa-stack-2x fa-star-o"></span>
       <span class="fa fa-stack-2x top-star-stack" star="2" data-bind="css: ratingClass(2)"></span>
     </div>
-    <div class="star-rating fa-stack" data-bind="style: {opacity: temp_rating() ? '1' : '.5'}, event: {'touchmouseup': function(vm, event){setRating(3, event); return true; }}">
+    <div class="star-rating fa-stack" data-bind="style: {opacity: temp_rating() ? '1' : '.5'}">
       <span class="fa fa-stack-2x fa-star-o"></span>
       <span class="fa fa-stack-2x top-star-stack" star="3" data-bind="css: ratingClass(3)"></span>
     </div>
-    <div class="star-rating fa-stack" data-bind="style: {opacity: temp_rating() ? '1' : '.5'}, event: {'touchmouseup': function(vm, event){setRating(4, event); return true; }}">
+    <div class="star-rating fa-stack" data-bind="style: {opacity: temp_rating() ? '1' : '.5'}">
       <span class="fa fa-stack-2x fa-star-o"></span>
       <span class="fa fa-stack-2x top-star-stack" star="4" data-bind="css: ratingClass(4)"></span>
     </div>
-    <div class="star-rating fa-stack" data-bind="style: {opacity: temp_rating() ? '1' : '.5'}, event: {'touchmouseup': function(vm, event){setRating(5, event); return true; }}">
+    <div class="star-rating fa-stack" data-bind="style: {opacity: temp_rating() ? '1' : '.5'}">
       <span class="fa fa-stack-2x fa-star-o"></span>
       <span class="fa fa-stack-2x top-star-stack" star="5" data-bind="css: ratingClass(5)"></span>
     </div>
