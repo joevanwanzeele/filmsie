@@ -76,6 +76,7 @@ function MovieViewModel(data, current_user) {
   self.imdb_id = ko.observable();
   self.release_date = ko.observable(data && data.release_date || null);
   self.cast_members = ko.observableArray([]);
+  self.fandango_id = ko.observable(data && data.fandango_id || null);
 
   self.current_user_rating = ko.observable(data && data.current_user_rating || null);
   self.temp_rating = ko.observable(self.current_user_rating());
@@ -91,6 +92,7 @@ function MovieViewModel(data, current_user) {
   self.reviews = ko.observableArray([]);
   self.new_review_text = ko.observable();
   self.review_count = ko.observable(data && data.review_count || 0);
+
   self.reviewCountText = ko.computed(function(){
     return self.review_count() > 0 ? self.review_count() : '';
   });
@@ -102,6 +104,11 @@ function MovieViewModel(data, current_user) {
   self.cast_is_hidden.subscribe(function(value){
     if (!value) return $('.cast-container').collapse('show');
     return $('.cast-container').collapse('hide');
+  });
+
+  self.fandango_url = ko.computed(function(){
+    //return "http://www.fandango.com/redirect.aspx?searchby=moverview&mid="+ self.fandango_id() +"&a=123456";
+    return "http://www.jdoqocy.com/click-7621988-10504407?url=http%3A%2F%2Fwww.fandango.com%2Fredirect.aspx%3Fsearchby%3Dmoverview%26mid%3D"+ self.fandango_id() + "%26a%3D123456";
   });
 
   self.saveReview = function(){

@@ -53,40 +53,12 @@
     <script src='//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.2.0/js/bootstrap.min.js'></script>
     <script src='//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.2.0/js/transition.min.js'></script>
     <script src='//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.2.0/js/collapse.min.js'></script>
+
   </head>
 
   <body>
     <div id="fb-root"></div>
-    <script>
-    (function(d, s, id) {
-      var js, fjs = d.getElementsByTagName(s)[0];
-      if (d.getElementById(id)) return;
-      js = d.createElement(s); js.id = id;
-      js.src = "//connect.facebook.net/en_US/sdk.js";
-      fjs.parentNode.insertBefore(js, fjs);
-    }(document, 'script', 'facebook-jssdk'));
 
-    window.fbAsyncInit = function() {
-      FB.init({
-        appId      : '<%= facebook_app_id %>',
-        cookie     : true,
-        xfbml      : true,
-        version    : 'v2.0'
-      });
-
-      FB.getLoginStatus(function(response) {
-        if (response.status === 'connected') {
-          processLogin();
-        }
-        else {
-          // FB.login(function(response) {
-          //   processLogin();
-          // }, {scope: 'public_profile, email, user_friends'});
-        }
-      });
-    };
-
-    </script>
     <div style="display: none" data-bind="visible: true">
     <nav class="navbar navbar-inverse" style="border-radius: 0" role="navigation">
       <div class="container-fluid">

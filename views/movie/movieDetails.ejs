@@ -76,11 +76,13 @@
             <img data-bind="attr: {src: image_url($root) }" /><br/>
             <!-- ko if: aka().length -->
             <div data-bind="foreach: aka" class="person-date">
-              <span data-bind="text: $data"></span>
+              <span data-bind="text: $data"></span><br/>
             </div>
             <!-- /ko -->
             <div class="person-date">
+              <!-- ko if: birth_date() -->
               <span>Born: </span><span data-bind="text: birth_date"></span><br/>
+              <!-- /ko -->
               <!-- ko if: death_date() -->
               <span>Died: </span><span data-bind="text: death_date"></span><br/>
               <!-- /ko -->

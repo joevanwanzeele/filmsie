@@ -20,19 +20,19 @@ module.exports.session = {
 
   // In production, uncomment the following lines to set up a shared redis session store
   // that can be shared across multiple Sails.js servers
-  //adapter: 'redis',
-  //
+  adapter: 'redis',
+
   // The following values are optional, if no options are set a redis instance running
   // on localhost is expected.
   // Read more about options at: https://github.com/visionmedia/connect-redis
-  //
-  //
-  // host: process.env.REDIS_HOST || 'localhost',
-  // port: 6379,
-  // ttl: 60000,
-  // db: 0,
-  // pass: process.env.REDIS_PSSWD || '',
-  // prefix: 'sess:'
+
+
+  host: process.env.REDIS_HOST || 'localhost',
+  port: 6379,
+  ttl: 60000,
+  db: 0,
+  pass: process.env.REDIS_PSSWD || '',
+  prefix: 'sess:'
 
   // host: 'redis-logicbomber-4088963654.redis.irstack.com',
   // port: 6379,
@@ -43,17 +43,17 @@ module.exports.session = {
   //url: 'redis://nodejitsu:redis-logicbomber-4088963654.redis.irstack.com:f327cfe980c971946e80b8e975fbebb4@redis-logicbomber-4088963654.redis.irstack.com:6379'
 
   // Uncomment the following lines to use your Mongo adapter as a session store
-  adapter: 'mongo',
+  // adapter: 'mongo',
   //
-  host: 'troup.mongohq.com',
-  port: '10048',
-  db: 'nodejitsudb8249523199',
-  collection: 'sessions',
-  username: 'nodejitsu',
-  ttl: 60000,
-  password: process.env.MONGO_PSSWD || 'a253679f158491fdd3da18bdbae1b3eb',
-  stringify: true,
-  auto_reconnect: true
+  // host: 'troup.mongohq.com',
+  // port: '10048',
+  // db: 'nodejitsudb8249523199',
+  // collection: 'sessions',
+  // username: 'nodejitsu',
+  // ttl: 60000,
+  // password: process.env.MONGO_PSSWD,
+  // stringify: true,
+  // auto_reconnect: true
 
   // Optional Values:
   //

@@ -503,7 +503,7 @@ footer{
   text-align:center;
   position:fixed;
   bottom:0px;
-  z-index:9998;
+  z-index:2;
   opacity:.8;
 }
 
@@ -520,6 +520,10 @@ and (min-device-width : 320px)
 and (max-device-width : 999px) {
  .movie-table-header{
    display:none;
+ }
+
+ .ad-container{
+   z-index:9999;
  }
 
  .web-ad{
@@ -660,6 +664,17 @@ and (max-device-width : 999px) {
   position:absolute;
   top:172px;
   right:7px;
+  width:30px;
+  img{
+    width:30px;
+    height:30px;
+  }
+}
+
+.fandango-button-small{
+  position:absolute;
+  top:172px;
+  left:7px;
   width:30px;
   img{
     width:30px;

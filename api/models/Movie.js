@@ -24,6 +24,8 @@ attributes: {
 
     tmdb_id: { type: 'integer', required: false },
 
-    imdb_id: { type: 'integer', required: false }
+    imdb_id: { type: 'integer', required: false },
+
+    fandango_id: { type: 'integer', required: false }
   }
 };

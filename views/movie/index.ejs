@@ -127,15 +127,42 @@
 <script type="text/javascript">
   $(function(){
     var vm = new FilmsieViewModel();
-    vm.init();
-    processLogin = vm.processLogin;
+    //processLogin = vm.processLogin;
     ko.applyBindings(vm);
+
+    (function(d, s, id) {
+      var js, fjs = d.getElementsByTagName(s)[0];
+      if (d.getElementById(id)) return;
+      js = d.createElement(s); js.id = id;
+      js.src = "//connect.facebook.net/en_US/sdk.js";
+      fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));
+
+    window.fbAsyncInit = function() {
+      FB.init({
+        appId      : '<%= facebook_app_id %>',
+        cookie     : true,
+        xfbml      : true,
+        version    : 'v2.0'
+      });
+      vm.processLogin();
+      // FB.getLoginStatus(function(response) {
+      //   if (response.status === 'connected') {
+      //     processLogin();
+      //   }
+      //   else {
+      //     // FB.login(function(response) {
+      //     //   processLogin();
+      //     // }, {scope: 'public_profile, email, user_friends'});
+      //   }
+      // });
+    };
 
     var callbacks = $.Callbacks();
   });
 
 
-function processLogin(){};
+//function processLogin(){};
 
 </script>
 

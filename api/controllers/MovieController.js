@@ -70,7 +70,10 @@ module.exports = {
         movie["tmdb_id"] = movie.id;
         Movie.findOne({tmdb_id: movie.id}).done(function(err, existing){
           movie.id = null;
-          if (existing) movie.id = existing.id;
+          if (existing){
+            movie.id = existing.id;
+            movie.fandango_id = existing.fandango_id;
+          }
         });
       });
       var user_id = req.session.user ? req.session.user.id : null;

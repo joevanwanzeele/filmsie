@@ -12,6 +12,9 @@
         <strong class="fa fa-stack-1x review-count" data-bind="text: reviewCountText"></strong>
       </span>
     </div>
+    <!-- ko if: fandango_id() -->
+      <a class="fandango-button-small" data-bind="attr: {href: fandango_url }" target="_blank" data-toggle="tooltip" data-placement="left" title="show times"><img src="/img/fandango.png" alt="find on fandango" /></a>
+    <!-- /ko -->
     <a class="amazon-button-small" data-bind="attr: {href: amazon_link }" target="_blank" data-toggle="tooltip" data-placement="right" title="Search Amazon"><img src="/img/Amazon-icon.png" alt="find on amazon" /></a>
     <div class="image-container">
       <img class="pointer" data-bind="attr: {src: image_url($root) }, click: $root.showDetails" />
@@ -35,6 +38,10 @@
         <strong class="fa fa-stack-1x review-count" data-bind="text: reviewCountText"></strong>
       </span>
     </div>
+    <!-- ko if: fandango_id() -->
+      <a class="fandango-button-small" data-bind="attr: {href: fandango_url }" target="_blank" data-toggle="tooltip" data-placement="left" title="Now Playing!"><img src="/img/fandango.png" alt="find on fandango" /></a>
+    <!-- /ko -->
+
     <a class="amazon-button-small" data-bind="attr: {href: amazon_link }" target="_blank" data-toggle="tooltip" data-placement="right" title="Search Amazon"><img src="/img/Amazon-icon.png" alt="find on amazon" /></a>
     <div class="image-container">
       <img class="pointer" data-bind="attr: {src: image_url($root) }, click: $root.showDetails" />
