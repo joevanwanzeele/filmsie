@@ -37,6 +37,24 @@ module.exports = {
     }
 
     return sum/length;
+  },
+
+  getDifferences: function(x,y){
+    //assumes arrays of same length
+    var result = [];
+    for (var i=0; i<x.length; i++){
+      result[i] = Math.abs(x[i] - y[i]);
+    }
+    return result;
+  },
+
+  getMarginOfError: function(stdDev, n){
+    //99% confidence z-score = 2.575
+    return 2.575 * stdDev / Math.sqrt(n);
+  },
+
+  getMatchPercent: function(averageDifference, marginOfError){
+    return (100/9)*(9 - averageDifference - marginOfError);
   }
 
 }
