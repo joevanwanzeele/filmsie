@@ -100,23 +100,18 @@ function calculateScore(user, combined_ratings, cb){
   var second_array = _.map(two_ratings, function(ratings){ return ratings[1];});
 
   var c_score = mathUtils.getPopulationCorrelation(first_array, second_array);
+  if (isNaN(c_score)) c_score = null;
+
   var mean_diff = mathUtils.getAverageDifference(first_array, second_array);
   var diff_array = mathUtils.getDifferences(first_array, second_array);
   var std_dev = mathUtils.getStandardDeviation(diff_array, mean_diff);
-  if (std_dev == 0 && diff_array.length < 5) std_dev = 4.5;
   var margin_of_error = mathUtils.getMarginOfError(std_dev, diff_array.length);
 
-  var match_score = mathUtils.getMatchPercent(mean_diff, margin_of_error);
-
-  if (isNaN(c_score)) c_score = null;
+  var match_score = diff_array.length > 4 ? mathUtils.getMatchPercent(mean_diff, margin_of_error) : 0;
 
   user["c_score"] = c_score ? c_score.toFixed(2) : null; //between -1 and 1, for calculations
   user["avg_diff"] = mean_diff;
-
-  //var correlationValue = 25 + (25 * (c_score || 0)); // from 0 to 50
-  //var scoreSimilarityValue = Math.max(0, 50 - (50 / (2 * first_array.length) + 5.6 * (avg_diff)));
-
-
+  
   user["match_score"] = match_score;
 
   return cb();
