@@ -103,6 +103,7 @@ function calculateScore(user, combined_ratings, cb){
   var mean_diff = mathUtils.getAverageDifference(first_array, second_array);
   var diff_array = mathUtils.getDifferences(first_array, second_array);
   var std_dev = mathUtils.getStandardDeviation(diff_array, mean_diff);
+  if (std_dev == 0 && diff_array.length < 5) std_dev = 4.5;
   var margin_of_error = mathUtils.getMarginOfError(std_dev, diff_array.length);
 
   var match_score = mathUtils.getMatchPercent(mean_diff, margin_of_error);
