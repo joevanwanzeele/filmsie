@@ -99,14 +99,15 @@ function calculateScore(user, combined_ratings, cb){
   var first_array = _.map(two_ratings, function(ratings){return ratings[0];});
   var second_array = _.map(two_ratings, function(ratings){ return ratings[1];});
 
-  //var c_score = mathUtils.getPopulationCorrelation(first_array, second_array);
+  var c_score = mathUtils.getPopulationCorrelation(first_array, second_array);
   var mean_diff = mathUtils.getAverageDifference(first_array, second_array);
   var diff_array = mathUtils.getDifferences(first_array, second_array);
   var std_dev = mathUtils.getStandardDeviation(diff_array, mean_diff);
   var margin_of_error = mathUtils.getMarginOfError(std_dev, diff_array.length);
 
   var match_score = mathUtils.getMatchPercent(mean_diff, margin_of_error);
-  //if (isNaN(c_score)) c_score = null;
+
+  if (isNaN(c_score)) c_score = null;
 
   user["c_score"] = c_score ? c_score.toFixed(2) : null; //between -1 and 1, for calculations
   user["avg_diff"] = mean_diff;
