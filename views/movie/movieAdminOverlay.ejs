@@ -1,0 +1,25 @@
+<div id="movieAdminMondal" class="modal fade in" tabindex="-1" role="dialog" aria-labelledby="movieAdminModalLabel" aria-hidden="true" data-bind="with: $root.selected_movie">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 id="movieAdminModalLabel" class="modal-title">Movie Administration</h4>
+      </div>
+      <div class="modal-body">
+        <span>Fandango ID: </span><input data-bind="value: fandango_id" />
+        <hr/>
+        <br/>
+        <!-- ko foreach: trivia_questions -->
+        Question Text: <textarea data-bind="value: question_text"></textarea><br/>
+        <!-- ko foreach: answer_choices -->
+        <span data-bind="text: $index + ') '"></span><input data-bind="value: $data" />
+        <!-- /ko  -->
+        <hr/>
+        <!-- /ko  -->
+
+        <button class="btn btn-default" data-bind="click: saveAdminChanges">Save</button>
+
+      </div>
+    </div>
+  </div>
+</div>

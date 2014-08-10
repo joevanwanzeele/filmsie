@@ -84,6 +84,8 @@ function MovieViewModel(data, current_user) {
   self.total_ratings = ko.observable(data && data.total_ratings || null);
   self.profile_user_rating = ko.observable(data && data.profile_user_rating || null);
 
+  self.showingBack = ko.observable(false);
+  self.trivia_questions = ko.observableArray([]);
   self.is_loading_details = ko.observable(true);
   self.is_loading_cast = ko.observable(false);
   self.cast_is_hidden = ko.observable(true);
@@ -92,6 +94,8 @@ function MovieViewModel(data, current_user) {
   self.reviews = ko.observableArray([]);
   self.new_review_text = ko.observable();
   self.review_count = ko.observable(data && data.review_count || 0);
+
+  self.saveAdminChanges = function(){};
 
   self.reviewCountText = ko.computed(function(){
     return self.review_count() > 0 ? self.review_count() : '';
@@ -110,6 +114,12 @@ function MovieViewModel(data, current_user) {
     //return "http://www.fandango.com/redirect.aspx?searchby=moverview&mid="+ self.fandango_id() +"&a=123456";
     return "http://www.jdoqocy.com/click-7621988-10504407?url=http%3A%2F%2Fwww.fandango.com%2Fredirect.aspx%3Fsearchby%3Dmoverview%26mid%3D"+ self.fandango_id() + "%26a%3D123456";
   });
+
+  self.flip = function(){
+    self.showingBack(!self.showingBack());
+  }
+
+  self.showAdmin = function(){}
 
   self.saveReview = function(){
     $.ajax({

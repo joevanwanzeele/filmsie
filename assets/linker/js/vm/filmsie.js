@@ -228,6 +228,7 @@ function FilmsieViewModel(){
            cache: false,
            success: function(data){
              self.current_user().id(data.id);
+             self.current_user().isAdmin(data.admin);
              self.init();
              self.beginSessionPolling();
            }

@@ -16,6 +16,7 @@ function UserViewModel(data){
   self.fb_profile_url = ko.observable(data && data.fb_profile_url || '');
   self.showing_user_profile = ko.observable(false);
   self.authenticated = ko.observable(false);
+  self.isAdmin = ko.observable();  //change it if you want, we validate on the server. ;)
   self.friends = ko.observableArray([]);
   self.matches = ko.observableArray([]);
   self.loading_profile = ko.observable(false);

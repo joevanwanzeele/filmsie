@@ -117,11 +117,11 @@ function MoviesViewModel(current_user) {
   self.getting.subscribe(function(value){
     if (value){
       var el = "<div id='loadingMoviesPlaceholder' class='movie-container movies-loading-placeholder' data-bind='visible: getting'><span class='fa fa-5x fa-spin fa-cog'></span></div>";
-      if ($('.movie-table-container > .movie-container').length == 0) {
+      if ($('.movie-table-container > .flip-container').length == 0) {
         $('.movie-table-container').html(el);
       }
       else {
-        $('.movie-container').last().after(el);
+        $('.flip-container').last().after(el);
       }
     } else {
       $('#loadingMoviesPlaceholder').remove();
@@ -186,12 +186,12 @@ function MoviesViewModel(current_user) {
     if (self.movies().length == self.total_results()) return;
 
     var viewport_element = $(event.target);
-    var last_movie_in_list = viewport_element.children('.movie-container').last();
+    var last_movie_in_list = viewport_element.children('.flip-container').last();
 
     if (!last_movie_in_list) return; //there are none, so scrolling shouldn't do anything
 
     var last_movie_position = viewport_element
-                              .children('.movie-container')
+                              .children('.flip-container')
                               .last()
                               .offset().top;
 

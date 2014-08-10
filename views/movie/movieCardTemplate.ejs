@@ -1,7 +1,9 @@
 <script type="text/html" id="movie-template">
-  <div class="movie-container" data-bind="style: { 'margin-left': $root.movie_container_margin, 'margin-right': $root.movie_container_margin }">
+<div class="flip-container" data-bind="style: { 'margin-left': $root.movie_container_margin, 'margin-right': $root.movie_container_margin }, css: {flip: showingBack}">
+<div class="flipper">
+  <div class="movie-container front">
     <div class="movie-title-container" data-bind="click: $root.showDetails">
-      <h5 data-bind="text: title"></h5>
+      <h4 data-bind="text: title"></h4>
     </div>
     <div class="add-to-list-button-container" data-bind="click: $root.showAddToListModal" data-toggle="tooltip" data-placement="left" title="Add to List">
       <span class="fa fa-2x fa-list"></span>
@@ -15,6 +17,12 @@
     <!-- ko if: fandango_id() -->
       <a class="fandango-button-small" data-bind="attr: {href: fandango_url }" target="_blank" data-toggle="tooltip" data-placement="left" title="show times"><img src="/img/fandango.png" alt="find on fandango" /></a>
     <!-- /ko -->
+    <!-- ko if: current_user().isAdmin() -->
+    <div class="admin-button-container" data-bind="click: showAdmin"><i class="fa fa-wrench"></i></div>
+    <!-- /ko -->
+    <!-- ko if: trivia_questions().length -->
+    <div class="trivia-trophy-container" data-bind="click: flip"><i class="fa fa-2x fa-trophy"></i></div>
+    <!-- /ko -->
     <a class="amazon-button-small" data-bind="attr: {href: amazon_link }" target="_blank" data-toggle="tooltip" data-placement="right" title="Search Amazon"><img src="/img/Amazon-icon.png" alt="find on amazon" /></a>
     <div class="image-container">
       <img class="pointer" data-bind="attr: {src: image_url($root) }, click: $root.showDetails" />
@@ -22,6 +30,9 @@
     <div class="average-rating-container" data-bind="template: {name: 'average-rating-template'}"></div>
     <div class="clear-rating-button" data-bind="visible: current_user_rating() > 0, click: clearRating"><span class="fa fa-1x fa-undo"></span></div><div class="star-rating-container rating-container" data-bind="template: {name: 'current-rating-template'}"></div>
   </div>
+  <div class="movie-container back"><div class="trivia-movie-container" data-bind="click: flip"><i class="fa fa-film"></i></div></div>
+  </div> <!-- /flipper -->
+</div>
 </script>
 
 <script type="text/html" id="favorite-movie-template">
@@ -29,20 +40,20 @@
     <div class="movie-title-container" data-bind="click: $root.showDetails">
       <h5 data-bind="text: title"></h5>
     </div>
-    <div class="add-to-list-button-container" data-bind="click: $root.showAddToListModal" data-toggle="tooltip" data-placement="right" title="Add to List">
+    <div class="add-to-list-button-container" data-bind="click: $root.showAddToListModal" data-toggle="tooltip" data-placement="top" title="Add to List">
       <span class="fa fa-2x fa-list"></span>
     </div>
-    <div class="show-reviews-button-container" data-bind="click: $root.showReviewsModal" data-toggle="tooltip" data-placement="right" title="Reviews">
+    <div class="show-reviews-button-container" data-bind="click: $root.showReviewsModal" data-toggle="tooltip" data-placement="top" title="Reviews">
       <span class="fa fa-stack">
         <span class="fa fa-stack-2x fa-2x fa-comments-o"></span>
         <strong class="fa fa-stack-1x review-count" data-bind="text: reviewCountText"></strong>
       </span>
     </div>
     <!-- ko if: fandango_id() -->
-      <a class="fandango-button-small" data-bind="attr: {href: fandango_url }" target="_blank" data-toggle="tooltip" data-placement="left" title="Now Playing!"><img src="/img/fandango.png" alt="find on fandango" /></a>
+      <a class="fandango-button-small" data-bind="attr: {href: fandango_url }" target="_blank" data-toggle="tooltip" data-placement="bottom" title="Now Playing"><img src="/img/fandango.png" alt="find on fandango" /></a>
     <!-- /ko -->
 
-    <a class="amazon-button-small" data-bind="attr: {href: amazon_link }" target="_blank" data-toggle="tooltip" data-placement="right" title="Search Amazon"><img src="/img/Amazon-icon.png" alt="find on amazon" /></a>
+    <a class="amazon-button-small" data-bind="attr: {href: amazon_link }" target="_blank" data-toggle="tooltip" data-placement="bottom" title="Search Amazon"><img src="/img/Amazon-icon.png" alt="find on amazon" /></a>
     <div class="image-container">
       <img class="pointer" data-bind="attr: {src: image_url($root) }, click: $root.showDetails" />
     </div>
