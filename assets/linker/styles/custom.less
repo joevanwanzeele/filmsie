@@ -249,7 +249,6 @@ td {
 }
 .average-rating-container {
   height     : 18px;
-  line-height: 18px;
   margin-left: 0;
   margin-bottom: 4px;
 }
@@ -277,10 +276,12 @@ td {
   }
   .star-rating-container {
     margin-left: 0;
+    color:#000;
   }
   img {
     max-height: 340px;
     max-width : 100%;
+    border: solid 2px #fff;
   }
   p {
     text-indent: 20px;
@@ -1057,6 +1058,10 @@ footer {
   text-align   : center;
   width        : 200px;
 }
+
+.tab-pane .flip-container {
+  height: 300px !important;
+}
 /* flip the pane when hovered */
 .flip-container.flip .flipper {
   transform: rotateY(180deg);
@@ -1064,8 +1069,6 @@ footer {
 .flip-container,
 .front,
 .back {
-  height: 260px;
-  width : 200px;
 }
 /* flip speed goes here */
 .flipper {

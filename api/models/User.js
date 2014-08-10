@@ -68,6 +68,11 @@ module.exports = {
       type: 'string'
     },
 
+    fb_authorized: {
+      type: 'boolean',
+      defaultsTo: true
+    },
+
     encrypted_password: {
       type: 'string'
     }

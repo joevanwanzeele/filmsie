@@ -36,35 +36,40 @@
 </script>
 
 <script type="text/html" id="favorite-movie-template">
-  <div class="favorite-movie-container" data-bind="style: { 'margin-left': $root.favorite_movie_container_margin, 'margin-right': $root.favorite_movie_container_margin }">
-    <div class="movie-title-container" data-bind="click: $root.showDetails">
-      <h5 data-bind="text: title"></h5>
-    </div>
-    <div class="add-to-list-button-container" data-bind="click: $root.showAddToListModal" data-toggle="tooltip" data-placement="top" title="Add to List">
-      <span class="fa fa-2x fa-list"></span>
-    </div>
-    <div class="show-reviews-button-container" data-bind="click: $root.showReviewsModal" data-toggle="tooltip" data-placement="top" title="Reviews">
-      <span class="fa fa-stack">
-        <span class="fa fa-stack-2x fa-2x fa-comments-o"></span>
-        <strong class="fa fa-stack-1x review-count" data-bind="text: reviewCountText"></strong>
-      </span>
-    </div>
-    <!-- ko if: fandango_id() -->
-      <a class="fandango-button-small" data-bind="attr: {href: fandango_url }" target="_blank" data-toggle="tooltip" data-placement="bottom" title="Now Playing"><img src="/img/fandango.png" alt="find on fandango" /></a>
-    <!-- /ko -->
+  <div class="flip-container" data-bind="style: { 'margin-left': $root.movie_container_margin, 'margin-right': $root.movie_container_margin }, css: {flip: showingBack}">
+  <div class="flipper">
+    <div class="favorite-movie-container front">
+      <div class="movie-title-container" data-bind="click: $root.showDetails">
+        <h4 data-bind="text: title"></h4>
+      </div>
+      <div class="add-to-list-button-container" data-bind="click: $root.showAddToListModal" data-toggle="tooltip" data-placement="top" title="Add to List">
+        <span class="fa fa-2x fa-list"></span>
+      </div>
+      <div class="show-reviews-button-container" data-bind="click: $root.showReviewsModal" data-toggle="tooltip" data-placement="top" title="Reviews">
+        <span class="fa fa-stack">
+          <span class="fa fa-stack-2x fa-2x fa-comments-o"></span>
+          <strong class="fa fa-stack-1x review-count" data-bind="text: reviewCountText"></strong>
+        </span>
+      </div>
+      <!-- ko if: fandango_id() -->
+        <a class="fandango-button-small" data-bind="attr: {href: fandango_url }" target="_blank" data-toggle="tooltip" data-placement="bottom" title="Now Playing"><img src="/img/fandango.png" alt="find on fandango" /></a>
+      <!-- /ko -->
 
-    <a class="amazon-button-small" data-bind="attr: {href: amazon_link }" target="_blank" data-toggle="tooltip" data-placement="bottom" title="Search Amazon"><img src="/img/Amazon-icon.png" alt="find on amazon" /></a>
-    <div class="image-container">
-      <img class="pointer" data-bind="attr: {src: image_url($root) }, click: $root.showDetails" />
-    </div>
-    <!-- ko if: $parent.id() == $root.current_user().id() -->
-    <span>average rating </span><div class="average-rating-container" data-bind="template: {name: 'average-rating-template'}"></div>
-    <!-- /ko -->
-    <!-- ko if: $parent.id() != $root.current_user().id() -->
-    <span data-bind="text: $parent.first_name() + '\'s'"></span> rating <div data-bind="template: {name: 'user-rating-template'}"></div>
-    <!-- /ko -->
-    <span>your rating</span>
-    <div style="width:100%"><div class="clear-rating-button" data-bind="visible: current_user_rating() > 0, click: clearRating"><span class="fa fa-1x fa-undo"></span></div><div class="star-rating-container rating-container" data-bind="template: {name: 'current-rating-template'}"></div>
+      <a class="amazon-button-small" data-bind="attr: {href: amazon_link }" target="_blank" data-toggle="tooltip" data-placement="bottom" title="Search Amazon"><img src="/img/Amazon-icon.png" alt="find on amazon" /></a>
+      <div class="image-container">
+        <img class="pointer" data-bind="attr: {src: image_url($root) }, click: $root.showDetails" />
+      </div>
+      <!-- ko if: $parent.id() == $root.current_user().id() -->
+      <span>average rating </span><div class="average-rating-container" data-bind="template: {name: 'average-rating-template'}"></div>
+      <!-- /ko -->
+      <!-- ko if: $parent.id() != $root.current_user().id() -->
+      <span data-bind="text: $parent.first_name() + '\'s'"></span> rating <div data-bind="template: {name: 'user-rating-template'}"></div>
+      <!-- /ko -->
+      <span>your rating</span>
+      <div style="width:100%"><div class="clear-rating-button" data-bind="visible: current_user_rating() > 0, click: clearRating"><span class="fa fa-1x fa-undo"></span></div><div class="star-rating-container rating-container" data-bind="template: {name: 'current-rating-template'}">
+      </div>
+    <div class="movie-container back"><div class="trivia-movie-container" data-bind="click: flip"><i class="fa fa-film"></i></div></div>
+    </div> <!-- /flipper -->
   </div>
 </script>
 
