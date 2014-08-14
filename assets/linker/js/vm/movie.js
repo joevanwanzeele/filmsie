@@ -95,7 +95,17 @@ function MovieViewModel(data, current_user) {
   self.new_review_text = ko.observable();
   self.review_count = ko.observable(data && data.review_count || 0);
 
-  self.saveAdminChanges = function(){};
+  self.saveAdminChanges = function(){
+    $.ajax({
+      type: "POST",
+      url: "/movie/update",
+
+    })
+  }
+
+  self.addTriviaQuestion = function(){
+    self.trivia_questions.push(new TriviaQuestionViewModel());
+  }
 
   self.reviewCountText = ko.computed(function(){
     return self.review_count() > 0 ? self.review_count() : '';
@@ -119,7 +129,9 @@ function MovieViewModel(data, current_user) {
     self.showingBack(!self.showingBack());
   }
 
-  self.showAdmin = function(){}
+  self.showAdmin = function(){
+    $('#movieAdminModal').modal('show');
+  }
 
   self.saveReview = function(){
     $.ajax({

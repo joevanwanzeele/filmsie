@@ -20,7 +20,8 @@ module.exports.policies = {
 
   MovieController: {
     '*': true,
-    recommended: 'isAuthenticated'
+    recommended: 'isAuthenticated',
+    save: 'isAdmin'
   },
 
   UserController: {

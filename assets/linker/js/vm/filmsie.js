@@ -158,6 +158,12 @@ function FilmsieViewModel(){
     });
   }
 
+  self.showMovieAdminModal = function(vm){
+    self.selected_movie(vm);
+    $('#movie_admin_modal').modal('show');
+    self.setModalProperties();
+  }
+
   self.left_menu_class = ko.computed(function(){
     if (self.left_menu_is_open()){
       return "fa-angle-double-left";
@@ -332,11 +338,6 @@ function FilmsieViewModel(){
     self.is_showing_people(false);
     self.is_showing_movies(true);
   }
-
-  // self.openProfileModal = function(){
-  //   $('#userProfileModal').modal();
-  //   self.setModalProperties();
-  // }
 
   self.setModalProperties = function(){
     $('.modal').on("click", function(e){

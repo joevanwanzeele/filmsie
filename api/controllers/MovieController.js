@@ -197,6 +197,11 @@ module.exports = {
     });
   },
 
+  save: function(req, res){
+    var movie = req.body.movie;
+    
+  },
+
   /*
    * Overrides for the settings in `config/controllers.js`
    * (specific to MovieController)
