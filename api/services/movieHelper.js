@@ -11,13 +11,15 @@ module.exports = {
           title: movie.title,
           poster_path: movie.poster_path,
           backdrop_path: movie.backdrop_path,
-          release_date: movie.release_date
+          release_date: movie.release_date,
+          fandango_id: movie.fandango_id
         }).done(cb);
       } else {
         existing_movie.title = movie.title;
         existing_movie.poster_path = movie.poster_path;
         existing_movie.backdrop_path = movie.backdrop_path;
-        existing_movie.release_date = existing_movie.release_date;
+        existing_movie.release_date = movie.release_date;
+        existing_movie.fandango_id = movie.fandango_id;
         existing_movie.save(function(err) {
           return cb(err, existing_movie);
         });

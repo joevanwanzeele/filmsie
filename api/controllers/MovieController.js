@@ -198,8 +198,12 @@ module.exports = {
   },
 
   save: function(req, res){
-    var movie = req.body.movie;
-    
+    var ui_movie = req.body.movie;
+
+    movieHelper.addOrUpdateMovie(ui_movie, function(err, existing_movie){
+      if (err) return console.log(err);
+      return res.json(existing_movie.id);
+    });
   },
 
   /*

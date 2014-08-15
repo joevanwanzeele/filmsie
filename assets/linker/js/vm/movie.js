@@ -98,9 +98,23 @@ function MovieViewModel(data, current_user) {
   self.saveAdminChanges = function(){
     $.ajax({
       type: "POST",
-      url: "/movie/update",
-
-    })
+      url: "/movie/save",
+      data: {
+        movie: {
+          id: self.id(),
+          title: self.title(),
+          tmdb_id: self.tmdb_id(),
+          fandango_id: self.fandango_id(),
+          poster_path: self.poster_path(),
+          backdrop_path: self.backdrop_path(),
+          release_date: self.release_date()
+        },
+        '_csrf': window.filmsie.csrf
+      },
+      success: function(response){
+        $('#movie_admin_modal').modal('hide');
+      }
+    });
   }
 
   self.addTriviaQuestion = function(){
@@ -130,7 +144,7 @@ function MovieViewModel(data, current_user) {
   }
 
   self.showAdmin = function(){
-    $('#movieAdminModal').modal('show');
+    $('#movie_admin_modal').modal('show');
   }
 
   self.saveReview = function(){
