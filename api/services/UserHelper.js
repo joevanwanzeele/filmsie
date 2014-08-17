@@ -72,7 +72,7 @@ module.exports = {
       .done(function(err, users){
         users = _.map(users, function(user){ user["current_user_id"] = current_user_id; return user; });
         async.each(users, includeCorrelationScore, function(){
-          users = _.filter(users, function(users){ return Math.abs(user.c_score) > .1 && user.id != current_user_id; });
+          users = _.filter(users, function(user){ return Math.abs(user.c_score) > .1 && user.id != current_user_id; });
           //console.dir(users);
           cb(users);
         });
@@ -111,7 +111,7 @@ function calculateScore(user, combined_ratings, cb){
 
   user["c_score"] = c_score ? c_score.toFixed(2) : null; //between -1 and 1, for calculations
   user["avg_diff"] = mean_diff;
-  
+
   user["match_score"] = match_score;
 
   return cb();
